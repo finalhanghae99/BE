@@ -1,6 +1,6 @@
 package com.product.application.reservation.entity;
 
-import com.product.application.campinginfo.entity.CampingInfo;
+import com.product.application.campinginfo.entity.Camping;
 import com.product.application.user.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,11 +32,11 @@ public class Reservation {
     private Long price;
 
     @ManyToOne
-    @JoinColumn(name="userId")
+    @JoinColumn(name="usersId")
     private Users users;
 
     @ManyToOne
     @JoinColumn(name="campingId")
-    private CampingInfo campingInfo;
+    private Camping camping;
 }
 

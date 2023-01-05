@@ -8,11 +8,15 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class CampingInfoLike {
+public class CampingLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private Long userId;
+
+    @ManyToOne
+    @JoinColumn(name = "campingId")
+    private Camping camping;
 }

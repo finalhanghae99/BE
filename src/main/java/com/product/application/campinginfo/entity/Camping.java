@@ -12,9 +12,10 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-public class CampingInfo {
+public class Camping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "campingId")
     private Long id;
 
     @Column(nullable = false)
@@ -65,12 +66,12 @@ public class CampingInfo {
     @Column
     private Long reviewCount;
 
-    @OneToMany(mappedBy = "CampingInfo")
+    @OneToMany(mappedBy = "camping")
     private List<Review> reviewList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "CampingInfo")
+    @OneToMany(mappedBy = "camping")
     private List<Reservation> reservationList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "CampingInfo")
-    private List<CampingInfoLike> campingInfoLikeList = new ArrayList<>();
+    @OneToMany(mappedBy = "camping")
+    private List<CampingLike> campingLikeList = new ArrayList<>();
 }

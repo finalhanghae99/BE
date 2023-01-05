@@ -1,6 +1,6 @@
 package com.product.application.review.entity;
 
-import com.product.application.campinginfo.entity.CampingInfo;
+import com.product.application.campinginfo.entity.Camping;
 import com.product.application.common.TimeStamped;
 import com.product.application.user.entity.Users;
 import lombok.Getter;
@@ -16,6 +16,7 @@ import java.util.List;
 public class Review extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reviewId")
     private Long id;
 
     @Column(nullable = false)
@@ -43,13 +44,13 @@ public class Review extends TimeStamped {
     private Long reviewUrl;
 
     @ManyToOne
-    @JoinColumn(name="userId")
+    @JoinColumn(name="usersId")
     private Users users;
 
-    @OneToMany(mappedBy = "Review")
+    @OneToMany(mappedBy = "review")
     private List<ReviewLike> reviewLikeList = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name="campingId")
-    private CampingInfo campingInfo;
+    private Camping camping;
 }

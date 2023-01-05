@@ -15,4 +15,8 @@ public class ReviewLike {
 
     @Column(nullable = false)
     private Long userId;
+
+    @ManyToOne
+    @JoinColumn(name = "reviewId")
+    private Review review;
 }
