@@ -1,6 +1,7 @@
 package com.product.application.user.controller;
 
 import com.product.application.common.ResponseMessage;
+import com.product.application.user.dto.EmailcheckRequestDto;
 import com.product.application.user.dto.LoginRequestDto;
 import com.product.application.user.dto.SignupRequestDto;
 import com.product.application.user.service.UserService;
@@ -26,6 +27,12 @@ public class UserController {
     @PostMapping("/users/login")
     public ResponseMessage<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response){
         userService.login(loginRequestDto, response);
+        return new ResponseMessage<>("Success", 200, null);
+    }
+
+    @PostMapping("/users/checkemail")
+    public ResponseMessage<?> emailcheck(@RequestBody EmailcheckRequestDto emailcheckRequestDto){
+        userService.emailcheck(emailcheckRequestDto);
         return new ResponseMessage<>("Success", 200, null);
     }
 }

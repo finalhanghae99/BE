@@ -1,6 +1,7 @@
 package com.product.application.user.service;
 
 import com.product.application.common.exception.CustomException;
+import com.product.application.user.dto.EmailcheckRequestDto;
 import com.product.application.user.dto.LoginRequestDto;
 import com.product.application.user.dto.SignupRequestDto;
 import com.product.application.user.entity.Users;
@@ -48,4 +49,10 @@ public class UserService {
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(users.getUseremail()));
     }
 
+    public void emailcheck(EmailcheckRequestDto emailcheckRequestDto) {
+       Optional<Users> check = userRepository.findByUseremail(emailcheckRequestDto.getUseremail());
+       if(check.isPresent()){
+           throw new CustomException(DUPLICATE_USEREMAIL);
+       }
+    }
 }
