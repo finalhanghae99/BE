@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### application-jwt
-.application-jwt.properties
+application-jwt.properties
