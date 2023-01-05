@@ -10,7 +10,7 @@ public enum ErrorCode {
     INVALID_PARAMETER("파라미터 값을 확인해주세요.", 400),
     INVALID_USERNAME_PATTERN("id는 소문자와 숫자 조합 4자리에서 10자리입니다.",400),
     INVALID_PASSWORD_PATTERN("비밀번호는 소문자, 대문자, 숫자, 특수문자(!@#$%^&+=) 조합 8자리에서 15자리입니다.",400),
-    DUPLICATE_USERNAME("중복된 아이디가 존재합니다.", 400),
+    DUPLICATE_USEREMAIL("중복된 이메일이 존재합니다.", 400),
     DUPLICATE_EMAIL("해당 이메일로 이미 가입된 회원입니다.", 400),
     DUPLICATE_NICKNAME("중복된 닉네임이 존재합니다.", 400),
     REQUIRED_ALL("모든 항목이 필수값입니다.",400),
