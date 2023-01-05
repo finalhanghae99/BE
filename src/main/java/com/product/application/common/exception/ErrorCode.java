@@ -23,6 +23,7 @@ public enum ErrorCode {
     CONTENT_NOT_FOUND("존재하지 않는 게시글 입니다.",404),
     COMMENT_NOT_FOUND("존재하지 않는 댓글 입니다.", 404),
     USERNAME_NOT_FOUND("존재하지 않는 아이디 입니다.",404),
+    USEREMAIL_NOT_FOUND("존재하지 않은 이메일 입니다.", 404),
     INCORRECT_PASSWORD("잘못된 비밀번호입니다.",404),
     AUTHORIZATION_DELETE_FAIL("삭제 권한이 없습니다.", 401),
     AUTHORIZATION_UPDATE_FAIL("수정 권한이 없습니다.", 401),
