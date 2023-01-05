@@ -28,9 +28,10 @@ public class Users {
     private String profileImageUrl;
 
     @Builder
-    public Users(String useremail, String nickname, String password){
+    public Users(String useremail, String nickname, String password, String profileImageUrl){
         this.useremail = useremail;
         this.nickname = nickname;
         this.password = password;
+        this.profileImageUrl = profileImageUrl;
     }
 }
