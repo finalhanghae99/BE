@@ -3,6 +3,7 @@ package com.product.application.user.controller;
 import com.product.application.common.ResponseMessage;
 import com.product.application.user.dto.EmailcheckRequestDto;
 import com.product.application.user.dto.LoginRequestDto;
+import com.product.application.user.dto.NicknamecheckRequestDto;
 import com.product.application.user.dto.SignupRequestDto;
 import com.product.application.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,12 @@ public class UserController {
     @PostMapping("/users/checkemail")
     public ResponseMessage<?> emailcheck(@RequestBody EmailcheckRequestDto emailcheckRequestDto){
         userService.emailcheck(emailcheckRequestDto);
+        return new ResponseMessage<>("Success", 200, null);
+    }
+
+    @PostMapping("/users/checknickname")
+    public ResponseMessage<?> nicknamecheck(@RequestBody NicknamecheckRequestDto nicknamecheckRequestDto){
+        userService.nicknamecheck(nicknamecheckRequestDto);
         return new ResponseMessage<>("Success", 200, null);
     }
 }

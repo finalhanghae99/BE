@@ -3,6 +3,7 @@ package com.product.application.user.service;
 import com.product.application.common.exception.CustomException;
 import com.product.application.user.dto.EmailcheckRequestDto;
 import com.product.application.user.dto.LoginRequestDto;
+import com.product.application.user.dto.NicknamecheckRequestDto;
 import com.product.application.user.dto.SignupRequestDto;
 import com.product.application.user.entity.Users;
 import com.product.application.user.jwt.JwtUtil;
@@ -54,5 +55,12 @@ public class UserService {
        if(check.isPresent()){
            throw new CustomException(DUPLICATE_USEREMAIL);
        }
+    }
+
+    public void nicknamecheck(NicknamecheckRequestDto nicknamecheckRequestDto) {
+        Optional<Users> check = userRepository.findByNickname(nicknamecheckRequestDto.getNickname());
+        if(check.isPresent()){
+            throw new CustomException(DUPLICATE_NICKNAME);
+        }
     }
 }
