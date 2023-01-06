@@ -1,6 +1,6 @@
 package com.product.application.review.entity;
 
-import com.product.application.campinginfo.entity.Camping;
+import com.product.application.camping.entity.Camping;
 import com.product.application.common.TimeStamped;
 import com.product.application.user.entity.Users;
 import lombok.Getter;
