@@ -19,4 +19,10 @@ public class ReviewController {
         ResponseMessage responseMessage = reviewService.writeReview(campingId, requestReviewWriteDto, httpServletRequest);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
+
+    @PutMapping("/{reviewId}")
+    public ResponseEntity updateReview(@PathVariable Long reviewId, @RequestBody RequestReviewWriteDto requestReviewWriteDto, HttpServletRequest httpServletRequest){
+        ResponseMessage responseMessage = reviewService.updateReview(reviewId, requestReviewWriteDto, httpServletRequest);
+        return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
+    }
 }

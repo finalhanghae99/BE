@@ -21,5 +21,6 @@ public class ReviewMapper {
                 .score5(requestReviewWriteDto.getScore5())
                 .build();
     }
+
     //MapStruct
 }

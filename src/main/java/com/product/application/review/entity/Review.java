@@ -2,6 +2,7 @@ package com.product.application.review.entity;
 
 import com.product.application.camping.entity.Camping;
 import com.product.application.common.TimeStamped;
+import com.product.application.review.dto.RequestReviewWriteDto;
 import com.product.application.user.entity.Users;
 import lombok.Builder;
 import lombok.Getter;
@@ -67,5 +68,15 @@ public class Review extends TimeStamped {
         this.score3 = score3;
         this.score4 = score4;
         this.score5 = score5;
+    }
+
+    public void update(RequestReviewWriteDto requestReviewWriteDto) {
+        this.reviewUrlList =  requestReviewWriteDto.getReviewUrlList();
+        this.content = requestReviewWriteDto.getContent();
+        this.score1 = requestReviewWriteDto.getScore1();
+        this.score2 = requestReviewWriteDto.getScore2();
+        this.score3 = requestReviewWriteDto.getScore3();
+        this.score4 = requestReviewWriteDto.getScore4();
+        this.score5 = requestReviewWriteDto.getScore5();
     }
 }
