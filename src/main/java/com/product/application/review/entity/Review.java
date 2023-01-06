@@ -1,8 +1,9 @@
 package com.product.application.review.entity;
 
-import com.product.application.campinginfo.entity.Camping;
+import com.product.application.camping.entity.Camping;
 import com.product.application.common.TimeStamped;
 import com.product.application.user.entity.Users;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +20,7 @@ public class Review extends TimeStamped {
     @Column(name = "reviewId")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50000)
     private String content;
 
     @Column(nullable = false)
@@ -41,7 +42,8 @@ public class Review extends TimeStamped {
     private Long score5;
 
     @Column(nullable = false)
-    private Long reviewUrl;
+    @ElementCollection
+    private List<String> reviewUrlList;
 
     @ManyToOne
     @JoinColumn(name="usersId")
@@ -53,4 +55,17 @@ public class Review extends TimeStamped {
     @ManyToOne
     @JoinColumn(name="campingId")
     private Camping camping;
+
+    @Builder
+    public Review(Users users, Camping camping, List<String> reviewUrlList, String content, Long score1, Long score2, Long score3, Long score4, Long score5){
+        this.users = users;
+        this.camping = camping;
+        this.reviewUrlList = reviewUrlList;
+        this.content = content;
+        this.score1 = score1;
+        this.score2 = score2;
+        this.score3 = score3;
+        this.score4 = score4;
+        this.score5 = score5;
+    }
 }

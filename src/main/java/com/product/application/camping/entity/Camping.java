@@ -1,4 +1,4 @@
-package com.product.application.campinginfo.entity;
+package com.product.application.camping.entity;
 
 import com.product.application.reservation.entity.Reservation;
 import com.product.application.review.entity.Review;

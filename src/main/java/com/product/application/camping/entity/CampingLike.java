@@ -1,4 +1,4 @@
-package com.product.application.campinginfo.entity;
+package com.product.application.camping.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
