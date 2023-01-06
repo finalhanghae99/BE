@@ -2,6 +2,7 @@ package com.product.application.campinginfo.entity;
 
 import com.product.application.reservation.entity.Reservation;
 import com.product.application.review.entity.Review;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -55,10 +56,7 @@ public class Camping {
     private String campingSurroundFac; // 주변이용시설
 
     @Column
-    private String createdAt; // open api에 등록된 생성시간
-
-    @Column
-    private String modifiedAt; // open api에 등록된 수정시간
+    private String imageUrl;
 
     @Column
     private Long campingLikeCount;
@@ -74,4 +72,28 @@ public class Camping {
 
     @OneToMany(mappedBy = "camping")
     private List<CampingLike> campingLikeList = new ArrayList<>();
+
+    public Camping(String campingName, String address1, String address2, String address3,
+                   String campingEnv, String campingFac, String mapX, String mapY,
+                   String campingType, String homepageUrl, String phoneNumber,
+                   String campingSurroundFac,String imageUrl, Long campingLikeCount, Long reviewCount){
+        this.campingName = campingName;
+        this.address1 = address1;
+        this.address2 = address2;
+        this.address3 = address3;
+        this.campingEnv = campingEnv;
+        this.campingFac = campingFac;
+        this.mapX = mapX;
+        this.mapY = mapY;
+        this.campingType = campingType;
+        this.homepageUrl = homepageUrl;
+        this.phoneNumber= phoneNumber;
+        this.campingSurroundFac = campingSurroundFac;
+        this.imageUrl = imageUrl;
+        this.campingLikeCount = campingLikeCount;
+        this.reviewCount = reviewCount;
+    }
+
+
+
 }
