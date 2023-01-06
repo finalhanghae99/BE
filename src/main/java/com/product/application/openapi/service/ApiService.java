@@ -45,7 +45,6 @@ public class ApiService {
             for (int i = 0; i < array.size(); i++) {
                 JSONObject jObj2 = (JSONObject)array.get(i);
 
-                //도메인클래스 빌더패턴으로 값 삽입하기
                 Camping camping = new Camping(jObj2.get("facltNm").toString(),jObj2.get("doNm").toString(),jObj2.get("sigunguNm").toString(),jObj2.get("addr1").toString(),jObj2.get("lctCl").toString(),
                                                 jObj2.get("sbrsCl").toString(), jObj2.get("mapX").toString(), jObj2.get("mapY").toString(), jObj2.get("induty").toString(),jObj2.get("homepage").toString(),
                         jObj2.get("tel").toString(),jObj2.get("posblFcltyCl").toString(), jObj2.get("firstImageUrl").toString(),0L,0L );
