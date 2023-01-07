@@ -1,6 +1,7 @@
 package com.product.application.reservation.entity;
 
 import com.product.application.camping.entity.Camping;
+import com.product.application.reservation.dto.ReservationRequestDto;
 import com.product.application.user.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,7 @@ public class Reservation {
     private LocalDate endDate;
 
     @Column(nullable = false)
-    private boolean tradeState;
+    private boolean tradeState = true;
 
     @Column(nullable = false)
     private Long price;
@@ -38,5 +39,15 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name="campingId")
     private Camping camping;
+
+    public Reservation(ReservationRequestDto reservationRequestDto, Users users) {
+        this.content = reservationRequestDto.getContent();
+        this.startDate = reservationRequestDto.getStartDate();
+        this.endDate = reservationRequestDto.getEndDate();
+        this.price = reservationRequestDto.getPrice();
+        this.tradeState = reservationRequestDto.isTradeState();
+        this.users = users;
+
+    }
 }
 

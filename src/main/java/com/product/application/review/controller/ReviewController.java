@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/review")
 @RequiredArgsConstructor
+@RequestMapping("/review")
 public class ReviewController {
     private final ReviewService reviewService;
     @PostMapping("/{campingId}")

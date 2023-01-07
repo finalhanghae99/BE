@@ -68,6 +68,7 @@ public class Review extends TimeStamped {
         this.score3 = score3;
         this.score4 = score4;
         this.score5 = score5;
+        this.likeCount = 0L;
     }
 
     public void update(RequestReviewWriteDto requestReviewWriteDto) {
