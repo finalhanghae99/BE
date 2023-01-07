@@ -73,6 +73,7 @@ public class Camping {
     @OneToMany(mappedBy = "camping")
     private List<CampingLike> campingLikeList = new ArrayList<>();
 
+    @Builder
     public Camping(String campingName, String address1, String address2, String address3,
                    String campingEnv, String campingFac, String mapX, String mapY,
                    String campingType, String homepageUrl, String phoneNumber,

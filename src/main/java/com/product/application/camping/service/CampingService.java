@@ -29,11 +29,11 @@ public class CampingService {
         else if(campingname == null && address1 == null && address2 != null){
             campingList = campingRepository.findAllByAddress2(address2);
         }
-        // 1.3. campingname X address1 O address2 X
+        // 1.3. campingname X address1 O address2 X - 0
         else if(campingname == null && address1 != null && address2 == null){
             campingList = campingRepository.findAllByAddress1(address1);
         }
-        // 1.4. campingname X address1 O address2 O
+        // 1.4. campingname X address1 O address2 O - 0
         // -> @Query? + sql쿼리문 함께 보기? > innerJoin / QueryDsl?
         else if(campingname == null && address1 != null && address2 != null){
             campingList = campingRepository.findAllByAddress1AndAddress2(address1,address2);
@@ -51,17 +51,16 @@ public class CampingService {
         }
         // 1.7. campingname O address1 O address2 X
         else if(campingname != null && address1 != null && address2 == null){
+            // address1으로 검색하고 campingname으로 검색
 
         }
         // 1.8. campingname O address1 O address2 O
         else if(campingname != null && address1 != null && address2 != null){
-
+            // address1으로 검색하고 address2로 추려내고 campingname으로 추려낸다.
         }
 
         // 2.추출된 List<Camping>에서 값을 추출해서 List<ResponseOneCampingInfo>만들기
         List<ResponseOneCampingInfo> responseOneCampingInfoList = new ArrayList<>();
-
-
 
 
 
