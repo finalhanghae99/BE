@@ -49,8 +49,5 @@ public class Reservation {
         this.users = users;
 
     }
-
-
-
 }
 

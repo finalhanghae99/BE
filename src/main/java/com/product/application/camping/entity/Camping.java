@@ -92,7 +92,4 @@ public class Camping {
         this.campingLikeCount = campingLikeCount;
         this.reviewCount = reviewCount;
     }
-
-
-
 }
