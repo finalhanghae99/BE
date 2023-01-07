@@ -51,7 +51,6 @@ public class ReviewService {
         reviewRepository.save(review);
         return new ResponseMessage<>("Success", 200, null);
     }
-
     @Transactional
     public ResponseMessage updateReview(Long reviewId, RequestReviewWriteDto requestReviewWriteDto, HttpServletRequest httpServletRequest) {
         /*
@@ -64,7 +63,7 @@ public class ReviewService {
          */
         // 1.토큰에서 유저이메일 확인
         String token = jwtUtil.resolveToken(httpServletRequest);
-        Claims claims;
+        Claims claims = null;
         // optional로 선언된 usersFromToken을 먼저 null로 선언하고
         Optional<Users> usersFromToken = null;
         if (token != null) {
@@ -85,7 +84,8 @@ public class ReviewService {
         // 2.reviewId와 연관된 유저이메일불러와서 토큰안에 있는 유저이메일과 비교하기
         String useremailFromReviewId = review.getUsers().getUseremail();
         // 3.reviewId로 불러온 유저이메일과 토큰안에 있는 유저이메일이 다르면 에러 발생
-        if(!useremailFromReviewId.equals(usersFromToken)){
+        String useremailFromToken = claims.getSubject();
+        if(!useremailFromReviewId.equals(useremailFromToken)){
             throw new CustomException(ErrorCode.AUTHORIZATION_UPDATE_FAIL);
         }
         // 4.update requestReviewWriteDto
