@@ -14,6 +14,7 @@ public enum ErrorCode {
     DUPLICATE_EMAIL("해당 이메일로 이미 가입된 회원입니다.", 400),
     DUPLICATE_NICKNAME("중복된 닉네임이 존재합니다.", 400),
     REQUIRED_ALL("모든 항목이 필수값입니다.",400),
+    REQUIRED_AT_LEAST_ONE("적어도 하나의 항목이 필요합니다.", 400),
     WRONG_IMAGE_FORMAT("파일을 확인해주세요.", 400),
     PASSWORD_MISMATCH("비밀번호가 비밀번호 확인과 일치하지 않습니다",400),
     DUPLICATE_MEMBERNAME("이미 추가한 유저입니다.", 400),
