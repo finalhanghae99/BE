@@ -20,6 +20,13 @@ public class ReservationController {
                                      , HttpServletRequest request) {
         reservationService.create(reservationRequestDto, request);
         return new ResponseMessage<>("Success", 200, null);
-
     }
+
+    @DeleteMapping("/{reservationId}")
+    public ResponseMessage<?> delete(@PathVariable Long reservationId
+                                     , HttpServletRequest request) {
+        reservationService.delete(reservationId, request);
+        return new ResponseMessage<>("Success", 200, null);
+    }
+
 }
