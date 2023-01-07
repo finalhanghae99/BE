@@ -1,8 +1,7 @@
-package com.product.application.campinginfo.entity;
+package com.product.application.camping.entity;
 
 import com.product.application.reservation.entity.Reservation;
 import com.product.application.review.entity.Review;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

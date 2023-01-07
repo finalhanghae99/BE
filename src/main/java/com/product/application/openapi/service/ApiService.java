@@ -1,7 +1,7 @@
 package com.product.application.openapi.service;
 
-import com.product.application.campinginfo.entity.Camping;
-import com.product.application.campinginfo.repository.CampingRepository;
+import com.product.application.camping.entity.Camping;
+import com.product.application.camping.repository.CampingRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
