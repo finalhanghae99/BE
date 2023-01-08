@@ -1,6 +1,7 @@
 package com.product.application.camping.dto;
 
 import com.product.application.camping.entity.Camping;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +20,15 @@ public class ResponseOneCampingInfo {
         this.address1 = camping.getAddress1();
         this.address2 = camping.getAddress2();
         this.address3 = camping.getAddress3();
+    }
+
+    @Builder
+    public ResponseOneCampingInfo(Long campingId, String campingName, String address1, String address2, String address3){
+        this.campingId = campingId;
+        this.campingName = campingName;
+        this.address1 = address1;
+        this.address2 = address2;
+        this.address3 = address3;
     }
 
 }

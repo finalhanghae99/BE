@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 public class CampingController {
     private final CampingService campingService;
     @GetMapping("search")
-    public ResponseEntity searchAllCampingInfo(@RequestParam(value="campingname", required = false) String campingname, @RequestParam(value="address1", required = false) String address1, @RequestParam(value = "address2", required = false) String address2, HttpServletRequest request){
+    public ResponseMessage searchAllCampingInfo(@RequestParam(value="campingname", required = false) String campingname, @RequestParam(value="address1", required = false) String address1, @RequestParam(value = "address2", required = false) String address2, HttpServletRequest request){
         ResponseMessage responseMessage = campingService.searchAllCampingInfo(campingname, address1, address2, request);
-        return new ResponseEntity(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
+        return responseMessage;
     }
 }
