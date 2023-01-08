@@ -1,5 +1,6 @@
 package com.product.application.camping.service;
 
+import com.product.application.camping.dto.ResponseFindListFiveDto;
 import com.product.application.camping.dto.ResponseOneCampingInfo;
 import com.product.application.camping.entity.Camping;
 import com.product.application.camping.mapper.CampingMapper;
@@ -93,4 +94,11 @@ public class CampingService {
         }
         return new ResponseMessage("Success", 200, responseOneCampingInfoList);
     }
+
+    //public ResponseMessage viewListFive(List<Long> campingIdList) {
+    //    List<ResponseFindListFiveDto> responseFindListFiveDtoList = new ArrayList<>();
+    //    for(Long campingId : campingIdList){
+    //
+    //    }
+    //}
 }
