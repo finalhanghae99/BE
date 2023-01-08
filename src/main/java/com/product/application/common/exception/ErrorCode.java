@@ -19,7 +19,7 @@ public enum ErrorCode {
     DUPLICATE_MEMBERNAME("이미 추가한 유저입니다.", 400),
 
     //404 NOT_FOUND 잘못된 리소스 접근
-    AGIT_NOT_FOUND("존재하지 않는 아지트 입니다.",404),
+    REVIEW_NOT_FOUND("존재하지 않는 리뷰 입니다.", 404),
     CONTENT_NOT_FOUND("존재하지 않는 게시글 입니다.",404),
     COMMENT_NOT_FOUND("존재하지 않는 댓글 입니다.", 404),
     USERNAME_NOT_FOUND("존재하지 않는 아이디 입니다.",404),
