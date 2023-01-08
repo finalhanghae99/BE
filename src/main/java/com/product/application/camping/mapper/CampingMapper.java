@@ -18,9 +18,4 @@ public class CampingMapper {
                 .address3(camping.getAddress3())
                 .build();
     }
-
-    public ResponseFindListFiveDto entityToResponseFindListFiveDto(Camping camping){
-        return ResponseFindListFiveDto
-                .builder().build();
-    }
 }

@@ -1,11 +1,12 @@
 package com.product.application.camping.dto;
 
+import com.product.application.camping.entity.Camping;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class ResponseFindListFiveDto {
     private Long campingId;
     private String imageUrl;
@@ -14,13 +15,12 @@ public class ResponseFindListFiveDto {
     private String address2;
     private String address3;
 
-    @Builder
-    public ResponseFindListFiveDto(Long campingId, String imageUrl, String campingName, String address1, String address2, String address3){
-        this.campingId = campingId;
-        this.imageUrl = imageUrl;
-        this.campingName = campingName;
-        this.address1 = address1;
-        this.address2 = address2;
-        this.address3 = address3;
+    public ResponseFindListFiveDto(Camping camping){
+        this.campingId = camping.getId();
+        this.imageUrl = camping.getImageUrl();
+        this.campingName = camping.getCampingName();
+        this.address1 = camping.getAddress1();
+        this.address2 = camping.getAddress2();
+        this.address3 = camping.getAddress3();
     }
 }

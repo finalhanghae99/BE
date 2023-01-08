@@ -1,5 +1,6 @@
 package com.product.application.camping.controller;
 
+import com.product.application.camping.dto.RequestFindListFiveDto;
 import com.product.application.camping.service.CampingService;
 import com.product.application.common.ResponseMessage;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +28,9 @@ public class CampingController {
     }
 
     @PostMapping("listfive")
-    public ResponseMessage viewListFive(@RequestBody List<Long> campingIdList){
-        ResponseMessage responseMessage = campingService.viewListFive(campingIdList);
+    public ResponseMessage viewListFive(@RequestBody RequestFindListFiveDto requestFindListFiveDto){
+        List<Long> list = requestFindListFiveDto.getCampingIdList();
+        ResponseMessage responseMessage = campingService.viewListFive(list);
         return responseMessage;
     }
 }

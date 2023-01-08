@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class ResponseOneCampingInfo {
     private Long campingId;
     private String campingName;
@@ -21,6 +21,8 @@ public class ResponseOneCampingInfo {
         this.address2 = camping.getAddress2();
         this.address3 = camping.getAddress3();
     }
+
+
 
     @Builder
     public ResponseOneCampingInfo(Long campingId, String campingName, String address1, String address2, String address3){
