@@ -14,21 +14,19 @@ public enum ErrorCode {
     DUPLICATE_EMAIL("해당 이메일로 이미 가입된 회원입니다.", 400),
     DUPLICATE_NICKNAME("중복된 닉네임이 존재합니다.", 400),
     REQUIRED_ALL("모든 항목이 필수값입니다.",400),
+    REQUIRED_AT_LEAST_ONE("적어도 하나의 항목이 필요합니다.", 400),
     WRONG_IMAGE_FORMAT("파일을 확인해주세요.", 400),
     PASSWORD_MISMATCH("비밀번호가 비밀번호 확인과 일치하지 않습니다",400),
     DUPLICATE_MEMBERNAME("이미 추가한 유저입니다.", 400),
 
-    //404 NOT_FOUND 잘못된 리소스 접근
-    REVIEW_NOT_FOUND("존재하지 않는 리뷰 입니다.", 404),
     CONTENT_NOT_FOUND("존재하지 않는 게시글 입니다.",404),
-    COMMENT_NOT_FOUND("존재하지 않는 댓글 입니다.", 404),
+    REVIEW_NOT_FOUND("존재하지 않는 리뷰 입니다.", 404),
     USERNAME_NOT_FOUND("존재하지 않는 아이디 입니다.",404),
     USEREMAIL_NOT_FOUND("존재하지 않은 이메일 입니다.", 404),
     INCORRECT_PASSWORD("잘못된 비밀번호입니다.",404),
     AUTHORIZATION_DELETE_FAIL("삭제 권한이 없습니다.", 401),
     AUTHORIZATION_UPDATE_FAIL("수정 권한이 없습니다.", 401),
     AUTHORIZATION_CREATE_FAIL("생성 권한이 없습니다.", 401),
-    AUTHORIZATION_AGIT_FAIL("아지트 권한이 없습니다.", 401),
 
     //필터단 에러
     FORBIDDEN_ERROR("서버 사용 권한이 없습니다.",403),
