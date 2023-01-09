@@ -3,7 +3,14 @@ package com.product.application.camping.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 
 @Getter
 @NoArgsConstructor
@@ -14,7 +21,10 @@ public class CampingLike {
     private Long id;
 
     @Column(nullable = false)
-    private Long userId;
+    private Long usersId;
+
+    //@Column(nullable = false)
+    //private Long campingId;
 
     @ManyToOne
     @JoinColumn(name = "campingId")

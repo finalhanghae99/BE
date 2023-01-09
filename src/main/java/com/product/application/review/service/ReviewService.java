@@ -1,11 +1,14 @@
 package com.product.application.review.service;
 
 import com.product.application.camping.entity.Camping;
+import com.product.application.camping.entity.CampingLike;
+import com.product.application.camping.repository.CampingLikeRepository;
 import com.product.application.camping.repository.CampingRepository;
 import com.product.application.common.ResponseMessage;
 import com.product.application.common.exception.CustomException;
 import com.product.application.common.exception.ErrorCode;
 import com.product.application.review.dto.RequestReviewWriteDto;
+import com.product.application.review.dto.ResponseFindListTenDto;
 import com.product.application.review.entity.Review;
 import com.product.application.review.mapper.ReviewMapper;
 import com.product.application.review.repository.ReviewRepository;
@@ -18,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,6 +31,7 @@ public class ReviewService {
     private final CampingRepository campingRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
+    private final CampingLikeRepository campingLikeRepository;
     private final ReviewMapper reviewMapper;
     private final JwtUtil jwtUtil;
     @Transactional
@@ -61,37 +67,70 @@ public class ReviewService {
             4. 일치하면 dto의 값으로 엔티티 값 변경
             5. reviewRepository에 업데이트
          */
-        // 1.토큰에서 유저이메일 확인
         String token = jwtUtil.resolveToken(httpServletRequest);
-        Claims claims = null;
-        // optional로 선언된 usersFromToken을 먼저 null로 선언하고
-        Optional<Users> usersFromToken = null;
         if (token != null) {
+            Claims claims;
+            Users usersFromToken;
+            // 토큰이 유효하다면 사용자 정보 가져오기
             if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
                 throw new CustomException(ErrorCode.TOKEN_ERROR);
             }
-            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
-            usersFromToken = userRepository.findByUseremail(claims.getSubject());
+            // 토큰에서 가져온 useremail을 사용하여 DB 조회
+            usersFromToken = userRepository.findByUseremail(claims.getSubject()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+            // @pathvariable reviewId로 DB에서 review 조회
+            Review review = reviewRepository.findById(reviewId).orElseThrow(()->new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+            // 토큰안에 있는 유저이메일, 리뷰와 연결된 유저이메일 비교
+            String useremailFromReview = review.getUsers().getUseremail();
+            String useremailFromToken = usersFromToken.getUseremail();
+            if(!useremailFromReview.equals(useremailFromToken)){
+                throw new CustomException(ErrorCode.AUTHORIZATION_UPDATE_FAIL);
+            }
+            // requestReviewWriteDto로 review 엔티티 업데이트
+            review.update(requestReviewWriteDto);
+            // DB에 entity 저장
+            reviewRepository.save(review);
+            return new ResponseMessage<>("Success", 200, null);
+        } else {
+            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
         }
-        if(!usersFromToken.isPresent()){ // usersFromToken이 null이면 업데이트 권한이 없음을 표시
-            throw new CustomException(ErrorCode.AUTHORIZATION_UPDATE_FAIL);
+    }
+
+    @Transactional
+    public ResponseMessage findListTen(List<Long> list, HttpServletRequest request) {
+        // ResponseFindListTenDto는
+        // campingId, imageUrl, campingName,
+        // address1, address2, address3;
+        // "reviewCount", "campingLikeState";
+        // campingEnv, campingType, campingFac, campingSurroundFac를 가지고 있음
+        // 이 중에서,
+        // reviewCount는 review의 갯수 :: reviewRepository에서 countByCamping(camping)으로 찾음
+        // campingLikeState는 findByCampingAndUsersId(camping,usersFromToken.get().getId())로 찾음.
+        // 이 때, Optional<CampingLike>를 반환 --> null이면 campingLikeState가 false / null이 아니면 campingLikeState가 true
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new CustomException(ErrorCode.TOKEN_ERROR);
+            }
+            Camping tempCamping;
+            Long reviewCount;
+            boolean campingLikeState;
+            Users usersFromToken = userRepository.findByUseremail(claims.getSubject()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+            List<ResponseFindListTenDto> dtoList = new ArrayList<>();
+            for(Long campingId : list){
+                tempCamping = campingRepository.findById(campingId).orElseThrow(()->new CustomException(ErrorCode.CAMPING_NOT_FOUND));
+                reviewCount = reviewRepository.countByCamping(tempCamping);
+                Optional<CampingLike> optionalCampingLike = campingLikeRepository.findByCampingAndUsersId(tempCamping,usersFromToken.getId());
+                campingLikeState = optionalCampingLike.isPresent();
+                dtoList.add(new ResponseFindListTenDto(tempCamping,reviewCount,campingLikeState));
+            }
+            return new ResponseMessage("Success",200, dtoList);
+        } else { // 토큰이 존재하지 않으면 에러 발생
+            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
         }
-        // review 불러오기
-        Review review = reviewRepository.findById(reviewId).orElseThrow(()->new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-        // 2.reviewId와 연관된 유저이메일불러와서 토큰안에 있는 유저이메일과 비교하기
-        String useremailFromReviewId = review.getUsers().getUseremail();
-        // 3.reviewId로 불러온 유저이메일과 토큰안에 있는 유저이메일이 다르면 에러 발생
-        String useremailFromToken = claims.getSubject();
-        if(!useremailFromReviewId.equals(useremailFromToken)){
-            throw new CustomException(ErrorCode.AUTHORIZATION_UPDATE_FAIL);
-        }
-        // 4.update requestReviewWriteDto
-        review.update(requestReviewWriteDto);
-        // 5.entity 저장
-        reviewRepository.save(review);
-        return new ResponseMessage<>("Success", 200, null);
     }
 }
