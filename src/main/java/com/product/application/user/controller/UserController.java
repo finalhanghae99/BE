@@ -1,10 +1,10 @@
 package com.product.application.user.controller;
 
 import com.product.application.common.ResponseMessage;
-import com.product.application.user.dto.EmailcheckRequestDto;
-import com.product.application.user.dto.LoginRequestDto;
-import com.product.application.user.dto.NicknamecheckRequestDto;
-import com.product.application.user.dto.SignupRequestDto;
+import com.product.application.user.dto.RequestEmailcheckDto;
+import com.product.application.user.dto.RequestLoginDto;
+import com.product.application.user.dto.RequestNicknamecheckDto;
+import com.product.application.user.dto.RequestSignupDto;
 import com.product.application.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,26 +20,26 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/users/signup")
-    public ResponseMessage<?> signup(@RequestBody @Valid SignupRequestDto signupRequestDto){
-        userService.signup(signupRequestDto);
+    public ResponseMessage<?> signup(@RequestBody @Valid RequestSignupDto requestSignupDto){
+        userService.signup(requestSignupDto);
         return new ResponseMessage<>("Success", 200, null);
     }
 
     @PostMapping("/users/login")
-    public ResponseMessage<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response){
-        userService.login(loginRequestDto, response);
+    public ResponseMessage<?> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletResponse response){
+        userService.login(requestLoginDto, response);
         return new ResponseMessage<>("Success", 200, null);
     }
 
     @PostMapping("/users/checkemail")
-    public ResponseMessage<?> emailcheck(@RequestBody EmailcheckRequestDto emailcheckRequestDto){
-        userService.emailcheck(emailcheckRequestDto);
+    public ResponseMessage<?> emailcheck(@RequestBody RequestEmailcheckDto requestEmailcheckDto){
+        userService.emailcheck(requestEmailcheckDto);
         return new ResponseMessage<>("Success", 200, null);
     }
 
     @PostMapping("/users/checknickname")
-    public ResponseMessage<?> nicknamecheck(@RequestBody NicknamecheckRequestDto nicknamecheckRequestDto){
-        userService.nicknamecheck(nicknamecheckRequestDto);
+    public ResponseMessage<?> nicknamecheck(@RequestBody RequestNicknamecheckDto requestNicknamecheckDto){
+        userService.nicknamecheck(requestNicknamecheckDto);
         return new ResponseMessage<>("Success", 200, null);
     }
 }

@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class LoginRequestDto {
-    private String useremail;
-    private String password;
+public class RequestNicknamecheckDto {
+    private String nickname;
 }

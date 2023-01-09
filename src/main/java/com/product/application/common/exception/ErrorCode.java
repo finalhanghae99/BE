@@ -19,6 +19,7 @@ public enum ErrorCode {
     PASSWORD_MISMATCH("비밀번호가 비밀번호 확인과 일치하지 않습니다",400),
     DUPLICATE_MEMBERNAME("이미 추가한 유저입니다.", 400),
 
+
     CONTENT_NOT_FOUND("존재하지 않는 게시글 입니다.",404),
     CAMPING_NOT_FOUND("존재하지 않는 캠핑글 입니다.",404),
     REVIEW_NOT_FOUND("존재하지 않는 리뷰 입니다.", 404),

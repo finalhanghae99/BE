@@ -1,9 +1,8 @@
 package com.product.application.reservation.controller;
 
 import com.product.application.common.ResponseMessage;
-import com.product.application.reservation.dto.ReservationRequestDto;
+import com.product.application.reservation.dto.RequestReservationDto;
 import com.product.application.reservation.service.ReservationService;
-import com.product.application.user.entity.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +15,9 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping()
-    public ResponseMessage<?> create(@RequestBody ReservationRequestDto reservationRequestDto
+    public ResponseMessage<?> create(@RequestBody RequestReservationDto requestReservationDto
                                      , HttpServletRequest request) {
-        reservationService.create(reservationRequestDto, request);
+        reservationService.create(requestReservationDto, request);
         return new ResponseMessage<>("Success", 200, null);
     }
 

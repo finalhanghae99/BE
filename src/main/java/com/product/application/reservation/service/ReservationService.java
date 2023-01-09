@@ -1,9 +1,8 @@
 package com.product.application.reservation.service;
 
-import com.product.application.camping.entity.Camping;
 import com.product.application.common.exception.CustomException;
 import com.product.application.common.exception.ErrorCode;
-import com.product.application.reservation.dto.ReservationRequestDto;
+import com.product.application.reservation.dto.RequestReservationDto;
 import com.product.application.reservation.entity.Reservation;
 import com.product.application.reservation.repository.ReservationRepository;
 import com.product.application.user.entity.Users;
@@ -24,7 +23,7 @@ public class ReservationService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public void create(ReservationRequestDto reservationRequestDto, HttpServletRequest request) {
+    public void create(RequestReservationDto requestReservationDto, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
 
@@ -41,7 +40,7 @@ public class ReservationService {
                     () -> new CustomException(ErrorCode.USER_NOT_FOUND)
             );
 
-            reservationRepository.save(new Reservation(reservationRequestDto, users));
+            reservationRepository.save(new Reservation(requestReservationDto, users));
 
         } else {
             throw new CustomException(ErrorCode.TOKEN_ERROR);
