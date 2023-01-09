@@ -51,21 +51,27 @@ public class ReviewLikeService {
             );
 
             ReviewLikeResponseDto likeResponseDto = new ReviewLikeResponseDto();
-
             ReviewLike reviewLike = reviewLikeRepository.findByReviewIdAndUserId(reviewId, usersId).orElse(null);
 
             if(reviewLike == null){
-                reviewLike = new ReviewLike(usersId, review);
+                reviewLike = new ReviewLike(usersId, review, true);
                 reviewLikeRepository.save(reviewLike);
                 review.updateLikeCount(true);
                 likeResponseDto.setLikeState(true);
                 likeResponseDto.setLikeCount(review.getLikeCount());
                 return likeResponseDto;
             }
+            if(reviewLike.getLikeState()){
+                reviewLike.update(false);
+                review.updateLikeCount(false);
+                likeResponseDto.setLikeState(false);
+                likeResponseDto.setLikeCount(review.getLikeCount());
+                return likeResponseDto;
+            }
 
-            reviewLikeRepository.delete(reviewLike);
-            review.updateLikeCount(false);
-            likeResponseDto.setLikeState(false);
+            reviewLike.update(true);
+            review.updateLikeCount(true);
+            likeResponseDto.setLikeState(true);
             likeResponseDto.setLikeCount(review.getLikeCount());
             return likeResponseDto;
         } else {
