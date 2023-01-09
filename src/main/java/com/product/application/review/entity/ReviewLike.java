@@ -19,4 +19,9 @@ public class ReviewLike {
     @ManyToOne
     @JoinColumn(name = "reviewId")
     private Review review;
+
+    public ReviewLike(Long usersId, Review review) {
+        this.userId = usersId;
+        this.review = review;
+    }
 }

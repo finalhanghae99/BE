@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
-public class ReservationRequestDto {
+public class RequestReservationDto {
     public String content;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     public LocalDate startDate;
