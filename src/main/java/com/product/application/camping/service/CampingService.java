@@ -1,5 +1,6 @@
 package com.product.application.camping.service;
 
+import com.product.application.camping.dto.ResponseFindListFiveDto;
 import com.product.application.camping.dto.ResponseOneCampingInfo;
 import com.product.application.camping.entity.Camping;
 import com.product.application.camping.mapper.CampingMapper;
@@ -25,14 +26,15 @@ public class CampingService {
         // # 검색기능 구현
         /*
             1. 총 8가지 경우로 구분
-                1.1. campingname X address1 X address2 X -> Error 반환
-                1.2. campingname X address1 X address2 O -> Error 반환
-                1.3. campingname X address1 O address2 X -> 검색가능
-                1.4. campingname X address1 O address2 O -> 검색가능
-                1.5. campingname O address1 X address2 X -> 검색가능
-                1.6. campingname O address1 X address2 O -> Error 반환
-                1.7. campingname O address1 O address2 X -> 검색가능
-                1.8. campingname O address1 O address2 O -> 검색가능
+            <테스트>
+                1.1. campingname X address1 X address2 X -> Error 반환 - 0
+                1.2. campingname X address1 X address2 O -> Error 반환 - 0
+                1.3. campingname X address1 O address2 X -> 검색가능 - 0
+                1.4. campingname X address1 O address2 O -> 검색가능 - X
+                1.5. campingname O address1 X address2 X -> 검색가능 - 0
+                1.6. campingname O address1 X address2 O -> Error 반환 - 0
+                1.7. campingname O address1 O address2 X -> 검색가능 - 0
+                1.8. campingname O address1 O address2 O -> 검색가능 - 0
          */
         // 1.경우나누기 -> 에러 반환 및 List<Camping> 추출
         // 1.1. campingname X address1 X address2 X
@@ -92,5 +94,15 @@ public class CampingService {
             responseOneCampingInfoList.add(responseOneCampingInfo);
         }
         return new ResponseMessage("Success", 200, responseOneCampingInfoList);
+    }
+
+    public ResponseMessage viewListFive(List<Long> campingIdList) {
+        List<ResponseFindListFiveDto> responseFindListFiveDtoList = new ArrayList<>();
+        Camping tempCamping;
+        for(Long campingId : campingIdList){
+            tempCamping = campingRepository.findById(campingId).orElseThrow(()->new CustomException(ErrorCode.CAMPING_NOT_FOUND));
+            responseFindListFiveDtoList.add(new ResponseFindListFiveDto(tempCamping));
+        }
+        return new ResponseMessage("Success",200,responseFindListFiveDtoList);
     }
 }

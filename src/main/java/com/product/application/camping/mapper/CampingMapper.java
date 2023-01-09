@@ -1,5 +1,6 @@
 package com.product.application.camping.mapper;
 
+import com.product.application.camping.dto.ResponseFindListFiveDto;
 import com.product.application.camping.dto.ResponseOneCampingInfo;
 import com.product.application.camping.entity.Camping;
 import lombok.RequiredArgsConstructor;
