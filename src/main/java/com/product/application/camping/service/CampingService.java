@@ -1,5 +1,6 @@
 package com.product.application.camping.service;
 
+import com.product.application.camping.dto.ResponseFindDetailCampingInfoDto;
 import com.product.application.camping.dto.ResponseFindListFiveDto;
 import com.product.application.camping.dto.ResponseOneCampingInfo;
 import com.product.application.camping.entity.Camping;
@@ -8,6 +9,9 @@ import com.product.application.camping.repository.CampingRepository;
 import com.product.application.common.ResponseMessage;
 import com.product.application.common.exception.CustomException;
 import com.product.application.common.exception.ErrorCode;
+import com.product.application.review.dto.ResponseDetailCampingInfoReviewDto;
+import com.product.application.review.entity.Review;
+import com.product.application.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CampingService {
     private final CampingRepository campingRepository;
+    private final ReviewRepository reviewRepository;
     private final CampingMapper campingMapper;
     public ResponseMessage searchAllCampingInfo(String campingname, String address1, String address2, HttpServletRequest request) {
         List<Camping> campingList;
@@ -104,5 +109,28 @@ public class CampingService {
             responseFindListFiveDtoList.add(new ResponseFindListFiveDto(tempCamping));
         }
         return new ResponseMessage("Success",200,responseFindListFiveDtoList);
+    }
+
+    public ResponseMessage viewDetailCampingInfo(Long campingId) {
+        // 1. 캠핑아이디로 캠핑장 정보를 불러와서 Dto를 만들고 여기에 추가하기
+        Camping camping = campingRepository.findById(campingId).orElseThrow(()-> new CustomException(ErrorCode.CAMPING_NOT_FOUND));
+        // - ResponseFindDetailCampingInfoDto에 Camping에서 정보를 전달( ReviewList 부분만 누락 )
+        ResponseFindDetailCampingInfoDto responseDto = new ResponseFindDetailCampingInfoDto(camping);
+        // 2. 캠핑ID로 리뷰 리스트 5개를 찾아서 반환하는 객체에 연결 ( modifiedAt 차순으로 반환 )
+        // - reviewRepository에서 시간 내림차순 ( 시간에서의 내림차순 : 늦은 날짜에서 빠른 날짜 순으로 정렬하는 것 -> 1월 4일, 3일, 2일 ... 순)해서 5개만 반환
+        // - ResponseDetailCampingInfoReviewDto에 Review를 전달해서 필요한 정보만 저장하고 리스트로 만들어서 ResponseFindDetailCampingInfoDto에 저장
+        List<Review> reviewList = reviewRepository.findAllByCamping(camping);
+        List<ResponseDetailCampingInfoReviewDto> reviewDtoList = new ArrayList<>();
+        for(Review review : reviewList){
+            List<String> urlList = review.getReviewUrlList();
+            String url;
+            // review안에 있는 사진이 0개 일때 null 값을 반환하고 아니라면 첫번째 사진을 반환
+            if(urlList.size() == 0) url = null;
+            else url = urlList.get(0);
+            ResponseDetailCampingInfoReviewDto reviewDto = new ResponseDetailCampingInfoReviewDto(review,url);
+            reviewDtoList.add(reviewDto);
+        }
+        responseDto.updateReviewDtoList(reviewDtoList);
+        return new ResponseMessage("Success",200,responseDto);
     }
 }
