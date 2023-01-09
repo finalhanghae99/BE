@@ -2,6 +2,7 @@ package com.product.application.camping.entity;
 
 import com.product.application.reservation.entity.Reservation;
 import com.product.application.review.entity.Review;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -72,6 +73,7 @@ public class Camping {
     @OneToMany(mappedBy = "camping")
     private List<CampingLike> campingLikeList = new ArrayList<>();
 
+    @Builder
     public Camping(String campingName, String address1, String address2, String address3,
                    String campingEnv, String campingFac, String mapX, String mapY,
                    String campingType, String homepageUrl, String phoneNumber,
