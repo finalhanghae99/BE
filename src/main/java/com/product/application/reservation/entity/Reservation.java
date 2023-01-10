@@ -1,10 +1,11 @@
 package com.product.application.reservation.entity;
 
 import com.product.application.camping.entity.Camping;
-import com.product.application.reservation.dto.ReservationRequestDto;
+import com.product.application.reservation.dto.RequestReservationDto;
 import com.product.application.user.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -21,10 +22,13 @@ public class Reservation {
     private String content;
 
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
+
 
     @Column(nullable = false)
     private boolean tradeState = true;
@@ -40,14 +44,17 @@ public class Reservation {
     @JoinColumn(name="campingId")
     private Camping camping;
 
-    public Reservation(ReservationRequestDto reservationRequestDto, Users users) {
-        this.content = reservationRequestDto.getContent();
-        this.startDate = reservationRequestDto.getStartDate();
-        this.endDate = reservationRequestDto.getEndDate();
-        this.price = reservationRequestDto.getPrice();
-        this.tradeState = reservationRequestDto.isTradeState();
+    public Reservation(RequestReservationDto requestReservationDto, Users users, Camping camping) {
+        this.content = requestReservationDto.getContent();
+        this.startDate = requestReservationDto.getStartDate();
+        this.endDate = requestReservationDto.getEndDate();
+        this.price = requestReservationDto.getPrice();
+        this.tradeState = requestReservationDto.isTradeState();
         this.users = users;
-
+        this.camping = camping;
     }
+
+
+
 }
 

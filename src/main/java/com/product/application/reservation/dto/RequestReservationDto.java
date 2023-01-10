@@ -8,14 +8,14 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
-public class ReservationRequestDto {
-    public String content;
+public class RequestReservationDto {
+    private String content;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    public LocalDate startDate;
+    private LocalDate startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    public LocalDate endDate;
-    public boolean tradeState = true;
-    public Long price;
+    private LocalDate endDate;
+    private boolean tradeState = true;
+    private Long price;
 
 
 
