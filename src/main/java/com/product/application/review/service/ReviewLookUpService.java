@@ -5,6 +5,7 @@ import com.product.application.camping.repository.CampingRepository;
 import com.product.application.common.exception.CustomException;
 import com.product.application.review.dto.ResponseReviewAllDto;
 import com.product.application.review.dto.ResponseReviewListDto;
+import com.product.application.review.dto.ResponseReviewOneDto;
 import com.product.application.review.entity.Review;
 import com.product.application.review.mapper.ReviewMapper;
 import com.product.application.review.repository.ReviewRepository;
@@ -66,6 +67,34 @@ public class ReviewLookUpService {
 
             ResponseReviewAllDto responseReviewAllDto = new ResponseReviewAllDto(reviewListDtos);
             return responseReviewAllDto;
+
+        } else {
+            throw new CustomException(TOKEN_ERROR);
+        }
+    }
+
+    public ResponseReviewOneDto searchOne(Long reviewId, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new CustomException(TOKEN_ERROR);
+            }
+
+            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
+                    () -> new CustomException(USER_NOT_FOUND)
+            );
+            Long usersId = users.getId();
+            Review review = reviewRepository.findById(reviewId).orElseThrow(
+                    () -> new CustomException(REVIEW_NOT_FOUND)
+            );
+
+            return reviewMapper.toResponseReviewOne(review, usersId);
 
         } else {
             throw new CustomException(TOKEN_ERROR);
