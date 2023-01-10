@@ -40,4 +40,9 @@ public class CampingController {
         ResponseMessage responseMessage = campingService.viewDetailCampingInfo(campingId);
         return responseMessage;
     }
+
+    @PostMapping("/{campingId}/like")
+    public ResponseMessage updateCampingLikeState(@PathVariable Long campingId, HttpServletRequest request){
+        return campingService.updateCampingLikeState(campingId, request);
+    }
 }

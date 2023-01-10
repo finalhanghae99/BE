@@ -1,29 +1,41 @@
 package com.product.application.camping.service;
 
+import com.product.application.camping.dto.ResponseCampingLikeStateDto;
 import com.product.application.camping.dto.ResponseFindDetailCampingInfoDto;
 import com.product.application.camping.dto.ResponseFindListFiveDto;
 import com.product.application.camping.dto.ResponseOneCampingInfo;
 import com.product.application.camping.entity.Camping;
+import com.product.application.camping.entity.CampingLike;
 import com.product.application.camping.mapper.CampingMapper;
+import com.product.application.camping.repository.CampingLikeRepository;
 import com.product.application.camping.repository.CampingRepository;
 import com.product.application.common.ResponseMessage;
 import com.product.application.common.exception.CustomException;
 import com.product.application.common.exception.ErrorCode;
 import com.product.application.review.dto.ResponseDetailCampingInfoReviewDto;
+import com.product.application.review.dto.ResponseFindListTenDto;
 import com.product.application.review.entity.Review;
 import com.product.application.review.repository.ReviewRepository;
+import com.product.application.user.entity.Users;
+import com.product.application.user.jwt.JwtUtil;
+import com.product.application.user.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CampingService {
     private final CampingRepository campingRepository;
+    private final CampingLikeRepository campingLikeRepository;
+    private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
+    private final JwtUtil jwtUtil;
     private final CampingMapper campingMapper;
     public ResponseMessage searchAllCampingInfo(String campingname, String address1, String address2, HttpServletRequest request) {
         List<Camping> campingList;
@@ -132,5 +144,53 @@ public class CampingService {
         }
         responseDto.updateReviewDtoList(reviewDtoList);
         return new ResponseMessage("Success",200,responseDto);
+    }
+
+    public ResponseMessage updateCampingLikeState(Long campingId, HttpServletRequest request) {
+
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+        if (token != null) {
+
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new CustomException(ErrorCode.TOKEN_ERROR);
+            }
+
+            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+            Long usersId = users.getId();
+            Camping camping = campingRepository.findById(campingId).orElseThrow(()->new CustomException(ErrorCode.CAMPING_NOT_FOUND));
+            Optional<CampingLike> optionalLike = campingLikeRepository.findByCampingAndUsersId(camping, usersId);
+
+            ResponseCampingLikeStateDto responseCampingLikeStateDto;
+            // like에 관한 정보가 아예 없던 경우 -> 메시지 만들어서 리턴
+            if(optionalLike.isEmpty()){
+                CampingLike newCampingLike = new CampingLike(usersId, true, camping);
+                responseCampingLikeStateDto = new ResponseCampingLikeStateDto(newCampingLike.isCampingLikeState());
+                campingLikeRepository.save(newCampingLike);
+                return new ResponseMessage("Success",200, responseCampingLikeStateDto);
+            }
+
+            // like에 관한 정보가 있는경우
+            CampingLike updatedCampingLike = optionalLike.get();
+            if(updatedCampingLike.isCampingLikeState()){
+                // 엔티티 업데이트 수행
+                updatedCampingLike.stateUpdate(false);
+                campingLikeRepository.save(updatedCampingLike);
+                responseCampingLikeStateDto = new ResponseCampingLikeStateDto(false);
+                return new ResponseMessage("Success",200, responseCampingLikeStateDto);
+            } else {
+                // 엔티티 업데이트 수행
+                updatedCampingLike.stateUpdate(true);
+                campingLikeRepository.save(updatedCampingLike);
+                responseCampingLikeStateDto = new ResponseCampingLikeStateDto(true);
+                return new ResponseMessage("Success",200, responseCampingLikeStateDto);
+            }
+
+        } else { // 토큰이 존재하지 않으면 에러 발생
+            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+        }
+
     }
 }
