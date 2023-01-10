@@ -4,6 +4,8 @@ import com.product.application.camping.entity.Camping;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class ResponseFindListTenDto {
@@ -15,11 +17,11 @@ public class ResponseFindListTenDto {
     private String address3;
     private Long reviewCount;
     private boolean campingLikeState;
-    private String campingEnv;
-    private String campingType;
-    private String campingFac;
-    private String campingSurroundFac;
-    public ResponseFindListTenDto(Camping camping, Long reviewCount, boolean campingLikeState){
+    private List<String> campingEnv;
+    private List<String> campingType;
+    private List<String> campingFac;
+    private List<String> campingSurroundFac;
+    public ResponseFindListTenDto(Camping camping, Long reviewCount, boolean campingLikeState, List<String> campingEnvList, List<String> campingTypeList, List<String> campingFacList, List<String> campingSurroundFacList){
         this.campingId = camping.getId();
         this.imageUrl = camping.getImageUrl();
         this.campingName = camping.getCampingName();
@@ -28,9 +30,9 @@ public class ResponseFindListTenDto {
         this.address3 = camping.getAddress3();
         this.reviewCount = reviewCount;
         this.campingLikeState = campingLikeState;
-        this.campingEnv = camping.getCampingEnv();
-        this.campingType = camping.getCampingType();
-        this.campingFac = camping.getCampingFac();
-        this.campingSurroundFac = camping.getCampingSurroundFac();
+        this.campingEnv = campingEnvList;
+        this.campingType = campingTypeList;
+        this.campingFac = campingFacList;
+        this.campingSurroundFac = campingSurroundFacList;
     }
 }
