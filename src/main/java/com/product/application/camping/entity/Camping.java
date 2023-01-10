@@ -71,6 +71,8 @@ public class Camping {
     private List<Reservation> reservationList = new ArrayList<>();
 
     @OneToMany(mappedBy = "camping")
+    //@OneToMany
+    //@JoinColumn(name = "campingId")
     private List<CampingLike> campingLikeList = new ArrayList<>();
 
     @Builder

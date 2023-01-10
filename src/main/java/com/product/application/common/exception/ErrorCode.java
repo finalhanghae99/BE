@@ -29,10 +29,12 @@ public enum ErrorCode {
     AUTHORIZATION_DELETE_FAIL("삭제 권한이 없습니다.", 401),
     AUTHORIZATION_UPDATE_FAIL("수정 권한이 없습니다.", 401),
     AUTHORIZATION_CREATE_FAIL("생성 권한이 없습니다.", 401),
+    AUTHORIZATION_READ_FAIL("읽기 권한이 없습니다.", 401),
 
     //필터단 에러
     FORBIDDEN_ERROR("서버 사용 권한이 없습니다.",403),
     TOKEN_ERROR("토큰이 유효하지 않습니다.",401),
+    TOKEN_NOT_FOUND("토큰이 존재하지 않습니다. 로그인이 필요합니다.",401),
     USER_NOT_FOUND("존재하지 않는 유저 입니다.",404),
 
     INTERNAL_SERVER_ERROR("서버 에러입니다. 서버 팀에 연락주세요!", 500);
