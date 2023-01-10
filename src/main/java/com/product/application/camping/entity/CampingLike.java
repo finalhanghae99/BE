@@ -23,8 +23,8 @@ public class CampingLike {
     @Column(nullable = false)
     private Long usersId;
 
-    //@Column(nullable = false)
-    //private Long campingId;
+    @Column(nullable = false)
+    private boolean campingLikeState;
 
     @ManyToOne
     @JoinColumn(name = "campingId")

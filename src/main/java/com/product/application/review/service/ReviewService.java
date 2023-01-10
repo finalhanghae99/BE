@@ -22,8 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -108,6 +111,9 @@ public class ReviewService {
         // reviewCount는 review의 갯수 :: reviewRepository에서 countByCamping(camping)으로 찾음
         // campingLikeState는 findByCampingAndUsersId(camping,usersFromToken.get().getId())로 찾음.
         // 이 때, Optional<CampingLike>를 반환 --> null이면 campingLikeState가 false / null이 아니면 campingLikeState가 true
+        // 추가로
+        // campingEnv, campingType, campingFac, campingSurroundFac는 DB에 String으로 저장되어 있지만,
+        // 배열로 바꿔서 반환해주기
         String token = jwtUtil.resolveToken(request);
         Claims claims;
         if (token != null) {
@@ -124,9 +130,37 @@ public class ReviewService {
             for(Long campingId : list){
                 tempCamping = campingRepository.findById(campingId).orElseThrow(()->new CustomException(ErrorCode.CAMPING_NOT_FOUND));
                 reviewCount = reviewRepository.countByCamping(tempCamping);
+
                 Optional<CampingLike> optionalCampingLike = campingLikeRepository.findByCampingAndUsersId(tempCamping,usersFromToken.getId());
-                campingLikeState = optionalCampingLike.isPresent();
-                dtoList.add(new ResponseFindListTenDto(tempCamping,reviewCount,campingLikeState));
+                if(optionalCampingLike.isEmpty()){
+                    campingLikeState = false;
+                } else {
+                    campingLikeState = optionalCampingLike.get().isCampingLikeState();
+                }
+
+                // ** campingEnv, campingType, campingFac, campingSurroundFac를 스트링에서 리스트로 변환해서 전달
+                // (1) campingEnv
+                String campingEnv = tempCamping.getCampingEnv();
+                String[] campingEnvArr = campingEnv.split(","); // 단일 단어인 경우에도 배열에 잘 들어감
+                List<String> campingEnvList = Stream.of(campingEnvArr).collect(Collectors.toList());
+                if(campingEnvList.size()==1 && campingEnvList.get(0) == "") campingEnvList.remove(0);
+                // (2) campingEnv
+                String campingType = tempCamping.getCampingType();
+                String[] campingTypeArr = campingType.split(",");
+                List<String> campingTypeList = Stream.of(campingTypeArr).collect(Collectors.toList());
+                if(campingTypeList.size() == 1 && campingTypeList.get(0) == "") campingTypeList.remove(0);
+                // (3) campingEnv
+                String campingFac = tempCamping.getCampingFac();
+                String[] campingFacArr = campingFac.split(",");
+                List<String> campingFacList = Stream.of(campingFacArr).collect(Collectors.toList());
+                if(campingFacList.size() == 1 && campingFacList.get(0) == "") campingFacList.remove(0);
+                // (4) campingEnv
+                String campingSurroundFac = tempCamping.getCampingSurroundFac();
+                String[] campingSurroundFacArr = campingSurroundFac.split(",");
+                List<String> campingSurroundFacList = Stream.of(campingSurroundFacArr).collect(Collectors.toList());
+                if(campingSurroundFacList.size() == 1 && campingSurroundFacList.get(0) == "") campingSurroundFacList.remove(0);
+
+                dtoList.add(new ResponseFindListTenDto(tempCamping,reviewCount,campingLikeState,campingEnvList,campingTypeList,campingFacList,campingSurroundFacList));
             }
             return new ResponseMessage("Success",200, dtoList);
         } else { // 토큰이 존재하지 않으면 에러 발생
