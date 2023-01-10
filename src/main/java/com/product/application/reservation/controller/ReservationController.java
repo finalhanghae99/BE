@@ -41,4 +41,10 @@ public class ReservationController {
         return responseMessage;
     }
 
+    @GetMapping("/{reservationId}")
+    public ResponseMessage getReservation(@PathVariable Long reservationId, HttpServletRequest request) {
+        ResponseMessage responseMessage = reservationService.getReservation(reservationId, request);
+        return responseMessage;
+    }
+
 }
