@@ -9,4 +9,6 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findAllByCamping(Camping camping);
     Long countByCamping(Camping camping);
+
+    List<Review> findTop5ByCampingIdOrderByModifiedAtDesc(Long campingId);
 }
