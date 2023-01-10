@@ -6,6 +6,7 @@ import com.product.application.common.ResponseMessage;
 import com.product.application.common.exception.CustomException;
 import com.product.application.common.exception.ErrorCode;
 import com.product.application.reservation.dto.RequestReservationDto;
+import com.product.application.reservation.dto.ResponseReservationDto;
 import com.product.application.reservation.dto.ResponseSearchDto;
 import com.product.application.reservation.dto.SearchDtoList;
 import com.product.application.reservation.entity.Reservation;
@@ -148,6 +149,30 @@ public class ReservationService {
                 responseSearchDtoList.add(responseSearchDto);
             }
             return new ResponseMessage("Success", 200, new SearchDtoList(responseSearchDtoList));
+        } else {
+            throw new CustomException(ErrorCode.TOKEN_ERROR);
+        }
+    }
+
+    public ResponseMessage getReservation(Long reservationId, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
+                    () -> new CustomException(ErrorCode.USER_NOT_FOUND)
+            );
+
+            Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+            ResponseReservationDto responseReservationDto = new ResponseReservationDto(reservation, reservation.getCamping());
+
+            return new ResponseMessage("Success", 200, responseReservationDto);
         } else {
             throw new CustomException(ErrorCode.TOKEN_ERROR);
         }
