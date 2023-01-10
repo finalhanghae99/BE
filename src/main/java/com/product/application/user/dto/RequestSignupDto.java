@@ -8,7 +8,7 @@ import javax.validation.constraints.Pattern;
 
 @Getter
 @NoArgsConstructor
-public class SignupRequestDto {
+public class RequestSignupDto {
     @NotBlank
     @Pattern(regexp="^([\\w\\.\\_\\-])*[a-zA-Z0-9]+([\\w\\.\\_\\-])*([a-zA-Z0-9])+([\\w\\.\\_\\-])+@([a-zA-Z0-9]+\\.)+[a-zA-Z0-9]{2,8}$", message = "이메일을 확인해주세요")
     private String useremail;
