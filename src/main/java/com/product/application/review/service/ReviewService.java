@@ -10,7 +10,9 @@ import com.product.application.common.exception.ErrorCode;
 import com.product.application.review.dto.RequestReviewWriteDto;
 import com.product.application.review.dto.ResponseFindListTenDto;
 import com.product.application.review.entity.Review;
+import com.product.application.review.entity.ReviewLike;
 import com.product.application.review.mapper.ReviewMapper;
+import com.product.application.review.repository.ReviewLikeRepository;
 import com.product.application.review.repository.ReviewRepository;
 import com.product.application.user.entity.Users;
 import com.product.application.user.jwt.JwtUtil;
@@ -34,6 +36,7 @@ public class ReviewService {
     private final CampingRepository campingRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
     private final CampingLikeRepository campingLikeRepository;
     private final ReviewMapper reviewMapper;
     private final JwtUtil jwtUtil;
@@ -163,6 +166,33 @@ public class ReviewService {
                 dtoList.add(new ResponseFindListTenDto(tempCamping,reviewCount,campingLikeState,campingEnvList,campingTypeList,campingFacList,campingSurroundFacList));
             }
             return new ResponseMessage("Success",200, dtoList);
+        } else { // 토큰이 존재하지 않으면 에러 발생
+            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+        }
+    }
+
+    @Transactional
+    public ResponseMessage deleteReview(Long reviewId, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new CustomException(ErrorCode.TOKEN_ERROR);
+            }
+            Review reviewFromReviewId = reviewRepository.findById(reviewId).orElseThrow(()->new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+            String useremailFromReview = reviewFromReviewId.getUsers().getUseremail();
+            String useremailFromToken = claims.getSubject();
+            if(!useremailFromReview.equals(useremailFromToken)){
+                throw new CustomException(ErrorCode.AUTHORIZATION_DELETE_FAIL);
+            }
+            List<ReviewLike> reviewLikeList = reviewLikeRepository.findByReviewId(reviewFromReviewId.getId());
+            for(ReviewLike reviewLike : reviewLikeList){
+                reviewLikeRepository.delete(reviewLike);
+            }
+            reviewRepository.delete(reviewFromReviewId);
+            return new ResponseMessage("Success",200, null);
         } else { // 토큰이 존재하지 않으면 에러 발생
             throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
         }

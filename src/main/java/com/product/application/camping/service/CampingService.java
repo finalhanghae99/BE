@@ -22,6 +22,7 @@ import com.product.application.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class CampingService {
     private final ReviewRepository reviewRepository;
     private final JwtUtil jwtUtil;
     private final CampingMapper campingMapper;
+    @Transactional
     public ResponseMessage searchAllCampingInfo(String campingname, String address1, String address2, HttpServletRequest request) {
         List<Camping> campingList;
         List<Camping> returnCampingList = new ArrayList<>();
@@ -113,6 +115,7 @@ public class CampingService {
         return new ResponseMessage("Success", 200, responseOneCampingInfoList);
     }
 
+    @Transactional
     public ResponseMessage viewListFive(List<Long> campingIdList) {
         List<ResponseFindListFiveDto> responseFindListFiveDtoList = new ArrayList<>();
         Camping tempCamping;
@@ -123,6 +126,7 @@ public class CampingService {
         return new ResponseMessage("Success",200,responseFindListFiveDtoList);
     }
 
+    @Transactional
     public ResponseMessage viewDetailCampingInfo(Long campingId) {
         // 1. 캠핑아이디로 캠핑장 정보를 불러와서 Dto를 만들고 여기에 추가하기
         Camping camping = campingRepository.findById(campingId).orElseThrow(()-> new CustomException(ErrorCode.CAMPING_NOT_FOUND));
@@ -146,6 +150,7 @@ public class CampingService {
         return new ResponseMessage("Success",200,responseDto);
     }
 
+    @Transactional
     public ResponseMessage updateCampingLikeState(Long campingId, HttpServletRequest request) {
 
         String token = jwtUtil.resolveToken(request);
