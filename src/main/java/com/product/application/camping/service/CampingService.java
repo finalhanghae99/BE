@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -126,8 +128,31 @@ public class CampingService {
     public ResponseMessage viewDetailCampingInfo(Long campingId) {
         // 1. 캠핑아이디로 캠핑장 정보를 불러와서 Dto를 만들고 여기에 추가하기
         Camping camping = campingRepository.findById(campingId).orElseThrow(()-> new CustomException(ErrorCode.CAMPING_NOT_FOUND));
-        // - ResponseFindDetailCampingInfoDto에 Camping에서 정보를 전달( ReviewList 부분만 누락 )
-        ResponseFindDetailCampingInfoDto responseDto = new ResponseFindDetailCampingInfoDto(camping);
+
+        // ** campingEnv, campingType, campingFac, campingSurroundFac를 스트링에서 리스트로 변환해서 전달
+        // (1) campingEnv
+        String campingEnv = camping.getCampingEnv();
+        String[] campingEnvArr = campingEnv.split(","); // 단일 단어인 경우에도 배열에 잘 들어감
+        List<String> campingEnvList = Stream.of(campingEnvArr).collect(Collectors.toList());
+        if(campingEnvList.size()==1 && campingEnvList.get(0) == "") campingEnvList.remove(0);
+        // (2) campingEnv
+        String campingType = camping.getCampingType();
+        String[] campingTypeArr = campingType.split(",");
+        List<String> campingTypeList = Stream.of(campingTypeArr).collect(Collectors.toList());
+        if(campingTypeList.size() == 1 && campingTypeList.get(0) == "") campingTypeList.remove(0);
+        // (3) campingEnv
+        String campingFac = camping.getCampingFac();
+        String[] campingFacArr = campingFac.split(",");
+        List<String> campingFacList = Stream.of(campingFacArr).collect(Collectors.toList());
+        if(campingFacList.size() == 1 && campingFacList.get(0) == "") campingFacList.remove(0);
+        // (4) campingEnv
+        String campingSurroundFac = camping.getCampingSurroundFac();
+        String[] campingSurroundFacArr = campingSurroundFac.split(",");
+        List<String> campingSurroundFacList = Stream.of(campingSurroundFacArr).collect(Collectors.toList());
+        if(campingSurroundFacList.size() == 1 && campingSurroundFacList.get(0) == "") campingSurroundFacList.remove(0);
+        // - ResponseFindDetailCampingInfoDto에 Camping에서 정보를 전달( ReviewList 부분만 누락, campingEnv, campingType, campingFac, campingSurroundFac는 리스트 처리해서 dto에 전달 )
+        ResponseFindDetailCampingInfoDto responseDto = new ResponseFindDetailCampingInfoDto(camping,campingEnvList,campingTypeList,campingFacList,campingSurroundFacList);
+
         // 2. 캠핑ID로 리뷰 리스트 5개를 찾아서 반환하는 객체에 연결 ( modifiedAt 차순으로 반환 )
         // - reviewRepository에서 시간 내림차순 ( 시간에서의 내림차순 : 늦은 날짜에서 빠른 날짜 순으로 정렬하는 것 -> 1월 4일, 3일, 2일 ... 순)해서 5개만 반환
         // - ResponseDetailCampingInfoReviewDto에 Review를 전달해서 필요한 정보만 저장하고 리스트로 만들어서 ResponseFindDetailCampingInfoDto에 저장
