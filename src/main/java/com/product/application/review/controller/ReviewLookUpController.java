@@ -28,4 +28,10 @@ public class ReviewLookUpController {
         ResponseReviewOneDto responseReviewOneDto = reviewLookUpService.searchOne(reviewId, request);
         return new ResponseMessage<>("Success", 200, responseReviewOneDto);
     }
+    //리뷰 글 조회(특정 캠핑장 리뷰 중 5개 보여주기)
+    @GetMapping("/review/listfive/{campingId}")
+    public ResponseMessage<?> searchfive(@PathVariable Long campingId, HttpServletRequest request){
+        ResponseReviewAllDto responseReviewAllDto = reviewLookUpService.searchfive(campingId, request);
+        return new ResponseMessage<>("Success", 200, responseReviewAllDto);
+    }
 }

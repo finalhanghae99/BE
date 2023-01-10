@@ -52,9 +52,7 @@ public class ReviewLookUpService {
                     () -> new CustomException(USER_NOT_FOUND)
             );
             Long usersId = users.getId();
-            //조회 시 주의 사항
-            //해당 camping장에 대한 리뷰가 없는 경우가 있다.
-            //해당 수정필요
+
             Camping camping = campingRepository.findById(campingId).orElseThrow(
                     () -> new CustomException(CAMPING_NOT_FOUND)
             );
@@ -95,6 +93,50 @@ public class ReviewLookUpService {
             );
 
             return reviewMapper.toResponseReviewOne(review, usersId);
+
+        } else {
+            throw new CustomException(TOKEN_ERROR);
+        }
+    }
+
+    public ResponseReviewAllDto searchfive(Long campingId, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new CustomException(TOKEN_ERROR);
+            }
+
+            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
+                    () -> new CustomException(USER_NOT_FOUND)
+            );
+            Long usersId = users.getId();
+
+            Camping camping = campingRepository.findById(campingId).orElseThrow(
+                    () -> new CustomException(CAMPING_NOT_FOUND)
+            );
+
+            List<Review> reviewList = camping.getReviewList();
+            if(reviewList.size() < 6){
+                List<ResponseReviewListDto> reviewListDtos = new ArrayList<>();
+                for(Review review : reviewList) {
+                    reviewListDtos.add(reviewMapper.toResponseReviewListDto(review, usersId));
+                }
+                ResponseReviewAllDto responseReviewAllDto = new ResponseReviewAllDto(reviewListDtos);
+                return responseReviewAllDto;
+            }
+            List<Review> reviewListTop5 = reviewRepository.findTop5ByCampingIdOrderByModifiedAtDesc(campingId);
+            List<ResponseReviewListDto> reviewListDtos = new ArrayList<>();
+            for(Review review : reviewListTop5) {
+                reviewListDtos.add(reviewMapper.toResponseReviewListDto(review, usersId));
+            }
+            ResponseReviewAllDto responseReviewAllDto = new ResponseReviewAllDto(reviewListDtos);
+            return responseReviewAllDto;
 
         } else {
             throw new CustomException(TOKEN_ERROR);
