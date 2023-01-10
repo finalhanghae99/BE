@@ -90,55 +90,68 @@ public class ReservationService {
     }
 
     @Transactional
-    public ResponseMessage getReservationList(LocalDate startDate, LocalDate endDate, String address1, String address2, HttpServletRequest reques) {
-        List<Reservation> reservationList;
-        List<Reservation> returnReservationList = new ArrayList<>();
+    public ResponseMessage getReservationList(LocalDate startDate, LocalDate endDate, String address1, String address2, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
 
-        if (startDate != null && endDate != null) {
-            reservationList = reservationRepository.findAllByStartDateBetween(startDate, endDate);
-            if (address1 != null) {
-                if (address2 != null) {
-                    for (Reservation reservation : reservationList) {
-                        if (reservation.getCamping().getAddress1().equals(address1) && reservation.getCamping().getAddress2().equals(address2)) {
-                            returnReservationList.add(reservation);
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+
+            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
+                    () -> new CustomException(ErrorCode.USER_NOT_FOUND)
+            );
+
+            List<Reservation> reservationList;
+            List<Reservation> returnReservationList = new ArrayList<>();
+
+            if (startDate != null && endDate != null) {
+                reservationList = reservationRepository.findAllByStartDateBetween(startDate, endDate);
+                if (address1 != null) {
+                    if (address2 != null) {
+                        for (Reservation reservation : reservationList) {
+                            if (reservation.getCamping().getAddress1().equals(address1) && reservation.getCamping().getAddress2().equals(address2)) {
+                                returnReservationList.add(reservation);
+                            }
+                        }
+                    } else {
+                        for (Reservation reservation : reservationList) {
+                            if (reservation.getCamping().getAddress1().equals(address1)) {
+                                returnReservationList.add(reservation);
+                            }
                         }
                     }
                 } else {
                     for (Reservation reservation : reservationList) {
-                        if (reservation.getCamping().getAddress1().equals(address1)) {
-                            returnReservationList.add(reservation);
-                        }
+                        returnReservationList.add(reservation);
+                    }
+                }
+            } else if (address1 != null) {
+                reservationList = reservationRepository.findAllByCampingAddress1(address1);
+                for (Reservation reservation : reservationList) {
+                    if (reservation.getCamping().getAddress1().equals(address1)) {
+                        returnReservationList.add(reservation);
                     }
                 }
             } else {
-                for (Reservation reservation : reservationList) {
-                    returnReservationList.add(reservation);
-                }
+                throw new CustomException(ErrorCode.REQUIRED_AT_LEAST_ONE);
             }
-        } else if (address1 != null) {
-            reservationList = reservationRepository.findAllByCampingAddress1(address1);
-            for (Reservation reservation : reservationList) {
-                if (reservation.getCamping().getAddress1().equals(address1)) {
-                    returnReservationList.add(reservation);
-                }
+
+            List<ResponseSearchDto> responseSearchDtoList = new ArrayList<>();
+            for (Reservation reservation : returnReservationList) {
+                ResponseSearchDto responseSearchDto = reservationMapper.entityTo(reservation, reservation.getCamping());
+                responseSearchDtoList.add(responseSearchDto);
             }
-        }else {
-            throw new CustomException(ErrorCode.REQUIRED_AT_LEAST_ONE);
+            return new ResponseMessage("Success", 200, new SearchDtoList(responseSearchDtoList));
+        } else {
+            throw new CustomException(ErrorCode.TOKEN_ERROR);
         }
-
-        List<ResponseSearchDto> responseSearchDtoList = new ArrayList<>();
-        for (Reservation reservation : returnReservationList) {
-            ResponseSearchDto responseSearchDto = reservationMapper.entityTo(reservation, reservation.getCamping());
-            responseSearchDtoList.add(responseSearchDto);
-        }
-
-
-        return new ResponseMessage("Success", 200, new SearchDtoList(responseSearchDtoList));
-
-
     }
-
-
 }
 
 
