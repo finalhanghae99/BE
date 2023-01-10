@@ -80,4 +80,12 @@ public class Review extends TimeStamped {
         this.score4 = requestReviewWriteDto.getScore4();
         this.score5 = requestReviewWriteDto.getScore5();
     }
+
+    public void updateLikeCount(boolean state) {
+        if(state){
+            this.likeCount++;
+        }else {
+            this.likeCount--;
+        }
+    }
 }
