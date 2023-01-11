@@ -34,4 +34,11 @@ public class ReviewLookUpController {
         ResponseReviewAllDto responseReviewAllDto = reviewLookUpService.searchfive(campingId, request);
         return new ResponseMessage<>("Success", 200, responseReviewAllDto);
     }
+
+    //리뷰 글 조회(전체 후기 글 조회 - 좋아요 순)
+    @GetMapping("/review/likerank")
+    public ResponseMessage<?> searchLikeAll(HttpServletRequest request){
+        ResponseReviewAllDto responseReviewAllDto = reviewLookUpService.searchLikeAll(request);
+        return new ResponseMessage<>("Success", 200, responseReviewAllDto);
+    }
 }
