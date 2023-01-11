@@ -34,4 +34,9 @@ public class ReviewController {
         List<Long> list = requestFindListTenDto.getCampingIdList();
         return reviewService.findListTen(list,request);
     }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseMessage deleteReview(@PathVariable Long reviewId, HttpServletRequest request){
+        return reviewService.deleteReview(reviewId, request);
+    }
 }
