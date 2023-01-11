@@ -5,10 +5,7 @@ import com.product.application.camping.repository.CampingRepository;
 import com.product.application.common.ResponseMessage;
 import com.product.application.common.exception.CustomException;
 import com.product.application.common.exception.ErrorCode;
-import com.product.application.reservation.dto.RequestReservationDto;
-import com.product.application.reservation.dto.ResponseReservationDto;
-import com.product.application.reservation.dto.ResponseSearchDto;
-import com.product.application.reservation.dto.SearchDtoList;
+import com.product.application.reservation.dto.*;
 import com.product.application.reservation.entity.Reservation;
 import com.product.application.reservation.mapper.ReservationMapper;
 import com.product.application.reservation.repository.ReservationRepository;
@@ -145,7 +142,7 @@ public class ReservationService {
 
             List<ResponseSearchDto> responseSearchDtoList = new ArrayList<>();
             for (Reservation reservation : returnReservationList) {
-                ResponseSearchDto responseSearchDto = reservationMapper.entityTo(reservation, reservation.getCamping());
+                ResponseSearchDto responseSearchDto = reservationMapper.entityTo(reservation, reservation.getCamping(), reservation.getUsers());
                 responseSearchDtoList.add(responseSearchDto);
             }
             return new ResponseMessage("Success", 200, new SearchDtoList(responseSearchDtoList));
@@ -177,6 +174,28 @@ public class ReservationService {
             throw new CustomException(ErrorCode.TOKEN_ERROR);
         }
     }
+
+    @Transactional
+    public ResponseMessage viewListSix() {
+        List<Reservation> reservationList;
+        List<Reservation> responseFindListSix = new ArrayList<>();
+
+        reservationList = reservationRepository.findTop6ByOrderByIdDesc();
+
+            for(Reservation reservation : reservationList){
+                responseFindListSix.add(reservation);
+            }
+
+        List<ResponseReservationDto> responseFindListSixDtoList = new ArrayList<>();
+            for(Reservation reservation : responseFindListSix){
+                ResponseReservationDto responseReservationDto = reservationMapper.entityToTop6(reservation, reservation.getCamping());
+                responseFindListSixDtoList.add(responseReservationDto);
+            }
+
+        return new ResponseMessage<>("Success", 200, responseFindListSixDtoList);
+    }
+
+
 }
 
 

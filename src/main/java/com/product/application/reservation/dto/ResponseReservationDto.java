@@ -36,7 +36,6 @@ public class ResponseReservationDto {
         this.tradeState = reservation.isTradeState();
         this.price = reservation.getPrice();
         this.content = reservation.getContent();
-
     }
 
     @Builder
@@ -51,8 +50,6 @@ public class ResponseReservationDto {
         this.tradeState = tradeState;
         this.price = price;
         this.content = content;
-
-
     }
 
 

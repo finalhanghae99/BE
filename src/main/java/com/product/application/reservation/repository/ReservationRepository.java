@@ -13,4 +13,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findAllByStartDateBetween(LocalDate startDate, LocalDate endDate);
 
     List<Reservation> findAllByCampingAddress1(String address1);
+
+    List<Reservation> findTop6ByOrderByIdDesc();
+
 }
