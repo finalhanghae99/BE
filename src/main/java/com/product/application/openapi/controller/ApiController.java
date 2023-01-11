@@ -2,6 +2,7 @@ package com.product.application.openapi.controller;
 
 import com.product.application.openapi.service.ApiService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +17,7 @@ import java.net.URL;
 @RequiredArgsConstructor
 public class ApiController {
     private final ApiService apiService;
-
+    @CrossOrigin(originPatterns = "http://localhost:3000")
     @GetMapping("/api/test")
     public void getApi() throws IOException {
         StringBuilder result = new StringBuilder();
@@ -24,7 +25,7 @@ public class ApiController {
         String urlStr ="http://apis.data.go.kr/B551011/GoCamping/basedList?" +                  //http://apis.data.go.kr/B551011/GoCamping는 endpoint주소 , /basedList는 내가 사용하는 서비스
                 "ServiceKey=5dTujJ6wogWD2Ihr77xVuJpvpgPqARMFWrfhyt4lrlGJhl5wx57ZHDnxsJdNV4Q7AkhKIPX7flh59yeiLcaVMg==" +     //Servicekey는 내가 받은 키 중 디코딩키를 사용( 포스트맨에서는 인코딩키 사용)
                 //"&pageNo=1" +
-                "&numOfRows=10" +
+                "&numOfRows=3500" +
                 "&MobileOS=ETC" +
                 "&MobileApp=AppTest" +
                 "&_type=json";

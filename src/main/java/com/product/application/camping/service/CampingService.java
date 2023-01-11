@@ -13,7 +13,6 @@ import com.product.application.common.ResponseMessage;
 import com.product.application.common.exception.CustomException;
 import com.product.application.common.exception.ErrorCode;
 import com.product.application.review.dto.ResponseDetailCampingInfoReviewDto;
-import com.product.application.review.dto.ResponseFindListTenDto;
 import com.product.application.review.entity.Review;
 import com.product.application.review.repository.ReviewRepository;
 import com.product.application.user.entity.Users;
