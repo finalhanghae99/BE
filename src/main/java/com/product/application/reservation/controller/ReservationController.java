@@ -18,23 +18,23 @@ public class ReservationController {
 
     @PostMapping("/{campingId}")
     public ResponseMessage<?> create(@RequestBody RequestReservationDto requestReservationDto
-                                     , HttpServletRequest request
-                                     , @PathVariable Long campingId) {
+            , HttpServletRequest request
+            , @PathVariable Long campingId) {
         reservationService.create(requestReservationDto, request, campingId);
         return new ResponseMessage<>("Success", 200, null);
     }
 
     @DeleteMapping("/{reservationId}")
     public ResponseMessage<?> delete(@PathVariable Long reservationId
-                                     , HttpServletRequest request) {
+            , HttpServletRequest request) {
         reservationService.delete(reservationId, request);
         return new ResponseMessage<>("Success", 200, null);
     }
 
     @GetMapping()
-    public ResponseMessage getReservationList(@RequestParam(value="startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                              @RequestParam(value="endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
-                                              @RequestParam(value="address1", required = false) String address1,
+    public ResponseMessage getReservationList(@RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                              @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                              @RequestParam(value = "address1", required = false) String address1,
                                               @RequestParam(value = "address2", required = false) String address2,
                                               HttpServletRequest request) {
         ResponseMessage responseMessage = reservationService.getReservationList(startDate, endDate, address1, address2, request);
@@ -47,4 +47,10 @@ public class ReservationController {
         return responseMessage;
     }
 
+
+    @GetMapping("/listsix")
+    public ResponseMessage viewListSix() {
+        ResponseMessage responseMessage = reservationService.viewListSix();
+        return responseMessage;
+    }
 }
