@@ -4,6 +4,7 @@ import com.product.application.camping.entity.Camping;
 import com.product.application.review.dto.RequestReviewWriteDto;
 import com.product.application.review.dto.ResponseReviewListDto;
 import com.product.application.review.dto.ResponseReviewOneDto;
+import com.product.application.review.dto.ResponseReviewSixDto;
 import com.product.application.review.entity.Review;
 import com.product.application.review.entity.ReviewLike;
 import com.product.application.user.entity.Users;
@@ -45,7 +46,7 @@ public class ReviewMapper {
         Boolean likestate = reviewLike == null ? null : reviewLike.getLikeState();
         return ResponseReviewOneDto.builder()
                 .reviewId(review.getId())
-                .campingname(review.getCamping().getCampingName())
+                .campingName(review.getCamping().getCampingName())
                 .nickname(review.getUsers().getNickname())
                 .score1(review.getScore1())
                 .score2(review.getScore2())
@@ -57,6 +58,18 @@ public class ReviewMapper {
                 .likeCount(review.getLikeCount())
                 .likeState(likestate)
                 .reviewUrlList(review.getReviewUrlList())       //리뷰 URL 리스트에 있는 값들을 다 가져와야 한다.
+                .build();
+    }
+
+
+    public ResponseReviewSixDto toResponseReviewSix(Review review) {
+        return ResponseReviewSixDto.builder()
+                .campingName(review.getCamping().getCampingName())
+                .score1(review.getScore1())
+                .score2(review.getScore2())
+                .score3(review.getScore3())
+                .score4(review.getScore4())
+                .score5(review.getScore5())
                 .build();
     }
 }

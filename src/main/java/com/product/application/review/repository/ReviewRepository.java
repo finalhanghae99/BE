@@ -15,4 +15,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query(value="select * from REVIEW order by Like_Count desc LIMIT 100", nativeQuery = true)
     List<Review> selectAllSQL();
+    @Query(value="select * from REVIEW order by LIKE_COUNT desc LIMIT 6", nativeQuery = true)
+    List<Review> selectSixSQL();
 }

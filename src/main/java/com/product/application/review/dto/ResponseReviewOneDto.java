@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 public class ResponseReviewOneDto {
     private Long reviewId;
-    private String campingname;
+    private String campingName;
     private String nickname;
     private Long score1;
     private Long score2;
