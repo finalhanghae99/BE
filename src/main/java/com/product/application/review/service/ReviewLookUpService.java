@@ -3,9 +3,7 @@ package com.product.application.review.service;
 import com.product.application.camping.entity.Camping;
 import com.product.application.camping.repository.CampingRepository;
 import com.product.application.common.exception.CustomException;
-import com.product.application.review.dto.ResponseReviewAllDto;
-import com.product.application.review.dto.ResponseReviewListDto;
-import com.product.application.review.dto.ResponseReviewOneDto;
+import com.product.application.review.dto.*;
 import com.product.application.review.entity.Review;
 import com.product.application.review.mapper.ReviewMapper;
 import com.product.application.review.repository.ReviewRepository;
@@ -171,5 +169,15 @@ public class ReviewLookUpService {
         } else {
             throw new CustomException(TOKEN_ERROR);
         }
+    }
+
+    public ResponseReviewSixListDto searchLikeSix() {
+        List<Review> reviewList = reviewRepository.selectSixSQL();
+        List<ResponseReviewSixDto> responseReviewSixDtos = new ArrayList<>();
+        for(Review review : reviewList){
+            responseReviewSixDtos.add(reviewMapper.toResponseReviewSix(review));
+        }
+        ResponseReviewSixListDto responseReviewSixListDto = new ResponseReviewSixListDto(responseReviewSixDtos);
+        return responseReviewSixListDto;
     }
 }

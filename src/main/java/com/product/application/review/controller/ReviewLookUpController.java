@@ -3,6 +3,7 @@ package com.product.application.review.controller;
 import com.product.application.common.ResponseMessage;
 import com.product.application.review.dto.ResponseReviewAllDto;
 import com.product.application.review.dto.ResponseReviewOneDto;
+import com.product.application.review.dto.ResponseReviewSixListDto;
 import com.product.application.review.service.ReviewLookUpService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,5 +41,12 @@ public class ReviewLookUpController {
     public ResponseMessage<?> searchLikeAll(HttpServletRequest request){
         ResponseReviewAllDto responseReviewAllDto = reviewLookUpService.searchLikeAll(request);
         return new ResponseMessage<>("Success", 200, responseReviewAllDto);
+    }
+
+    //리뷰 글 조회(전체 후기 글 중 좋아요 순 Top 6반환
+    @GetMapping("/review/bestsix")
+    public ResponseMessage<?> searchLikeSix(){
+        ResponseReviewSixListDto responseReviewSixListDto = reviewLookUpService.searchLikeSix();
+        return new ResponseMessage<>("Success", 200, responseReviewSixListDto);
     }
 }
