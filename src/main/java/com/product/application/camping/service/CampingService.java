@@ -194,14 +194,14 @@ public class CampingService {
             if(optionalLike.isEmpty()){
                 CampingLike newCampingLike = new CampingLike(usersId, true, camping);
                 camping.updateCampingLikeCount(true);
-                responseCampingLikeStateDto = new ResponseCampingLikeStateDto(newCampingLike.isCampingLikeState());
+                responseCampingLikeStateDto = new ResponseCampingLikeStateDto(newCampingLike.getCampingLikeState());
                 campingLikeRepository.save(newCampingLike);
                 return new ResponseMessage("Success",200, responseCampingLikeStateDto);
             }
 
             // like에 관한 정보가 있는경우
             CampingLike updatedCampingLike = optionalLike.get();
-            if(updatedCampingLike.isCampingLikeState()){
+            if(updatedCampingLike.getCampingLikeState()){
                 // 엔티티 업데이트 수행
                 updatedCampingLike.stateUpdate(false);
                 campingLikeRepository.save(updatedCampingLike);

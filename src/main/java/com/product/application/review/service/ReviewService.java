@@ -137,7 +137,7 @@ public class ReviewService {
                 if(optionalCampingLike.isEmpty()){
                     campingLikeState = false;
                 } else {
-                    campingLikeState = optionalCampingLike.get().isCampingLikeState();
+                    campingLikeState = optionalCampingLike.get().getCampingLikeState();
                 }
 
                 // ** campingEnv, campingType, campingFac, campingSurroundFac를 스트링에서 리스트로 변환해서 전달
