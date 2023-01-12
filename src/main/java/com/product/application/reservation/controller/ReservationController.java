@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @RequestMapping("/reservation")
 public class ReservationController {
     private final ReservationService reservationService;
-
+    @CrossOrigin(originPatterns = "http://localhost:3000")
     @PostMapping("/{campingId}")
     public ResponseMessage<?> create(@RequestBody RequestReservationDto requestReservationDto
             , HttpServletRequest request
@@ -23,14 +23,14 @@ public class ReservationController {
         reservationService.create(requestReservationDto, request, campingId);
         return new ResponseMessage<>("Success", 200, null);
     }
-
+    @CrossOrigin(originPatterns = "http://localhost:3000")
     @DeleteMapping("/{reservationId}")
     public ResponseMessage<?> delete(@PathVariable Long reservationId
             , HttpServletRequest request) {
         reservationService.delete(reservationId, request);
         return new ResponseMessage<>("Success", 200, null);
     }
-
+    @CrossOrigin(originPatterns = "http://localhost:3000")
     @GetMapping()
     public ResponseMessage getReservationList(@RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                               @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
@@ -40,14 +40,14 @@ public class ReservationController {
         ResponseMessage responseMessage = reservationService.getReservationList(startDate, endDate, address1, address2, request);
         return responseMessage;
     }
-
+    @CrossOrigin(originPatterns = "http://localhost:3000")
     @GetMapping("/{reservationId}")
     public ResponseMessage getReservation(@PathVariable Long reservationId, HttpServletRequest request) {
         ResponseMessage responseMessage = reservationService.getReservation(reservationId, request);
         return responseMessage;
     }
 
-
+    @CrossOrigin(originPatterns = "http://localhost:3000")
     @GetMapping("/listsix")
     public ResponseMessage viewListSix() {
         ResponseMessage responseMessage = reservationService.viewListSix();
