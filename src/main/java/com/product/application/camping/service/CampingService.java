@@ -1,9 +1,6 @@
 package com.product.application.camping.service;
 
-import com.product.application.camping.dto.ResponseCampingLikeStateDto;
-import com.product.application.camping.dto.ResponseFindDetailCampingInfoDto;
-import com.product.application.camping.dto.ResponseFindListFiveDto;
-import com.product.application.camping.dto.ResponseOneCampingInfo;
+import com.product.application.camping.dto.*;
 import com.product.application.camping.entity.Camping;
 import com.product.application.camping.entity.CampingLike;
 import com.product.application.camping.mapper.CampingMapper;
@@ -196,6 +193,7 @@ public class CampingService {
             // like에 관한 정보가 아예 없던 경우 -> 메시지 만들어서 리턴
             if(optionalLike.isEmpty()){
                 CampingLike newCampingLike = new CampingLike(usersId, true, camping);
+                camping.updateCampingLikeCount(true);
                 responseCampingLikeStateDto = new ResponseCampingLikeStateDto(newCampingLike.isCampingLikeState());
                 campingLikeRepository.save(newCampingLike);
                 return new ResponseMessage("Success",200, responseCampingLikeStateDto);
@@ -207,12 +205,14 @@ public class CampingService {
                 // 엔티티 업데이트 수행
                 updatedCampingLike.stateUpdate(false);
                 campingLikeRepository.save(updatedCampingLike);
+                camping.updateCampingLikeCount(false);
                 responseCampingLikeStateDto = new ResponseCampingLikeStateDto(false);
                 return new ResponseMessage("Success",200, responseCampingLikeStateDto);
             } else {
                 // 엔티티 업데이트 수행
                 updatedCampingLike.stateUpdate(true);
                 campingLikeRepository.save(updatedCampingLike);
+                camping.updateCampingLikeCount(true);
                 responseCampingLikeStateDto = new ResponseCampingLikeStateDto(true);
                 return new ResponseMessage("Success",200, responseCampingLikeStateDto);
             }
@@ -221,5 +221,15 @@ public class CampingService {
             throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
         }
 
+    }
+
+    public ResponseCampingFiveListDto searchLikeFive() {
+        List<Camping> campingList = campingRepository.selectFiveSQL();
+        List<ResponseCampingFiveDto> responseCampingFiveDtos = new ArrayList<>();
+        for(Camping camping : campingList){
+            responseCampingFiveDtos.add(campingMapper.toResponseCampingFive(camping));
+        }
+        ResponseCampingFiveListDto responseCampingFiveListDto = new ResponseCampingFiveListDto(responseCampingFiveDtos);
+        return responseCampingFiveListDto;
     }
 }

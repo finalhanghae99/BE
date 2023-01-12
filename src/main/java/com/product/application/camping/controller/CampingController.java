@@ -1,11 +1,10 @@
 package com.product.application.camping.controller;
 
 import com.product.application.camping.dto.RequestFindListFiveDto;
+import com.product.application.camping.dto.ResponseCampingFiveListDto;
 import com.product.application.camping.service.CampingService;
 import com.product.application.common.ResponseMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,5 +38,12 @@ public class CampingController {
     @PostMapping("/{campingId}/like")
     public ResponseMessage updateCampingLikeState(@PathVariable Long campingId, HttpServletRequest request){
         return campingService.updateCampingLikeState(campingId, request);
+    }
+
+    @CrossOrigin(originPatterns = "http://localhost:3000")
+    @GetMapping("/bestfive")
+    public ResponseMessage<?> searchLikeFive(){
+        ResponseCampingFiveListDto responseCampingFiveListDto = campingService.searchLikeFive();
+        return new ResponseMessage<>("Success", 200, responseCampingFiveListDto);
     }
 }

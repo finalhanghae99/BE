@@ -96,4 +96,12 @@ public class Camping {
         this.campingLikeCount = campingLikeCount;
         this.reviewCount = reviewCount;
     }
+
+    public void updateCampingLikeCount(boolean state) {
+        if(state){
+            this.campingLikeCount++;
+        }else {
+            this.campingLikeCount--;
+        }
+    }
 }
