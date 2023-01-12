@@ -5,6 +5,7 @@ import com.product.application.user.dto.RequestEmailcheckDto;
 import com.product.application.user.dto.RequestLoginDto;
 import com.product.application.user.dto.RequestNicknamecheckDto;
 import com.product.application.user.dto.RequestSignupDto;
+import com.product.application.user.jwt.JwtUtil;
 import com.product.application.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,27 +20,27 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    @CrossOrigin(originPatterns = "http://localhost:3000")
+    @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PostMapping("/users/signup")
     public ResponseMessage<?> signup(@RequestBody @Valid RequestSignupDto requestSignupDto){
         userService.signup(requestSignupDto);
         return new ResponseMessage<>("Success", 200, null);
     }
-    @CrossOrigin(originPatterns = "http://localhost:3000")
+    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PostMapping("/users/login")
     public ResponseMessage<?> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletResponse response){
         userService.login(requestLoginDto, response);
         return new ResponseMessage<>("Success", 200, null);
     }
 
-    @CrossOrigin(originPatterns = "http://localhost:3000")
+    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PostMapping("/users/checkemail")
     public ResponseMessage<?> emailcheck(@RequestBody RequestEmailcheckDto requestEmailcheckDto){
         userService.emailcheck(requestEmailcheckDto);
         return new ResponseMessage<>("Success", 200, null);
     }
 
-    @CrossOrigin(originPatterns = "http://localhost:3000")
+    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PostMapping("/users/checknickname")
     public ResponseMessage<?> nicknamecheck(@RequestBody RequestNicknamecheckDto requestNicknamecheckDto){
         userService.nicknamecheck(requestNicknamecheckDto);

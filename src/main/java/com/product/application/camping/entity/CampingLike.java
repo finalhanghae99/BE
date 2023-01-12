@@ -24,19 +24,19 @@ public class CampingLike {
     private Long usersId;
 
     @Column(nullable = false)
-    private boolean campingLikeState;
+    private Boolean campingLikeState;
 
     @ManyToOne
     @JoinColumn(name = "campingId")
     private Camping camping;
 
-    public CampingLike(Long usersId, boolean campingLikeState, Camping camping){
+    public CampingLike(Long usersId, Boolean campingLikeState, Camping camping){
         this.usersId = usersId;
         this.campingLikeState = campingLikeState;
         this.camping = camping;
     }
 
-    public void stateUpdate(boolean campingLikeState){
+    public void stateUpdate(Boolean campingLikeState){
         this.campingLikeState = campingLikeState;
     }
 }
