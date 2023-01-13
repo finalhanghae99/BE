@@ -12,6 +12,7 @@ import com.product.application.common.exception.ErrorCode;
 import com.product.application.review.dto.ResponseDetailCampingInfoReviewDto;
 import com.product.application.review.entity.Review;
 import com.product.application.review.repository.ReviewRepository;
+import com.product.application.s3.Img;
 import com.product.application.user.entity.Users;
 import com.product.application.user.jwt.JwtUtil;
 import com.product.application.user.repository.UserRepository;
@@ -159,11 +160,9 @@ public class CampingService {
         List<Review> reviewList = reviewRepository.findAllByCamping(camping);
         List<ResponseDetailCampingInfoReviewDto> reviewDtoList = new ArrayList<>();
         for(Review review : reviewList){
-            List<String> urlList = review.getReviewUrlList();
-            String url;
-            // review안에 있는 사진이 0개 일때 null 값을 반환하고 아니라면 첫번째 사진을 반환
-            if(urlList.size() == 0) url = null;
-            else url = urlList.get(0);
+            List<Img> urlList = review.getReviewUrlList();
+            Img url;
+            url = urlList.get(0);
             ResponseDetailCampingInfoReviewDto reviewDto = new ResponseDetailCampingInfoReviewDto(review,url);
             reviewDtoList.add(reviewDto);
         }

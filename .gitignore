@@ -38,3 +38,6 @@ out/
 
 ### application-jwt
 application-jwt.properties
+
+### application-jwt
+application-s3.properties

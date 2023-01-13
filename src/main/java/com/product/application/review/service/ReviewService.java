@@ -14,6 +14,9 @@ import com.product.application.review.entity.ReviewLike;
 import com.product.application.review.mapper.ReviewMapper;
 import com.product.application.review.repository.ReviewLikeRepository;
 import com.product.application.review.repository.ReviewRepository;
+import com.product.application.s3.Img;
+import com.product.application.s3.ImgRepository;
+import com.product.application.s3.S3Config;
 import com.product.application.user.entity.Users;
 import com.product.application.user.jwt.JwtUtil;
 import com.product.application.user.repository.UserRepository;
@@ -39,31 +42,46 @@ public class ReviewService {
     private final CampingLikeRepository campingLikeRepository;
     private final ReviewMapper reviewMapper;
     private final JwtUtil jwtUtil;
+    private final S3Config s3Config;
+    private  final ImgRepository imgRepository;
+
     @Transactional
-    public ResponseMessage writeReview(Long campingId, RequestReviewWriteDto requestReviewWriteDto, HttpServletRequest request) {
-        Camping camping = campingRepository.findById(campingId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-        // Request에서 Token 가져오기
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        Users users = null;
-        if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(ErrorCode.TOKEN_ERROR);
+    public ResponseMessage writeReview(Long campingId, RequestReviewWriteDto requestReviewWriteDto, HttpServletRequest request, List<String> reviewUrl) {
+            // Request에서 Token 가져오기
+            String token = jwtUtil.resolveToken(request);
+            Claims claims;
+            Users users = null;
+            if (token != null) {
+                if (jwtUtil.validateToken(token)) {
+                    // 토큰에서 사용자 정보 가져오기
+                    claims = jwtUtil.getUserInfoFromToken(token);
+                } else {
+                    throw new CustomException(ErrorCode.TOKEN_ERROR);
+                }
+                // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
+                users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
+                        () -> new CustomException(ErrorCode.USER_NOT_FOUND)
+                );
             }
-            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
-            users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(ErrorCode.USER_NOT_FOUND)
-            );
+        Camping camping = campingRepository.findById(campingId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+        if (reviewUrl == null || reviewUrl.isEmpty()) { //.isEmpty()도 되는지 확인해보기
+            throw new CustomException(ErrorCode.WRONG_INPUT_IMAGE);
         }
-        Review review = reviewMapper.requestReviewWriteDtoToEntity(users, camping, requestReviewWriteDto);
-        reviewRepository.save(review);
-        return new ResponseMessage<>("Success", 200, null);
-    }
+
+            Review review = reviewMapper.requestReviewWriteDtoToEntity(users, camping, requestReviewWriteDto);
+            reviewRepository.save(review);
+
+            List<String> imgList = new ArrayList<>();
+            for (String imgUrl : reviewUrl) {
+                Img img = new Img(imgUrl, review);
+                imgRepository.save(img);
+                imgList.add(img.getImgUrl());
+            }
+            return new ResponseMessage<>("Success", 200, null);
+        }
+
     @Transactional
-    public ResponseMessage updateReview(Long reviewId, RequestReviewWriteDto requestReviewWriteDto, HttpServletRequest httpServletRequest) {
+    public ResponseMessage updateReview(Long reviewId, RequestReviewWriteDto requestReviewWriteDto, HttpServletRequest httpServletRequest, List<String> reviewUrl) {
         /*
         업데이트 로직
             1. 토큰에서 유저이메일 확인 -> 토큰에서 사용자 정보 추출
@@ -96,12 +114,28 @@ public class ReviewService {
             review.update(requestReviewWriteDto);
             // DB에 entity 저장
             reviewRepository.save(review);
+
+            List<Img> imgList = imgRepository.findByReviewId(reviewId);
+            for(Img img : imgList){
+                imgRepository.delete(img);
+                String result = img.getImgUrl().substring(img.getImgUrl().lastIndexOf("/image")+1);
+                s3Config.deleteImg(result);
+                System.out.println("img.getImgUrl() = " + result);
+            }
+
+            List<String> newImgList = new ArrayList<>();
+            for (String imgUrl : reviewUrl) {
+                Img img = new Img(imgUrl, review);
+                imgRepository.save(img);
+                newImgList.add(img.getImgUrl());
+            }
+
+
             return new ResponseMessage<>("Success", 200, null);
         } else {
             throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
         }
     }
-
     @Transactional
     public ResponseMessage findListTen(List<Long> list, HttpServletRequest request) {
         // ResponseFindListTenDto는
@@ -187,8 +221,15 @@ public class ReviewService {
                 throw new CustomException(ErrorCode.AUTHORIZATION_DELETE_FAIL);
             }
             List<ReviewLike> reviewLikeList = reviewLikeRepository.findByReviewId(reviewFromReviewId.getId());
-            for(ReviewLike reviewLike : reviewLikeList){
+            for(ReviewLike reviewLike : reviewLikeList) {
                 reviewLikeRepository.delete(reviewLike);
+            }
+            List<Img> imgList = imgRepository.findByReviewId(reviewId);
+            for(Img img : imgList){
+                imgRepository.delete(img);
+                String result = img.getImgUrl().substring(img.getImgUrl().lastIndexOf("/image")+1);
+                s3Config.deleteImg(result);
+                System.out.println("img.getImgUrl() = " + result);
             }
             reviewRepository.delete(reviewFromReviewId);
             return new ResponseMessage("Success",200, null);
