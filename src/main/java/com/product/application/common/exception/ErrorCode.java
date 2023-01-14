@@ -18,6 +18,8 @@ public enum ErrorCode {
     WRONG_IMAGE_FORMAT("파일을 확인해주세요.", 400),
     PASSWORD_MISMATCH("비밀번호가 비밀번호 확인과 일치하지 않습니다",400),
     DUPLICATE_MEMBERNAME("이미 추가한 유저입니다.", 400),
+    IMAGE_UPLOAD_ERROR("이미지 업로드를 실패했습니다.", 400),
+    WRONG_INPUT_IMAGE("이미지 파일이 아닙니다.", 400),
 
 
     CONTENT_NOT_FOUND("존재하지 않는 게시글 입니다.",404),
@@ -38,6 +40,8 @@ public enum ErrorCode {
     USER_NOT_FOUND("존재하지 않는 유저 입니다.",404),
 
     INTERNAL_SERVER_ERROR("서버 에러입니다. 서버 팀에 연락주세요!", 500);
+
+
 
 
     private final String msg;

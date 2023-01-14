@@ -3,6 +3,7 @@ package com.product.application.review.entity;
 import com.product.application.camping.entity.Camping;
 import com.product.application.common.TimeStamped;
 import com.product.application.review.dto.RequestReviewWriteDto;
+import com.product.application.s3.Img;
 import com.product.application.user.entity.Users;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,9 +43,13 @@ public class Review extends TimeStamped {
     @Column(nullable = false)
     private Long score5;
 
+//    @Column(nullable = false)
+//    @ElementCollection
+//    private List<String> reviewUrlList;
+
     @Column(nullable = false)
-    @ElementCollection
-    private List<String> reviewUrlList;
+    @Transient
+    private List<Img> reviewUrlList = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name="usersId")
@@ -53,12 +58,15 @@ public class Review extends TimeStamped {
     @OneToMany(mappedBy = "review")
     private List<ReviewLike> reviewLikeList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "review")
+    private List<Img> imgList = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name="campingId")
     private Camping camping;
 
     @Builder
-    public Review(Users users, Camping camping, List<String> reviewUrlList, String content, Long score1, Long score2, Long score3, Long score4, Long score5){
+    public Review(Users users, Camping camping, List<Img> reviewUrlList, String content, Long score1, Long score2, Long score3, Long score4, Long score5){
         this.users = users;
         this.camping = camping;
         this.reviewUrlList = reviewUrlList;

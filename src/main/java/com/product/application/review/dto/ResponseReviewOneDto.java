@@ -1,5 +1,6 @@
 package com.product.application.review.dto;
 
+import com.product.application.s3.Img;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,5 +22,5 @@ public class ResponseReviewOneDto {
     private String content;
     private Long likeCount;
     private Boolean likeState;
-    private List<String> reviewUrlList;
+    private List<Img> reviewUrlList;
 }

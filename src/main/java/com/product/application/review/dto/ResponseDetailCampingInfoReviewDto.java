@@ -1,6 +1,7 @@
 package com.product.application.review.dto;
 
 import com.product.application.review.entity.Review;
+import com.product.application.s3.Img;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,13 +13,13 @@ public class ResponseDetailCampingInfoReviewDto {
     private String nickname;
     private LocalDateTime modifiedAt;
     private String content;
-    private String url;
+    private Img url;
 
-    public ResponseDetailCampingInfoReviewDto(Review review,String imageUrl){
+    public ResponseDetailCampingInfoReviewDto(Review review,Img url){
         this.nickname = review.getUsers().getNickname();
         this.modifiedAt = review.getModifiedAt();
         this.content = review.getContent();
-        this.url = imageUrl;
+        this.url = url;
         // * this.url을 외부에서 입력받는 이유 *
         // review에는 reviewUrl이 list형태로 존재하고 있다.(review.getReviewUrlList()로 리스트를 불러올 수 있음)
         // 여기(dto)에서 list에서 한장을 뽑아서 저장하는 처리를 하는 것은 Review엔티티에 대한 종속성이 너무 커진다.
