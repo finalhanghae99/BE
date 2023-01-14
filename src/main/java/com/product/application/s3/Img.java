@@ -28,4 +28,8 @@ public class Img {
         this.imgUrl = imgUrl;
         this.review = review;
     }
+
+    public Img(Img imgUrl) {
+        this.imgUrl = imgUrl.getImgUrl();
+    }
 }
