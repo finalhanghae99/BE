@@ -10,6 +10,8 @@ import com.product.application.review.entity.ReviewLike;
 import com.product.application.user.entity.Users;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class ReviewMapper {
     public Review requestReviewWriteDtoToEntity(Users users, Camping camping, RequestReviewWriteDto requestReviewWriteDto){
@@ -26,13 +28,13 @@ public class ReviewMapper {
                 .build();
     }
 
-    public ResponseReviewListDto toResponseReviewListDto(Review review, Long usersId) {
+    public ResponseReviewListDto toResponseReviewListDto(Review review, Long usersId, List<String> imgList) {
         ReviewLike reviewLike = review.getReviewLikeList().stream().filter(Like -> Like.getUserId().equals(usersId)).findFirst().orElse(null);  //userId뿐만 아니라 review아이디도 같아야 한다
         Boolean likestate = reviewLike == null ? null : reviewLike.getLikeState();
         return ResponseReviewListDto.builder()
                 .reviewId(review.getId())
                 .campingName(review.getCamping().getCampingName())
-                .reviewUrlList(review.getReviewUrlList())       //리뷰 URL 리스트에 있는 값들을 다 가져와야 한다.
+                .reviewUrlList(imgList)       //리뷰 URL 리스트에 있는 값들을 다 가져와야 한다.
                 .nickname(review.getUsers().getNickname())
                 .modifiedAt(review.getModifiedAt())
                 .content(review.getContent())
@@ -41,7 +43,7 @@ public class ReviewMapper {
                 .build();
     }
 
-    public ResponseReviewOneDto toResponseReviewOne(Review review, Long usersId) {
+    public ResponseReviewOneDto toResponseReviewOne(Review review, Long usersId, List<String> imgList) {
         ReviewLike reviewLike = review.getReviewLikeList().stream().filter(Like -> Like.getUserId().equals(usersId)).findFirst().orElse(null);  //userId뿐만 아니라 review아이디도 같아야 한다
         Boolean likestate = reviewLike == null ? null : reviewLike.getLikeState();
         return ResponseReviewOneDto.builder()
@@ -57,7 +59,7 @@ public class ReviewMapper {
                 .content(review.getContent())
                 .likeCount(review.getLikeCount())
                 .likeState(likestate)
-                .reviewUrlList(review.getReviewUrlList())       //리뷰 URL 리스트에 있는 값들을 다 가져와야 한다.
+                .reviewUrlList(imgList)       //리뷰 URL 리스트에 있는 값들을 다 가져와야 한다.
                 .build();
     }
 

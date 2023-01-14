@@ -9,6 +9,8 @@ import com.product.application.review.dto.ResponseReviewListDto;
 import com.product.application.review.entity.Review;
 import com.product.application.review.mapper.ReviewMapper;
 import com.product.application.review.repository.ReviewRepository;
+import com.product.application.s3.Img;
+import com.product.application.s3.ImgRepository;
 import com.product.application.user.dto.RequestUserInfoDto;
 import com.product.application.user.dto.ResponseUserCampingInfoDto;
 import com.product.application.user.dto.ResponseUserCampingInfoListDto;
@@ -40,6 +42,7 @@ public class UserInformationService {
     private final ReviewRepository reviewRepository;
     private final UserMapper userMapper;
     private final ReviewMapper reviewMapper;
+    private final ImgRepository imgRepository;
 
     public ResponseUserInfoDto userInfo(HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
@@ -161,7 +164,13 @@ public class UserInformationService {
             List<Review> reviewList = reviewRepository.findAllByusersId(usersId);
             List<ResponseReviewListDto> responseReviewListDtos = new ArrayList<>();
             for(Review review : reviewList){
-                responseReviewListDtos.add(reviewMapper.toResponseReviewListDto(review, usersId));
+                List<Img> urlList = imgRepository.findByReviewId(review.getId());
+                List<String> imgList = new ArrayList<>();
+                for(Img imgUrl : urlList){
+                    Img img = new Img(imgUrl);
+                    imgList.add(img.getImgUrl());
+                }
+                responseReviewListDtos.add(reviewMapper.toResponseReviewListDto(review, usersId, imgList));
             }
             ResponseReviewAllDto responseReviewAllDto = new ResponseReviewAllDto(responseReviewListDtos);
             return responseReviewAllDto;

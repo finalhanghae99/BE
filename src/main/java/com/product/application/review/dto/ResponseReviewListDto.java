@@ -15,7 +15,7 @@ import java.util.List;
 public class ResponseReviewListDto {
     private Long reviewId;
     private String campingName;
-    private List<Img> reviewUrlList;
+    private List<String> reviewUrlList;
     private String nickname;
     private LocalDateTime modifiedAt;
     private String content;
