@@ -1,5 +1,7 @@
 package com.product.application.user.controller;
 
+import com.product.application.review.dto.ResponseReviewAllDto;
+import com.product.application.user.dto.RequestUserInfoDto;
 import com.product.application.user.dto.ResponseUserCampingInfoDto;
 import com.product.application.common.ResponseMessage;
 import com.product.application.user.dto.ResponseUserInfoDto;
@@ -8,6 +10,7 @@ import com.product.application.user.service.UserInformationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,4 +34,17 @@ public class UserInformationController {
         return new ResponseMessage<>("Success", 200, responseUserCampingInfo);
     }
 
+    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @GetMapping("/mypage/update")
+    public ResponseMessage<?> userInfoChange(@RequestBody RequestUserInfoDto requestUserInfoDto, HttpServletRequest request){
+        ResponseUserInfoDto responseUserInfoDto = userInformationService.userInfoChange(requestUserInfoDto, request);
+        return new ResponseMessage<>("Success", 200, responseUserInfoDto);
+    }
+
+    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @GetMapping("/mypage/review")
+    public ResponseMessage<?> userReviewInfo(HttpServletRequest request){
+        ResponseReviewAllDto responseReviewAllDto = userInformationService.userReviewInfo(request);
+        return new ResponseMessage<>("Success", 200, responseReviewAllDto);
+    }
 }
