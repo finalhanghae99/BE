@@ -17,4 +17,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> selectAllSQL();
     @Query(value="select * from REVIEW order by LIKE_COUNT desc LIMIT 6", nativeQuery = true)
     List<Review> selectSixSQL();
+
+    List<Review> findAllByusersId(Long usersId);
 }

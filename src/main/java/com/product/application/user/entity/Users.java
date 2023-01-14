@@ -34,4 +34,9 @@ public class Users {
         this.password = password;
         this.profileImageUrl = profileImageUrl;
     }
+
+    public void change(String nickname, String profileImageUrl) {
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
+    }
 }
