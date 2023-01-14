@@ -13,6 +13,7 @@ import com.product.application.review.dto.ResponseDetailCampingInfoReviewDto;
 import com.product.application.review.entity.Review;
 import com.product.application.review.repository.ReviewRepository;
 import com.product.application.s3.Img;
+import com.product.application.s3.ImgRepository;
 import com.product.application.user.entity.Users;
 import com.product.application.user.jwt.JwtUtil;
 import com.product.application.user.repository.UserRepository;
@@ -37,6 +38,8 @@ public class CampingService {
     private final ReviewRepository reviewRepository;
     private final JwtUtil jwtUtil;
     private final CampingMapper campingMapper;
+    private final ImgRepository imgRepository;
+
     @Transactional
     public ResponseMessage searchAllCampingInfo(String campingname, String address1, String address2, HttpServletRequest request) {
         List<Camping> campingList;
@@ -159,11 +162,14 @@ public class CampingService {
         // - ResponseDetailCampingInfoReviewDto에 Review를 전달해서 필요한 정보만 저장하고 리스트로 만들어서 ResponseFindDetailCampingInfoDto에 저장
         List<Review> reviewList = reviewRepository.findAllByCamping(camping);
         List<ResponseDetailCampingInfoReviewDto> reviewDtoList = new ArrayList<>();
-        for(Review review : reviewList){
-            List<Img> urlList = review.getReviewUrlList();
-            Img url;
-            url = urlList.get(0);
-            ResponseDetailCampingInfoReviewDto reviewDto = new ResponseDetailCampingInfoReviewDto(review,url);
+        for(Review review : reviewList) {
+            List<Img> urlList = imgRepository.findByReviewId(review.getId());
+            List<String> imgList = new ArrayList<>();
+            for(Img imgUrl : urlList){
+                Img img = new Img(imgUrl);
+                imgList.add(img.getImgUrl());
+            }
+            ResponseDetailCampingInfoReviewDto reviewDto = new ResponseDetailCampingInfoReviewDto(review, imgList);
             reviewDtoList.add(reviewDto);
         }
         responseDto.updateReviewDtoList(reviewDtoList);
