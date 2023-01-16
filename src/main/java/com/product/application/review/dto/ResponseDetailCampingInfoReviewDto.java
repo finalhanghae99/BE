@@ -1,7 +1,6 @@
 package com.product.application.review.dto;
 
 import com.product.application.review.entity.Review;
-import com.product.application.s3.Img;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
