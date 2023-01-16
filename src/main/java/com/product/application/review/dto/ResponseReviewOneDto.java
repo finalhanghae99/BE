@@ -22,5 +22,5 @@ public class ResponseReviewOneDto {
     private String content;
     private Long likeCount;
     private Boolean likeState;
-    private List<Img> reviewUrlList;
+    private List<String> reviewUrlList;
 }

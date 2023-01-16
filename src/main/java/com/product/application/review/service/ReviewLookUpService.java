@@ -7,6 +7,8 @@ import com.product.application.review.dto.*;
 import com.product.application.review.entity.Review;
 import com.product.application.review.mapper.ReviewMapper;
 import com.product.application.review.repository.ReviewRepository;
+import com.product.application.s3.Img;
+import com.product.application.s3.ImgRepository;
 import com.product.application.user.entity.Users;
 import com.product.application.user.jwt.JwtUtil;
 import com.product.application.user.repository.UserRepository;
@@ -31,6 +33,7 @@ public class ReviewLookUpService {
     private final ReviewRepository reviewRepository;
     private final CampingRepository campingRepository;
     private final ReviewMapper reviewMapper;
+    private final ImgRepository imgRepository;
 
     @Transactional
     public ResponseReviewAllDto searchAll(Long campingId, HttpServletRequest request) {
@@ -58,7 +61,13 @@ public class ReviewLookUpService {
             List<Review> reviewList = camping.getReviewList();
 
             for(Review review : reviewList){
-                reviewListDtos.add(reviewMapper.toResponseReviewListDto(review, usersId));
+                List<Img> urlList = imgRepository.findByReviewId(review.getId());
+                List<String> imgList = new ArrayList<>();
+                for(Img imgUrl : urlList){
+                    Img img = new Img(imgUrl);
+                    imgList.add(img.getImgUrl());
+                }
+                reviewListDtos.add(reviewMapper.toResponseReviewListDto(review, usersId, imgList));
             }
 
             ResponseReviewAllDto responseReviewAllDto = new ResponseReviewAllDto(reviewListDtos);
@@ -90,7 +99,14 @@ public class ReviewLookUpService {
                     () -> new CustomException(REVIEW_NOT_FOUND)
             );
 
-            return reviewMapper.toResponseReviewOne(review, usersId);
+            List<Img> urlList = imgRepository.findByReviewId(review.getId());
+            List<String> imgList = new ArrayList<>();
+            for(Img imgUrl : urlList){
+                Img img = new Img(imgUrl);
+                imgList.add(img.getImgUrl());
+            }
+
+            return reviewMapper.toResponseReviewOne(review, usersId, imgList);
 
         } else {
             throw new CustomException(TOKEN_ERROR);
@@ -123,7 +139,13 @@ public class ReviewLookUpService {
             if(reviewList.size() < 6){
                 List<ResponseReviewListDto> reviewListDtos = new ArrayList<>();
                 for(Review review : reviewList) {
-                    reviewListDtos.add(reviewMapper.toResponseReviewListDto(review, usersId));
+                    List<Img> urlList = imgRepository.findByReviewId(review.getId());
+                    List<String> imgList = new ArrayList<>();
+                    for(Img imgUrl : urlList){
+                        Img img = new Img(imgUrl);
+                        imgList.add(img.getImgUrl());
+                    }
+                    reviewListDtos.add(reviewMapper.toResponseReviewListDto(review, usersId, imgList));
                 }
                 ResponseReviewAllDto responseReviewAllDto = new ResponseReviewAllDto(reviewListDtos);
                 return responseReviewAllDto;
@@ -131,7 +153,13 @@ public class ReviewLookUpService {
             List<Review> reviewListTop5 = reviewRepository.findTop5ByCampingIdOrderByModifiedAtDesc(campingId);
             List<ResponseReviewListDto> reviewListDtos = new ArrayList<>();
             for(Review review : reviewListTop5) {
-                reviewListDtos.add(reviewMapper.toResponseReviewListDto(review, usersId));
+                List<Img> urlList = imgRepository.findByReviewId(review.getId());
+                List<String> imgList = new ArrayList<>();
+                for(Img imgUrl : urlList){
+                    Img img = new Img(imgUrl);
+                    imgList.add(img.getImgUrl());
+                }
+                reviewListDtos.add(reviewMapper.toResponseReviewListDto(review, usersId, imgList));
             }
             ResponseReviewAllDto responseReviewAllDto = new ResponseReviewAllDto(reviewListDtos);
             return responseReviewAllDto;
@@ -162,7 +190,13 @@ public class ReviewLookUpService {
             List<Review> reviewList = reviewRepository.selectAllSQL();
             List<ResponseReviewListDto> reviewListDtos = new ArrayList<>();
             for(Review review : reviewList) {
-                reviewListDtos.add(reviewMapper.toResponseReviewListDto(review, usersId));
+                List<Img> urlList = imgRepository.findByReviewId(review.getId());
+                List<String> imgList = new ArrayList<>();
+                for(Img imgUrl : urlList){
+                    Img img = new Img(imgUrl);
+                    imgList.add(img.getImgUrl());
+                }
+                reviewListDtos.add(reviewMapper.toResponseReviewListDto(review, usersId, imgList));
             }
             ResponseReviewAllDto responseReviewAllDto = new ResponseReviewAllDto(reviewListDtos);
             return responseReviewAllDto;
