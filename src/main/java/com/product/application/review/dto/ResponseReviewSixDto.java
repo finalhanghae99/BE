@@ -13,4 +13,5 @@ public class ResponseReviewSixDto {
     private Long score4;
     private Long score5;
     private String imageUrl;
+    private Long reviewId;
 }

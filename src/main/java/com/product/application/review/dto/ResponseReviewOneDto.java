@@ -22,4 +22,6 @@ public class ResponseReviewOneDto {
     private Long likeCount;
     private Boolean likeState;
     private List<String> reviewUrlList;
+    private boolean ownerCheck;
+    private String profileImageUrl;
 }
