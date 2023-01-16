@@ -1,6 +1,5 @@
 package com.product.application.review.dto;
 
-import com.product.application.s3.Img;
 import lombok.Builder;
 import lombok.Getter;
 

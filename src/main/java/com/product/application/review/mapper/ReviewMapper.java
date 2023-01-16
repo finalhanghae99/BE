@@ -40,6 +40,7 @@ public class ReviewMapper {
                 .content(review.getContent())
                 .likeCount(review.getLikeCount())
                 .likeState(likestate)
+                .profileImageUrl(review.getUsers().getProfileImageUrl())
                 .build();
     }
 
@@ -72,6 +73,7 @@ public class ReviewMapper {
                 .score3(review.getScore3())
                 .score4(review.getScore4())
                 .score5(review.getScore5())
+                .imageUrl(review.getCamping().getImageUrl())
                 .build();
     }
 }
