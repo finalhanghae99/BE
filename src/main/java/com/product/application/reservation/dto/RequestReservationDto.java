@@ -9,8 +9,6 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 public class RequestReservationDto {
-
-    private String campingName;
     private String content;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
