@@ -17,7 +17,4 @@ public class RequestReservationDto {
     private boolean tradeState = true;
     private Long price;
 
-
-
-
 }
