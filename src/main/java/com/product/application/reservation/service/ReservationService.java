@@ -88,22 +88,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public ResponseMessage getReservationList(LocalDate startDate, LocalDate endDate, String address1, String address2, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(ErrorCode.USER_NOT_FOUND)
-            );
+    public ResponseMessage getReservationList(LocalDate startDate, LocalDate endDate, String address1, String address2) {
 
             List<Reservation> reservationList;
             List<Reservation> returnReservationList = new ArrayList<>();
@@ -146,34 +131,17 @@ public class ReservationService {
                 responseSearchDtoList.add(responseSearchDto);
             }
             return new ResponseMessage("Success", 200, new SearchDtoList(responseSearchDtoList));
-        } else {
-            throw new CustomException(ErrorCode.TOKEN_ERROR);
         }
-    }
 
-    public ResponseMessage getReservation(Long reservationId, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(ErrorCode.USER_NOT_FOUND)
-            );
+
+    public ResponseMessage getReservation(Long reservationId) {
+
 
             Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
             ResponseReservationDto responseReservationDto = new ResponseReservationDto(reservation, reservation.getCamping());
 
             return new ResponseMessage("Success", 200, responseReservationDto);
-        } else {
-            throw new CustomException(ErrorCode.TOKEN_ERROR);
         }
-    }
 
     @Transactional
     public ResponseMessage viewListSix() {

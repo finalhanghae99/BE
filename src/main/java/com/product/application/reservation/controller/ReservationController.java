@@ -38,13 +38,13 @@ public class ReservationController {
                                               @RequestParam(value = "address1", required = false) String address1,
                                               @RequestParam(value = "address2", required = false) String address2,
                                               HttpServletRequest request) {
-        ResponseMessage responseMessage = reservationService.getReservationList(startDate, endDate, address1, address2, request);
+        ResponseMessage responseMessage = reservationService.getReservationList(startDate, endDate, address1, address2);
         return responseMessage;
     }
     @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping("/{reservationId}")
     public ResponseMessage getReservation(@PathVariable Long reservationId, HttpServletRequest request) {
-        ResponseMessage responseMessage = reservationService.getReservation(reservationId, request);
+        ResponseMessage responseMessage = reservationService.getReservation(reservationId);
         return responseMessage;
     }
 
