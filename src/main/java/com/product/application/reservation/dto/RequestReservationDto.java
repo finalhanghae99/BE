@@ -13,13 +13,12 @@ public class RequestReservationDto {
     private String campingName;
     private String content;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
     private boolean tradeState = true;
     private Long price;
-
-
-
 
 }

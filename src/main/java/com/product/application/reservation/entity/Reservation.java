@@ -21,6 +21,10 @@ public class Reservation {
     @Column(nullable = false)
     private String content;
 
+    @Column
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
+
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
@@ -46,6 +50,7 @@ public class Reservation {
 
     public Reservation(RequestReservationDto requestReservationDto, Users users, Camping camping) {
         this.content = requestReservationDto.getContent();
+        this.date = requestReservationDto.getDate();
         this.startDate = requestReservationDto.getStartDate();
         this.endDate = requestReservationDto.getEndDate();
         this.price = requestReservationDto.getPrice();
