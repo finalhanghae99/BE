@@ -10,6 +10,7 @@ import com.product.application.user.jwt.JwtUtil;
 import com.product.application.user.mapper.UserMapper;
 import com.product.application.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +30,13 @@ public class UserService {
     public void signup(RequestSignupDto requestSignupDto) {
         Users users =userMapper.toUser(requestSignupDto);
 
-        Optional<Users> check = userRepository.findByUseremail(users.getUseremail());
-        if(check.isPresent()) {
+        Optional<Users> checkuseremail = userRepository.findByUseremail(users.getUseremail());
+        if(checkuseremail.isPresent()) {
             throw new CustomException(DUPLICATE_USEREMAIL);
+        }
+        Optional<Users> checkusernickname = userRepository.findByNickname(users.getNickname());
+        if(checkusernickname.isPresent()){
+            throw new CustomException(DUPLICATE_NICKNAME);
         }
         userRepository.save(users);
 

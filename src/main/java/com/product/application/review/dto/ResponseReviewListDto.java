@@ -20,5 +20,4 @@ public class ResponseReviewListDto {
     private Long likeCount;
     private Boolean likeState;
     private String profileImageUrl;
-
 }

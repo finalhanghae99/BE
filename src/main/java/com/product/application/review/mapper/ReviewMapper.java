@@ -47,6 +47,7 @@ public class ReviewMapper {
     public ResponseReviewOneDto toResponseReviewOne(Review review, Long usersId, List<String> imgList) {
         ReviewLike reviewLike = review.getReviewLikeList().stream().filter(Like -> Like.getUserId().equals(usersId)).findFirst().orElse(null);  //userId뿐만 아니라 review아이디도 같아야 한다
         Boolean likestate = reviewLike == null ? false : reviewLike.getLikeState();
+        Boolean owncheck = review.getUsers().getId().equals(usersId) == true ? true : false;
         return ResponseReviewOneDto.builder()
                 .reviewId(review.getId())
                 .campingName(review.getCamping().getCampingName())
@@ -61,6 +62,8 @@ public class ReviewMapper {
                 .likeCount(review.getLikeCount())
                 .likeState(likestate)
                 .reviewUrlList(imgList)       //리뷰 URL 리스트에 있는 값들을 다 가져와야 한다.
+                .ownerCheck(owncheck)
+                .profileImageUrl(review.getUsers().getProfileImageUrl())
                 .build();
     }
 
@@ -74,6 +77,7 @@ public class ReviewMapper {
                 .score4(review.getScore4())
                 .score5(review.getScore5())
                 .imageUrl(review.getCamping().getImageUrl())
+                .reviewId(review.getId())
                 .build();
     }
 }
