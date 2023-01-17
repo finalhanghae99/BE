@@ -63,13 +63,16 @@ public class ReviewService {
                         () -> new CustomException(ErrorCode.USER_NOT_FOUND)
                 );
             }
-        Camping camping = campingRepository.findById(campingId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-        if (reviewUrl == null || reviewUrl.isEmpty()) { //.isEmpty()도 되는지 확인해보기
-            throw new CustomException(ErrorCode.WRONG_INPUT_IMAGE);
-        }
+            Camping camping = campingRepository.findById(campingId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+            if (reviewUrl == null || reviewUrl.isEmpty()) { //.isEmpty()도 되는지 확인해보기
+                throw new CustomException(ErrorCode.WRONG_INPUT_IMAGE);
+            }
 
             Review review = reviewMapper.requestReviewWriteDtoToEntity(users, camping, requestReviewWriteDto);
             reviewRepository.save(review);
+            camping.updateReviewCount(true);
+            //리뷰 카운트 증가해줘야됨.
+
 
             List<String> imgList = new ArrayList<>();
             for (String imgUrl : reviewUrl) {
@@ -215,6 +218,7 @@ public class ReviewService {
                 throw new CustomException(ErrorCode.TOKEN_ERROR);
             }
             Review reviewFromReviewId = reviewRepository.findById(reviewId).orElseThrow(()->new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+            Camping camping = reviewFromReviewId.getCamping();
             String useremailFromReview = reviewFromReviewId.getUsers().getUseremail();
             String useremailFromToken = claims.getSubject();
             if(!useremailFromReview.equals(useremailFromToken)){
@@ -232,6 +236,7 @@ public class ReviewService {
                 System.out.println("img.getImgUrl() = " + result);
             }
             reviewRepository.delete(reviewFromReviewId);
+            camping.updateReviewCount(false);
             return new ResponseMessage("Success",200, null);
         } else { // 토큰이 존재하지 않으면 에러 발생
             throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);

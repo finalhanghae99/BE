@@ -29,6 +29,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.product.application.common.exception.ErrorCode.TOKEN_ERROR;
+import static com.product.application.common.exception.ErrorCode.USER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class CampingService {
@@ -42,6 +45,29 @@ public class CampingService {
 
     @Transactional
     public ResponseMessage searchAllCampingInfo(String campingname, String address1, String address2, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+        Long usersId;
+
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new CustomException(TOKEN_ERROR);
+            }
+
+            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
+                    () -> new CustomException(USER_NOT_FOUND)
+            );
+            usersId = users.getId();
+
+        } else {
+            usersId = 0L;
+            //throw new CustomException(TOKEN_ERROR);
+        }
+
         List<Camping> campingList;
         List<Camping> returnCampingList = new ArrayList<>();
         // # 검색기능 구현
@@ -108,10 +134,32 @@ public class CampingService {
                 }
             }
         }
-        // 2.추출된 List<Camping> returnCampingList에서 값을 추출해서 List<ResponseOneCampingInfo>만들기
+        // 2.추출된 List<Camping> returnCampingList에서 값을 추출해서 List<ResponseOneCampingInfo>만들기 -------- 수정 중
         List<ResponseOneCampingInfo> responseOneCampingInfoList = new ArrayList<>();
         for(Camping camping : returnCampingList){
-            ResponseOneCampingInfo responseOneCampingInfo = campingMapper.entityToResponseOneCampingInfo(camping);
+            String campingEnv = camping.getCampingEnv();
+            String[] campingEnvArr = campingEnv.split(",");
+            List<String> campingEnvList = Stream.of(campingEnvArr).collect(Collectors.toList());
+            if(campingEnvList.size()==1 && campingEnvList.get(0).equals("")) campingEnvList.remove(0);
+
+            String campingType = camping.getCampingType();
+            String[] campingTypeArr = campingType.split(",");
+            List<String> campingTypeList = Stream.of(campingTypeArr).collect(Collectors.toList());
+            if(campingTypeList.size() == 1 && campingTypeList.get(0).equals("")) campingTypeList.remove(0);
+
+
+            String campingFac = camping.getCampingFac();
+            String[] campingFacArr = campingFac.split(",");
+            List<String> campingFacList = Stream.of(campingFacArr).collect(Collectors.toList());
+            if(campingFacList.size() == 1 && campingFacList.get(0).equals("")) campingFacList.remove(0);
+
+
+            String campingSurroundFac = camping.getCampingSurroundFac();
+            String[] campingSurroundFacArr = campingSurroundFac.split(",");
+            List<String> campingSurroundFacList = Stream.of(campingSurroundFacArr).collect(Collectors.toList());
+            if(campingSurroundFacList.size() == 1 && campingSurroundFacList.get(0).equals("")) campingSurroundFacList.remove(0);
+
+            ResponseOneCampingInfo responseOneCampingInfo = campingMapper.entityToResponseOneCampingInfo(camping, campingEnvList, campingTypeList, campingFacList, campingSurroundFacList, usersId);
             responseOneCampingInfoList.add(responseOneCampingInfo);
         }
         return new ResponseMessage("Success", 200, responseOneCampingInfoList);
@@ -129,7 +177,30 @@ public class CampingService {
     }
 
     @Transactional
-    public ResponseMessage viewDetailCampingInfo(Long campingId) {
+    public ResponseMessage viewDetailCampingInfo(Long campingId, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+        Long usersId;
+
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new CustomException(TOKEN_ERROR);
+            }
+
+            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
+                    () -> new CustomException(USER_NOT_FOUND)
+            );
+            usersId = users.getId();
+
+        } else {
+            usersId = 0L;
+            //throw new CustomException(TOKEN_ERROR);
+        }
+
         // 1. 캠핑아이디로 캠핑장 정보를 불러와서 Dto를 만들고 여기에 추가하기
         Camping camping = campingRepository.findById(campingId).orElseThrow(()-> new CustomException(ErrorCode.CAMPING_NOT_FOUND));
 
@@ -173,6 +244,11 @@ public class CampingService {
             reviewDtoList.add(reviewDto);
         }
         responseDto.updateReviewDtoList(reviewDtoList);
+
+        CampingLike campingLike = camping.getCampingLikeList().stream().filter(Like -> Like.getUsersId().equals(usersId)).findFirst().orElse(null);
+        Boolean likestate = campingLike == null ? false : campingLike.getCampingLikeState();
+        responseDto.updatecampingLikeState(likestate);
+
         return new ResponseMessage("Success",200,responseDto);
     }
 

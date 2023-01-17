@@ -24,6 +24,7 @@ public class ResponseFindDetailCampingInfoDto {
     private String mapX;
     private String mapY;
     private List<ResponseDetailCampingInfoReviewDto> reviewList;
+    private Boolean campingLikeState = false;
 
     public ResponseFindDetailCampingInfoDto(Camping camping, List<String> campingEnvList, List<String> campingTypeList, List<String> campingFacList, List<String> campingSurroundFacList){
         this.imageUrl = camping.getImageUrl();
@@ -45,4 +46,7 @@ public class ResponseFindDetailCampingInfoDto {
         this.reviewList = responseDetailCampingInfoReviewDtoList;
     }
 
+    public void updatecampingLikeState(Boolean likestate) {
+        this.campingLikeState = likestate;
+    }
 }

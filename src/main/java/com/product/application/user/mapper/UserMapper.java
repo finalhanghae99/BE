@@ -33,7 +33,7 @@ public class UserMapper {
 
     public ResponseUserCampingInfoListDto toResponseUserCampingInfo(Camping camping, List<String> campingEnvList, List<String> campingTypeList, List<String> campingFacList, List<String> campingSurroundFacList, Long usersId) {
         CampingLike campingLike = camping.getCampingLikeList().stream().filter(Like -> Like.getUsersId().equals(usersId)).findFirst().orElse(null);
-        Boolean likeState = campingLike == null ? null : campingLike.getCampingLikeState();
+        Boolean likeState = campingLike == null ? false : campingLike.getCampingLikeState();
         return ResponseUserCampingInfoListDto.builder()
                 .campingId(camping.getId())
                 .imageUrl(camping.getImageUrl())
