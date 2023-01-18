@@ -5,16 +5,26 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
-@NoArgsConstructor
+@Builder
+//@NoArgsConstructor
 public class ResponseOneCampingInfo {
     private Long campingId;
     private String campingName;
     private String address1;
     private String address2;
     private String address3;
+    private String imageUrl;
+    private Long reviewCount;
+    private Boolean campingLikeState;
+    private List<String> campingEnv;
+    private List<String> campingType;
+    private List<String> campingFac;
+    private List<String> campingSurroundFac;
 
-    public ResponseOneCampingInfo(Camping camping){
+    /*public ResponseOneCampingInfo(Camping camping){
         this.campingId = camping.getId();
         this.campingName = camping.getCampingName();
         this.address1 = camping.getAddress1();
@@ -31,6 +41,6 @@ public class ResponseOneCampingInfo {
         this.address1 = address1;
         this.address2 = address2;
         this.address3 = address3;
-    }
+    }*/
 
 }

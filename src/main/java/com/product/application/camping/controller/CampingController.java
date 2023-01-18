@@ -31,8 +31,8 @@ public class CampingController {
     }
     @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping("/{campingId}")
-    public ResponseMessage viewDetailCampingInfo(@PathVariable Long campingId){
-        ResponseMessage responseMessage = campingService.viewDetailCampingInfo(campingId);
+    public ResponseMessage viewDetailCampingInfo(@PathVariable Long campingId, HttpServletRequest request){
+        ResponseMessage responseMessage = campingService.viewDetailCampingInfo(campingId, request);
         return responseMessage;
     }
     @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)

@@ -104,4 +104,12 @@ public class Camping {
             this.campingLikeCount--;
         }
     }
+
+    public void updateReviewCount(boolean state) {
+        if(state) {
+            this.reviewCount++;
+        } else {
+            this.reviewCount--;
+        }
+    }
 }
