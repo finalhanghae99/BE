@@ -14,8 +14,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ResponseSearchDto {
 
-    private String nickname;
-    private String profileImageUrl;
     private Long reservationId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
@@ -28,7 +26,7 @@ public class ResponseSearchDto {
     private boolean tradeState;
     private Long price;
 
-    public ResponseSearchDto(Reservation reservation, Camping camping, Users users){
+    public ResponseSearchDto(Reservation reservation, Camping camping){
         this.reservationId = reservation.getId();
         this.startDate = reservation.getStartDate();
         this.endDate = reservation.getEndDate();
@@ -38,13 +36,11 @@ public class ResponseSearchDto {
         this.address2 =camping.getAddress2();
         this.tradeState = reservation.isTradeState();
         this.price = reservation.getPrice();
-        this.nickname = users.getNickname();
-        this.profileImageUrl = users.getProfileImageUrl();
 
     }
 
     @Builder
-    public ResponseSearchDto(Long reservationId, LocalDate startDate, LocalDate endDate, String imageUrl, String campingName, String address1, String address2, boolean tradeState, Long price, String nickname, String profileImageUrl){
+    public ResponseSearchDto(Long reservationId, LocalDate startDate, LocalDate endDate, String imageUrl, String campingName, String address1, String address2, boolean tradeState, Long price){
         this.reservationId = reservationId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -54,8 +50,7 @@ public class ResponseSearchDto {
         this.address2 = address2;
         this.tradeState = tradeState;
         this.price = price;
-        this.nickname = nickname;
-        this.profileImageUrl = profileImageUrl;
+
 
     }
 }

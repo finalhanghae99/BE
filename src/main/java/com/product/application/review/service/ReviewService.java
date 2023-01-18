@@ -14,9 +14,9 @@ import com.product.application.review.entity.ReviewLike;
 import com.product.application.review.mapper.ReviewMapper;
 import com.product.application.review.repository.ReviewLikeRepository;
 import com.product.application.review.repository.ReviewRepository;
-import com.product.application.s3.Img;
-import com.product.application.s3.ImgRepository;
-import com.product.application.s3.S3Config;
+import com.product.application.s3.entity.Img;
+import com.product.application.s3.repository.ImgRepository;
+import com.product.application.s3.service.S3UploadService;
 import com.product.application.user.entity.Users;
 import com.product.application.user.jwt.JwtUtil;
 import com.product.application.user.repository.UserRepository;
@@ -42,7 +42,7 @@ public class ReviewService {
     private final CampingLikeRepository campingLikeRepository;
     private final ReviewMapper reviewMapper;
     private final JwtUtil jwtUtil;
-    private final S3Config s3Config;
+    private final S3UploadService s3UploadService;
     private  final ImgRepository imgRepository;
 
     @Transactional
@@ -119,8 +119,7 @@ public class ReviewService {
             for(Img img : imgList){
                 imgRepository.delete(img);
                 String result = img.getImgUrl().substring(img.getImgUrl().lastIndexOf("/image")+1);
-                s3Config.deleteImg(result);
-                System.out.println("img.getImgUrl() = " + result);
+                s3UploadService.deleteImg(result);
             }
 
             List<String> newImgList = new ArrayList<>();
@@ -228,7 +227,7 @@ public class ReviewService {
             for(Img img : imgList){
                 imgRepository.delete(img);
                 String result = img.getImgUrl().substring(img.getImgUrl().lastIndexOf("/image")+1);
-                s3Config.deleteImg(result);
+                s3UploadService.deleteImg(result);
                 System.out.println("img.getImgUrl() = " + result);
             }
             reviewRepository.delete(reviewFromReviewId);

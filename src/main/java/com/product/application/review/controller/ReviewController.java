@@ -4,7 +4,7 @@ import com.product.application.common.ResponseMessage;
 import com.product.application.review.dto.RequestFindListTenDto;
 import com.product.application.review.dto.RequestReviewWriteDto;
 import com.product.application.review.service.ReviewService;
-import com.product.application.s3.S3Config;
+import com.product.application.s3.service.S3UploadService;
 import com.product.application.user.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,14 +22,14 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    private final S3Config s3Config;
+    private final S3UploadService s3UploadService;
     @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PostMapping("/{campingId}")
     public ResponseEntity writeReview(@PathVariable Long campingId,
                                       @RequestPart(value = "requestReviewWriteDto") RequestReviewWriteDto requestReviewWriteDto,
                                       @RequestPart List<MultipartFile> multipartFile,
                                       HttpServletRequest httpServletRequest){
-        List<String> reviewUrl = s3Config.upload(multipartFile);
+        List<String> reviewUrl = s3UploadService.upload(multipartFile);
         ResponseMessage responseMessage = reviewService.writeReview(campingId, requestReviewWriteDto, httpServletRequest, reviewUrl);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
@@ -39,7 +39,7 @@ public class ReviewController {
                                        @RequestPart(value = "requestReviewWriteDto") RequestReviewWriteDto requestReviewWriteDto,
                                        @RequestPart List<MultipartFile> multipartFile,
                                        HttpServletRequest httpServletRequest){
-        List<String> reviewUrl = s3Config.upload(multipartFile);
+        List<String> reviewUrl = s3UploadService.upload(multipartFile);
         ResponseMessage responseMessage = reviewService.updateReview(reviewId, requestReviewWriteDto, httpServletRequest, reviewUrl);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }

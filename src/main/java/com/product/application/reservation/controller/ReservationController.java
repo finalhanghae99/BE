@@ -16,7 +16,8 @@ import java.time.LocalDate;
 @RequestMapping("/reservation")
 public class ReservationController {
     private final ReservationService reservationService;
-    @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+
+    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PostMapping("/{campingId}")
     public ResponseMessage<?> create(@RequestBody RequestReservationDto requestReservationDto
             , HttpServletRequest request
@@ -24,31 +25,33 @@ public class ReservationController {
         reservationService.create(requestReservationDto, request, campingId);
         return new ResponseMessage<>("Success", 200, null);
     }
-    @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+
+    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @DeleteMapping("/{reservationId}")
     public ResponseMessage<?> delete(@PathVariable Long reservationId
             , HttpServletRequest request) {
         reservationService.delete(reservationId, request);
         return new ResponseMessage<>("Success", 200, null);
     }
-    @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+
+    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping()
     public ResponseMessage getReservationList(@RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                               @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                               @RequestParam(value = "address1", required = false) String address1,
-                                              @RequestParam(value = "address2", required = false) String address2,
-                                              HttpServletRequest request) {
+                                              @RequestParam(value = "address2", required = false) String address2) {
         ResponseMessage responseMessage = reservationService.getReservationList(startDate, endDate, address1, address2);
         return responseMessage;
     }
-    @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+
+    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping("/{reservationId}")
-    public ResponseMessage getReservation(@PathVariable Long reservationId, HttpServletRequest request) {
+    public ResponseMessage getReservation(@PathVariable Long reservationId) {
         ResponseMessage responseMessage = reservationService.getReservation(reservationId);
         return responseMessage;
     }
 
-    @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping("/listsix")
     public ResponseMessage viewListSix() {
         ResponseMessage responseMessage = reservationService.viewListSix();

@@ -3,6 +3,7 @@ package com.product.application.reservation.entity;
 import com.product.application.camping.entity.Camping;
 import com.product.application.reservation.dto.RequestReservationDto;
 import com.product.application.user.entity.Users;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -44,12 +45,13 @@ public class Reservation {
     @JoinColumn(name="campingId")
     private Camping camping;
 
-    public Reservation(RequestReservationDto requestReservationDto, Users users, Camping camping) {
-        this.content = requestReservationDto.getContent();
-        this.startDate = requestReservationDto.getStartDate();
-        this.endDate = requestReservationDto.getEndDate();
-        this.price = requestReservationDto.getPrice();
-        this.tradeState = requestReservationDto.isTradeState();
+    @Builder
+    public Reservation(String content, LocalDate startDate, LocalDate endDate, Long price, Boolean tradeState, Users users, Camping camping) {
+        this.content = content;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.price = price;
+        this.tradeState = tradeState;
         this.users = users;
         this.camping = camping;
     }

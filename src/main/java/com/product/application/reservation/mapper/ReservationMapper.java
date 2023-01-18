@@ -1,6 +1,7 @@
 package com.product.application.reservation.mapper;
 
 import com.product.application.camping.entity.Camping;
+import com.product.application.reservation.dto.RequestReservationDto;
 import com.product.application.reservation.dto.ResponseReservationDto;
 import com.product.application.reservation.dto.ResponseSearchDto;
 import com.product.application.reservation.entity.Reservation;
@@ -11,7 +12,20 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ReservationMapper {
-    public ResponseSearchDto entityTo(Reservation reservation, Camping camping, Users users){
+
+    public Reservation toRequestReservationDto(Users users, Camping camping, RequestReservationDto requestReservationDto){
+        return Reservation.builder()
+                .users(users)
+                .camping(camping)
+                .content(requestReservationDto.getContent())
+                .tradeState(requestReservationDto.isTradeState())
+                .startDate(requestReservationDto.getStartDate())
+                .endDate(requestReservationDto.getEndDate())
+                .price(requestReservationDto.getPrice())
+                .build();
+    }
+
+    public ResponseSearchDto toResponseSearchDto(Reservation reservation, Camping camping){
         return ResponseSearchDto.builder()
                 .reservationId(reservation.getId())
                 .startDate(reservation.getStartDate())
@@ -22,22 +36,22 @@ public class ReservationMapper {
                 .address2(camping.getAddress2())
                 .tradeState(reservation.isTradeState())
                 .price(reservation.getPrice())
-                .nickname(users.getNickname())
-                .profileImageUrl(users.getProfileImageUrl())
                 .build();
     }
 
-    public ResponseReservationDto entityToTop6(Reservation reservation, Camping camping) {
+    public ResponseReservationDto toresponseReservationDto(Reservation reservation, Camping camping, Users users) {
         return ResponseReservationDto.builder()
                 .reservationId(reservation.getId())
                 .startDate(reservation.getStartDate())
                 .endDate(reservation.getEndDate())
                 .imageUrl(camping.getImageUrl())
                 .campingName(camping.getCampingName())
-                .address1(camping.getAddress1())
-                .address2(camping.getAddress2())
+                .address3(camping.getAddress3())
                 .tradeState(reservation.isTradeState())
                 .price(reservation.getPrice())
+                .content(reservation.getContent())
+                .nickname(users.getNickname())
+                .profileImageUrl(users.getProfileImageUrl())
                 .build();
     }
 }
