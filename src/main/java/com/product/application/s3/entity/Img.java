@@ -1,4 +1,4 @@
-package com.product.application.s3;
+package com.product.application.s3.entity;
 
 import com.product.application.review.entity.Review;
 import lombok.Getter;

@@ -52,7 +52,9 @@ public class ReservationService {
             );
 
             Camping camping = campingRepository.findById(campingId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-            reservationRepository.save(new Reservation(requestReservationDto, users, camping));
+           Reservation reservation = reservationMapper.toRequestReservationDto(users, camping, requestReservationDto);
+
+            reservationRepository.save(reservation);
 
         } else {
             throw new CustomException(ErrorCode.TOKEN_ERROR);
@@ -90,44 +92,51 @@ public class ReservationService {
     @Transactional
     public ResponseMessage getReservationList(LocalDate startDate, LocalDate endDate, String address1, String address2) {
 
-            List<Reservation> reservationList;
-            List<Reservation> returnReservationList = new ArrayList<>();
+        List<Reservation> reservationList;
+        List<Reservation> returnReservationList = new ArrayList<>();
 
-            if (startDate != null && endDate != null) {
-                reservationList = reservationRepository.findAllByStartDateBetween(startDate, endDate);
-                if (address1 != null) {
-                    if (address2 != null) {
-                        for (Reservation reservation : reservationList) {
-                            if (reservation.getCamping().getAddress1().equals(address1) && reservation.getCamping().getAddress2().equals(address2)) {
-                                returnReservationList.add(reservation);
-                            }
-                        }
-                    } else {
-                        for (Reservation reservation : reservationList) {
-                            if (reservation.getCamping().getAddress1().equals(address1)) {
-                                returnReservationList.add(reservation);
-                            }
+        if (startDate != null && endDate != null) {
+            reservationList = reservationRepository.findAllByStartDateBetween(startDate, endDate);
+            if (address1 != null) {
+                if (address2 != null) {
+                    for (Reservation reservation : reservationList) {
+                        if (reservation.getCamping().getAddress1().equals(address1) && reservation.getCamping().getAddress2().equals(address2)) {
+                            returnReservationList.add(reservation);
                         }
                     }
                 } else {
                     for (Reservation reservation : reservationList) {
-                        returnReservationList.add(reservation);
-                    }
-                }
-            } else if (address1 != null) {
-                reservationList = reservationRepository.findAllByCampingAddress1(address1);
-                for (Reservation reservation : reservationList) {
-                    if (reservation.getCamping().getAddress1().equals(address1)) {
-                        returnReservationList.add(reservation);
+                        if (reservation.getCamping().getAddress1().equals(address1)) {
+                            returnReservationList.add(reservation);
+                        }
                     }
                 }
             } else {
-                throw new CustomException(ErrorCode.REQUIRED_AT_LEAST_ONE);
+                for (Reservation reservation : reservationList) {
+                    returnReservationList.add(reservation);
+                }
             }
+        } else if (address1 != null && address2 != null) {
+            reservationList = reservationRepository.findAllByCampingAddress1(address1);
+            for (Reservation reservation : reservationList) {
+                if (reservation.getCamping().getAddress1().equals(address1) && reservation.getCamping().getAddress2().equals(address2)) {
+                    returnReservationList.add(reservation);
+                }
+            }
+        } else if (address1 != null) {
+            reservationList = reservationRepository.findAllByCampingAddress1(address1);
+            for (Reservation reservation : reservationList) {
+                if (reservation.getCamping().getAddress1().equals(address1)) {
+                    returnReservationList.add(reservation);
+                }
+            }
+        } else {
+            throw new CustomException(ErrorCode.SEARCH_REQUIREMENT_ERROR);
+        }
 
             List<ResponseSearchDto> responseSearchDtoList = new ArrayList<>();
             for (Reservation reservation : returnReservationList) {
-                ResponseSearchDto responseSearchDto = reservationMapper.entityTo(reservation, reservation.getCamping(), reservation.getUsers());
+                ResponseSearchDto responseSearchDto = reservationMapper.toResponseSearchDto(reservation, reservation.getCamping());
                 responseSearchDtoList.add(responseSearchDto);
             }
             return new ResponseMessage("Success", 200, new SearchDtoList(responseSearchDtoList));
@@ -138,7 +147,7 @@ public class ReservationService {
 
 
             Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-            ResponseReservationDto responseReservationDto = new ResponseReservationDto(reservation, reservation.getCamping());
+            ResponseReservationDto responseReservationDto = reservationMapper.toresponseReservationDto(reservation, reservation.getCamping(), reservation.getUsers());
 
             return new ResponseMessage("Success", 200, responseReservationDto);
         }
@@ -154,14 +163,15 @@ public class ReservationService {
                 responseFindListSix.add(reservation);
             }
 
-        List<ResponseReservationDto> responseFindListSixDtoList = new ArrayList<>();
+        List<ResponseSearchDto> responseFindListSixDtoList = new ArrayList<>();
             for(Reservation reservation : responseFindListSix){
-                ResponseReservationDto responseReservationDto = reservationMapper.entityToTop6(reservation, reservation.getCamping());
-                responseFindListSixDtoList.add(responseReservationDto);
+                ResponseSearchDto responseSearchDto = reservationMapper.toResponseSearchDto(reservation, reservation.getCamping());
+                responseFindListSixDtoList.add(responseSearchDto);
             }
 
         return new ResponseMessage<>("Success", 200, responseFindListSixDtoList);
     }
+
 
 
 }

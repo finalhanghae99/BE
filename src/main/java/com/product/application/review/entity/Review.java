@@ -3,7 +3,7 @@ package com.product.application.review.entity;
 import com.product.application.camping.entity.Camping;
 import com.product.application.common.TimeStamped;
 import com.product.application.review.dto.RequestReviewWriteDto;
-import com.product.application.s3.Img;
+import com.product.application.s3.entity.Img;
 import com.product.application.user.entity.Users;
 import lombok.Builder;
 import lombok.Getter;
