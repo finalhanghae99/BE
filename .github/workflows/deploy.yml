@@ -56,6 +56,7 @@ jobs:
           OCCUPY_SECRET_DIR_FILE_NAME: application-rds.properties
         run: echo $OCCUPY_SECRET | base64 --decode > $OCCUPY_SECRET_DIR/$OCCUPY_SECRET_DIR_FILE_NAME
 
+
       # 디렉토리 생성
       - name: Make Directory
         run: mkdir -p deploy
