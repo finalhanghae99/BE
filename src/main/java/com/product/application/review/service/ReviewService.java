@@ -32,6 +32,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.product.application.common.exception.ErrorCode.TOKEN_ERROR;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
@@ -50,37 +52,39 @@ public class ReviewService {
             // Request에서 Token 가져오기
             String token = jwtUtil.resolveToken(request);
             Claims claims;
-            Users users = null;
+            //Users users = null;
             if (token != null) {
                 if (jwtUtil.validateToken(token)) {
                     // 토큰에서 사용자 정보 가져오기
                     claims = jwtUtil.getUserInfoFromToken(token);
                 } else {
-                    throw new CustomException(ErrorCode.TOKEN_ERROR);
+                    throw new CustomException(TOKEN_ERROR);
                 }
                 // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
-                users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
+                Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
                         () -> new CustomException(ErrorCode.USER_NOT_FOUND)
                 );
-            }
-            Camping camping = campingRepository.findById(campingId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-            if (reviewUrl == null || reviewUrl.isEmpty()) { //.isEmpty()도 되는지 확인해보기
-                throw new CustomException(ErrorCode.WRONG_INPUT_IMAGE);
+                Camping camping = campingRepository.findById(campingId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+                if (reviewUrl == null || reviewUrl.isEmpty()) { //.isEmpty()도 되는지 확인해보기
+                    throw new CustomException(ErrorCode.WRONG_INPUT_IMAGE);
+                }
+
+                Review review = reviewMapper.requestReviewWriteDtoToEntity(users, camping, requestReviewWriteDto);
+                reviewRepository.save(review);
+                //리뷰 카운트 증가해줘야됨.
+                camping.updateReviewCount(true);
+
+                List<String> imgList = new ArrayList<>();
+                for (String imgUrl : reviewUrl) {
+                    Img img = new Img(imgUrl, review);
+                    imgRepository.save(img);
+                    imgList.add(img.getImgUrl());
+                }
+                return new ResponseMessage<>("Success", 200, null);
+            }else {
+                throw new CustomException(TOKEN_ERROR);
             }
 
-            Review review = reviewMapper.requestReviewWriteDtoToEntity(users, camping, requestReviewWriteDto);
-            reviewRepository.save(review);
-            camping.updateReviewCount(true);
-            //리뷰 카운트 증가해줘야됨.
-
-
-            List<String> imgList = new ArrayList<>();
-            for (String imgUrl : reviewUrl) {
-                Img img = new Img(imgUrl, review);
-                imgRepository.save(img);
-                imgList.add(img.getImgUrl());
-            }
-            return new ResponseMessage<>("Success", 200, null);
         }
 
     @Transactional
@@ -101,7 +105,7 @@ public class ReviewService {
             if (jwtUtil.validateToken(token)) {
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
-                throw new CustomException(ErrorCode.TOKEN_ERROR);
+                throw new CustomException(TOKEN_ERROR);
             }
             // 토큰에서 가져온 useremail을 사용하여 DB 조회
             usersFromToken = userRepository.findByUseremail(claims.getSubject()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -158,7 +162,7 @@ public class ReviewService {
             if (jwtUtil.validateToken(token)) {
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
-                throw new CustomException(ErrorCode.TOKEN_ERROR);
+                throw new CustomException(TOKEN_ERROR);
             }
             Camping tempCamping;
             Long reviewCount;
@@ -214,7 +218,7 @@ public class ReviewService {
             if (jwtUtil.validateToken(token)) {
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
-                throw new CustomException(ErrorCode.TOKEN_ERROR);
+                throw new CustomException(TOKEN_ERROR);
             }
             Review reviewFromReviewId = reviewRepository.findById(reviewId).orElseThrow(()->new CustomException(ErrorCode.REVIEW_NOT_FOUND));
             Camping camping = reviewFromReviewId.getCamping();
