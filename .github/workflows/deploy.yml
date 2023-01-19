@@ -13,7 +13,8 @@ env:
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: project4-group
 
 jobs:
-  deploy:
+  build:
+
     runs-on: ubuntu-latest
 
     steps:
