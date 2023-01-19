@@ -16,8 +16,8 @@ permissions:
 jobs:
   deploy:
     name: Deploy
-    runs-on: ubuntu-latest
     environment: production
+    runs-on: ubuntu-latest
 
     steps:
     - name: checkout
