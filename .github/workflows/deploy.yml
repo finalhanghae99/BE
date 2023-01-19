@@ -1,4 +1,4 @@
-name: coinTalk chatRoom server CI/CD
+name: Final Project Camping-project CI/CD
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: project1-camping-bucket
-  CODE_DEPLOY_APPLICATION_NAME: camping
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: camping-deploy-group
+  CODE_DEPLOY_APPLICATION_NAME: project1
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: project1-deploy-group
 
 jobs:
   deploy:
