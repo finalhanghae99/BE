@@ -191,4 +191,4 @@ jobs:
           --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }}
           --file-exists-behavior OVERWRITE 
           --s3-location bucket=${{ env.S3_BUCKET_NAME }},bundleType=zip,key=camping.zip
-          --region ${{ AWS_REGION }}
+          --region ${{ env.AWS_REGION }}
