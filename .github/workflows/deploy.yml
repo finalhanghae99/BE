@@ -7,13 +7,20 @@ on:
     branches: [ develop ]
 
 env:
-  S3_BUCKET_NAME: camping-s3-bucket
+  AWS_REGION: ap-northeast-2
+  S3_BUCKET_NAME: project1-camping-bucket
+
+permissions:
+  contents: read
 
 jobs:
-  build:
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
+    - name: checkout
     - uses: actions/checkout@v3
     
     - name: Set up JDK 17
