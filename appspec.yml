@@ -12,7 +12,7 @@ permissions:
     group: ubuntu
 
 hooks:
-  BeforeInstall:
+  BeforeInstall: "BeforeInstallHookFunctionName"
   AfterInstall:
   ApplicationStart:
     - location: deploy.sh
