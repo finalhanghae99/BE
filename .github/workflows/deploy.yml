@@ -86,8 +86,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           aws deploy create-deployment 
-          --application-name ${{ CODE_DEPLOY_APPLICATION_NAME }}
-          --deployment-group-name ${{ CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }}
+          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }}
+          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }}
           --file-exists-behavior OVERWRITE 
-          --s3-location bucket=${{ S3_BUCKET_NAME }},bundleType=zip,key=camping.zip 
-          --region ${{ AWS_REGION }}
+          --s3-location bucket=${{ env.S3_BUCKET_NAME }},bundleType=zip,key=camping.zip 
+          --region ${{ env.AWS_REGION }}
