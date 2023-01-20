@@ -104,8 +104,8 @@ on:
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: project1-camping-bucket
-  CODE_DEPLOY_APPLICATION_NAME: project4
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: project4-group
+  CODE_DEPLOY_APPLICATION_NAME: project5
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: project5-group
 
 jobs:
   build:
