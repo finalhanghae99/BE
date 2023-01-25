@@ -1,6 +1,7 @@
 package com.product.application.user.controller;
 
 import com.product.application.review.dto.ResponseReviewAllDto;
+import com.product.application.review.dto.ResponseReviewOneListDto;
 import com.product.application.user.dto.RequestUserInfoDto;
 import com.product.application.user.dto.ResponseUserCampingInfoDto;
 import com.product.application.common.ResponseMessage;
@@ -20,31 +21,31 @@ import javax.servlet.http.HttpServletRequest;
 public class UserInformationController {
     private final UserInformationService userInformationService;
 
-    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping("/mypage")
     public ResponseMessage<?> userInfo(HttpServletRequest request) {
         ResponseUserInfoDto responseUserInfoDto = userInformationService.userInfo(request);
         return new ResponseMessage<>("Success", 200, responseUserInfoDto);
     }
 
-    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping("/mypage/camping")
     public ResponseMessage<?> userCampingInfo(HttpServletRequest request){
         ResponseUserCampingInfoDto responseUserCampingInfo = userInformationService.userCampingInfo(request);
         return new ResponseMessage<>("Success", 200, responseUserCampingInfo);
     }
 
-    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping("/mypage/update")
     public ResponseMessage<?> userInfoChange(@RequestBody RequestUserInfoDto requestUserInfoDto, HttpServletRequest request){
         ResponseUserInfoDto responseUserInfoDto = userInformationService.userInfoChange(requestUserInfoDto, request);
         return new ResponseMessage<>("Success", 200, responseUserInfoDto);
     }
 
-    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping("/mypage/review")
     public ResponseMessage<?> userReviewInfo(HttpServletRequest request){
-        ResponseReviewAllDto responseReviewAllDto = userInformationService.userReviewInfo(request);
-        return new ResponseMessage<>("Success", 200, responseReviewAllDto);
+        ResponseReviewOneListDto responseReviewOneListDto = userInformationService.userReviewInfo(request);
+        return new ResponseMessage<>("Success", 200, responseReviewOneListDto);
     }
 }

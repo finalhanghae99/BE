@@ -6,6 +6,8 @@ import com.product.application.camping.repository.CampingLikeRepository;
 import com.product.application.common.exception.CustomException;
 import com.product.application.review.dto.ResponseReviewAllDto;
 import com.product.application.review.dto.ResponseReviewListDto;
+import com.product.application.review.dto.ResponseReviewOneDto;
+import com.product.application.review.dto.ResponseReviewOneListDto;
 import com.product.application.review.entity.Review;
 import com.product.application.review.mapper.ReviewMapper;
 import com.product.application.review.repository.ReviewRepository;
@@ -83,9 +85,12 @@ public class UserInformationService {
             Long usersId = users.getId();
 
             List<CampingLike> campingLikeList = campingLikeRepository.findAllByusersId(usersId);
+
             List<Camping> CampingList = new ArrayList<>();
             for(CampingLike campingLike : campingLikeList ){
-                CampingList.add(campingLike.getCamping());
+                if(campingLike.getCampingLikeState()==true){
+                    CampingList.add(campingLike.getCamping());
+                }
             }
 
             List<ResponseUserCampingInfoListDto> responseUserCampingInfoListDto = new ArrayList<>();
@@ -144,7 +149,7 @@ public class UserInformationService {
         }
     }
 
-    public ResponseReviewAllDto userReviewInfo(HttpServletRequest request) {
+    public ResponseReviewOneListDto userReviewInfo(HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
 
@@ -162,7 +167,7 @@ public class UserInformationService {
             Long usersId = users.getId();
 
             List<Review> reviewList = reviewRepository.findAllByusersId(usersId);
-            List<ResponseReviewListDto> responseReviewListDtos = new ArrayList<>();
+            List<ResponseReviewOneDto> responseReviewOneDtoList = new ArrayList<>();
             for(Review review : reviewList){
                 List<Img> urlList = imgRepository.findByReviewId(review.getId());
                 List<String> imgList = new ArrayList<>();
@@ -170,10 +175,10 @@ public class UserInformationService {
                     Img img = new Img(imgUrl);
                     imgList.add(img.getImgUrl());
                 }
-                responseReviewListDtos.add(reviewMapper.toResponseReviewListDto(review, usersId, imgList));
+                responseReviewOneDtoList.add(reviewMapper.toResponseReviewOne(review, usersId, imgList));
             }
-            ResponseReviewAllDto responseReviewAllDto = new ResponseReviewAllDto(responseReviewListDtos);
-            return responseReviewAllDto;
+            ResponseReviewOneListDto responseReviewOneListDto = new ResponseReviewOneListDto(responseReviewOneDtoList);
+            return responseReviewOneListDto;
 
         } else {
             throw new CustomException(TOKEN_ERROR);

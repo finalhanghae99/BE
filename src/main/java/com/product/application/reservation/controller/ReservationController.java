@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class ReservationController {
     private final ReservationService reservationService;
 
-    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PostMapping("/{campingId}")
     public ResponseMessage<?> create(@RequestBody RequestReservationDto requestReservationDto
             , HttpServletRequest request
@@ -26,7 +26,7 @@ public class ReservationController {
         return new ResponseMessage<>("Success", 200, null);
     }
 
-    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @DeleteMapping("/{reservationId}")
     public ResponseMessage<?> delete(@PathVariable Long reservationId
             , HttpServletRequest request) {
@@ -34,7 +34,7 @@ public class ReservationController {
         return new ResponseMessage<>("Success", 200, null);
     }
 
-    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping()
     public ResponseMessage getReservationList(@RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                               @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
@@ -44,14 +44,14 @@ public class ReservationController {
         return responseMessage;
     }
 
-    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping("/{reservationId}")
     public ResponseMessage getReservation(@PathVariable Long reservationId) {
         ResponseMessage responseMessage = reservationService.getReservation(reservationId);
         return responseMessage;
     }
 
-    @CrossOrigin(originPatterns = "http://localhost:3000", exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping("/listsix")
     public ResponseMessage viewListSix() {
         ResponseMessage responseMessage = reservationService.viewListSix();
