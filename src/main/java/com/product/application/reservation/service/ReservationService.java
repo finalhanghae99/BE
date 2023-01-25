@@ -134,23 +134,22 @@ public class ReservationService {
             throw new CustomException(ErrorCode.SEARCH_REQUIREMENT_ERROR);
         }
 
-            List<ResponseSearchDto> responseSearchDtoList = new ArrayList<>();
-            for (Reservation reservation : returnReservationList) {
-                ResponseSearchDto responseSearchDto = reservationMapper.toResponseSearchDto(reservation, reservation.getCamping());
-                responseSearchDtoList.add(responseSearchDto);
-            }
-            return new ResponseMessage("Success", 200, new SearchDtoList(responseSearchDtoList));
+        List<ResponseSearchDto> responseSearchDtoList = new ArrayList<>();
+        for (Reservation reservation : returnReservationList) {
+            ResponseSearchDto responseSearchDto = reservationMapper.toResponseSearchDto(reservation, reservation.getCamping());
+            responseSearchDtoList.add(responseSearchDto);
         }
-
+        return new ResponseMessage("Success", 200, new SearchDtoList(responseSearchDtoList));
+    }
 
     public ResponseMessage getReservation(Long reservationId) {
 
 
-            Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-            ResponseReservationDto responseReservationDto = reservationMapper.toresponseReservationDto(reservation, reservation.getCamping(), reservation.getUsers());
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+        ResponseReservationDto responseReservationDto = reservationMapper.toresponseReservationDto(reservation, reservation.getCamping(), reservation.getUsers());
 
-            return new ResponseMessage("Success", 200, responseReservationDto);
-        }
+        return new ResponseMessage("Success", 200, responseReservationDto);
+    }
 
     @Transactional
     public ResponseMessage viewListSix() {
@@ -159,20 +158,18 @@ public class ReservationService {
 
         reservationList = reservationRepository.findTop6ByOrderByIdDesc();
 
-            for(Reservation reservation : reservationList){
-                responseFindListSix.add(reservation);
-            }
+        for (Reservation reservation : reservationList) {
+            responseFindListSix.add(reservation);
+        }
 
         List<ResponseSearchDto> responseFindListSixDtoList = new ArrayList<>();
-            for(Reservation reservation : responseFindListSix){
-                ResponseSearchDto responseSearchDto = reservationMapper.toResponseSearchDto(reservation, reservation.getCamping());
-                responseFindListSixDtoList.add(responseSearchDto);
-            }
+        for (Reservation reservation : responseFindListSix) {
+            ResponseSearchDto responseSearchDto = reservationMapper.toResponseSearchDto(reservation, reservation.getCamping());
+            responseFindListSixDtoList.add(responseSearchDto);
+        }
 
         return new ResponseMessage<>("Success", 200, responseFindListSixDtoList);
     }
-
-
 
 }
 

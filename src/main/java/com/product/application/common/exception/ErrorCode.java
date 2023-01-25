@@ -29,6 +29,8 @@ public enum ErrorCode {
     USERNAME_NOT_FOUND("존재하지 않는 아이디 입니다.",404),
     USEREMAIL_NOT_FOUND("존재하지 않은 이메일 입니다.", 404),
     INCORRECT_PASSWORD("잘못된 비밀번호입니다.",404),
+    CANNOT_FOUND_CHATROOM("채팅방을 찾지 못했습니다.", 404),
+    CANNOT_MAKE_ROOM_ALONE("내 양도글에서는 채팅방 생성이 불가능합니다.", 404),
     AUTHORIZATION_DELETE_FAIL("삭제 권한이 없습니다.", 401),
     AUTHORIZATION_UPDATE_FAIL("수정 권한이 없습니다.", 401),
     AUTHORIZATION_CREATE_FAIL("생성 권한이 없습니다.", 401),
