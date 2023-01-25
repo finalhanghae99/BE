@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ReviewLikeController {
     private final ReviewLikeService reviewLikeService;
 
-    @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PostMapping("/review/{reviewId}/like")
     public ResponseMessage<?> updateLike(@PathVariable Long reviewId, HttpServletRequest request){
         ReviewLikeResponseDto likeResponseDto = reviewLikeService.updateLike(reviewId, request);

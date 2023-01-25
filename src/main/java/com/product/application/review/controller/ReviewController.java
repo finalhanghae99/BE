@@ -23,7 +23,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     private final S3UploadService s3UploadService;
-    @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PostMapping("/{campingId}")
     public ResponseEntity writeReview(@PathVariable Long campingId,
                                       @RequestPart(value = "requestReviewWriteDto") RequestReviewWriteDto requestReviewWriteDto,
@@ -33,7 +33,7 @@ public class ReviewController {
         ResponseMessage responseMessage = reviewService.writeReview(campingId, requestReviewWriteDto, httpServletRequest, reviewUrl);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
-    @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PutMapping("/{reviewId}")
     public ResponseEntity updateReview(@PathVariable Long reviewId,
                                        @RequestPart(value = "requestReviewWriteDto") RequestReviewWriteDto requestReviewWriteDto,
@@ -43,13 +43,13 @@ public class ReviewController {
         ResponseMessage responseMessage = reviewService.updateReview(reviewId, requestReviewWriteDto, httpServletRequest, reviewUrl);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
-    @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PostMapping("/listten")
     public ResponseMessage findListTen(@RequestBody RequestFindListTenDto requestFindListTenDto, HttpServletRequest request){
         List<Long> list = requestFindListTenDto.getCampingIdList();
         return reviewService.findListTen(list,request);
     }
-    @CrossOrigin(originPatterns = "http://localhost:3000",exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @DeleteMapping("/{reviewId}")
     public ResponseMessage deleteReview(@PathVariable Long reviewId, HttpServletRequest request){
         return reviewService.deleteReview(reviewId, request);
