@@ -16,5 +16,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findTop6ByOrderByIdDesc();
 
-
+    List<Reservation> findAllByUsersId(Long usersId);
 }
