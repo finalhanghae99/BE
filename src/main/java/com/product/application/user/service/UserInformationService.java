@@ -4,8 +4,6 @@ import com.product.application.camping.entity.Camping;
 import com.product.application.camping.entity.CampingLike;
 import com.product.application.camping.repository.CampingLikeRepository;
 import com.product.application.common.exception.CustomException;
-import com.product.application.review.dto.ResponseReviewAllDto;
-import com.product.application.review.dto.ResponseReviewListDto;
 import com.product.application.review.dto.ResponseReviewOneDto;
 import com.product.application.review.dto.ResponseReviewOneListDto;
 import com.product.application.review.entity.Review;
@@ -32,8 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.product.application.common.exception.ErrorCode.TOKEN_ERROR;
-import static com.product.application.common.exception.ErrorCode.USER_NOT_FOUND;
+import static com.product.application.common.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -142,8 +139,15 @@ public class UserInformationService {
             Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
                     () -> new CustomException(USER_NOT_FOUND)
             );
+
+            if(users.getNickname().equals(requestUserInfoDto.getNickname())){
+                throw new CustomException(DUPLICATE_NICKNAME);
+            }
+
             users.change(requestUserInfoDto.getNickname(),requestUserInfoDto.getProfileImageUrl());
+            userRepository.save(users);
             return userMapper.toResponseUserInfo(users);
+
         } else {
             throw new CustomException(TOKEN_ERROR);
         }

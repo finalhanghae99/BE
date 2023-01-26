@@ -1,20 +1,19 @@
 package com.product.application.user.service;
 
 import com.product.application.common.exception.CustomException;
-import com.product.application.user.dto.RequestEmailcheckDto;
-import com.product.application.user.dto.RequestLoginDto;
-import com.product.application.user.dto.RequestNicknamecheckDto;
-import com.product.application.user.dto.RequestSignupDto;
+import com.product.application.user.dto.*;
 import com.product.application.user.entity.Users;
 import com.product.application.user.jwt.JwtUtil;
 import com.product.application.user.mapper.UserMapper;
 import com.product.application.user.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
@@ -66,6 +65,31 @@ public class UserService {
         Optional<Users> check = userRepository.findByNickname(requestNicknamecheckDto.getNickname());
         if(check.isPresent()){
             throw new CustomException(DUPLICATE_NICKNAME);
+        }
+    }
+
+    public ResponseUserNicknameDto getnickname(HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new CustomException(TOKEN_ERROR);
+            }
+            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
+                    () -> new CustomException(USER_NOT_FOUND)
+            );
+
+            String nickname = users.getNickname();
+            ResponseUserNicknameDto responseUserNicknameDto = new ResponseUserNicknameDto(nickname);
+            return responseUserNicknameDto;
+
+        } else {
+            throw new CustomException(TOKEN_ERROR);
         }
     }
 }
