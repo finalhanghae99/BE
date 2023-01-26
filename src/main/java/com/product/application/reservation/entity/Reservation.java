@@ -30,7 +30,6 @@ public class Reservation {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-
     @Column(nullable = false)
     private boolean tradeState = true;
 
@@ -54,6 +53,10 @@ public class Reservation {
         this.tradeState = tradeState;
         this.users = users;
         this.camping = camping;
+    }
+
+    public void update(boolean tradeState) {
+        this.tradeState = tradeState;
     }
 
 

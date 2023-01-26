@@ -9,6 +9,9 @@ import com.product.application.reservation.dto.*;
 import com.product.application.reservation.entity.Reservation;
 import com.product.application.reservation.mapper.ReservationMapper;
 import com.product.application.reservation.repository.ReservationRepository;
+import com.product.application.review.dto.ReviewLikeResponseDto;
+import com.product.application.review.entity.Review;
+import com.product.application.review.entity.ReviewLike;
 import com.product.application.user.entity.Users;
 import com.product.application.user.jwt.JwtUtil;
 import com.product.application.user.repository.UserRepository;
@@ -21,6 +24,8 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.product.application.common.exception.ErrorCode.*;
 
 
 @Service
@@ -52,7 +57,7 @@ public class ReservationService {
             );
 
             Camping camping = campingRepository.findById(campingId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-           Reservation reservation = reservationMapper.toRequestReservationDto(users, camping, requestReservationDto);
+            Reservation reservation = reservationMapper.toRequestReservationDto(users, camping, requestReservationDto);
 
             reservationRepository.save(reservation);
 
@@ -142,11 +147,31 @@ public class ReservationService {
         return new ResponseMessage("Success", 200, new SearchDtoList(responseSearchDtoList));
     }
 
-    public ResponseMessage getReservation(Long reservationId) {
+    public ResponseMessage getReservation(Long reservationId, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+        Long usersId;
 
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new CustomException(TOKEN_ERROR);
+            }
+
+            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
+                    () -> new CustomException(USER_NOT_FOUND)
+            );
+            usersId = users.getId();
+
+        } else {
+            usersId = 0L;
+        }
 
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-        ResponseReservationDto responseReservationDto = reservationMapper.toresponseReservationDto(reservation, reservation.getCamping(), reservation.getUsers());
+        ResponseReservationDto responseReservationDto = reservationMapper.toresponseReservationDto(reservation, reservation.getCamping(), reservation.getUsers(), usersId);
 
         return new ResponseMessage("Success", 200, responseReservationDto);
     }
@@ -171,6 +196,46 @@ public class ReservationService {
         return new ResponseMessage<>("Success", 200, responseFindListSixDtoList);
     }
 
+    public void updateState(Long reservationId, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new CustomException(TOKEN_ERROR);
+            }
+
+            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
+                    () -> new CustomException(USER_NOT_FOUND)
+            );
+            Long usersId = users.getId();
+
+            //reservation글을 찾아서 상태값을 변경한다./
+            Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
+                    () -> new CustomException(RESERVATION_NOT_FOUND)
+            );
+
+            if(reservation.getUsers().getId().equals(usersId)){
+                throw new CustomException(AUTHORIZATION_UPDATE_FAIL);
+            }
+
+            if(reservation.isTradeState()){
+                reservation.update(false);
+                reservationRepository.save(reservation);
+            } else {
+                reservation.update(true);
+                reservationRepository.save(reservation);
+            }
+
+
+        } else {
+            throw new CustomException(TOKEN_ERROR);
+        }
+    }
 }
 
 

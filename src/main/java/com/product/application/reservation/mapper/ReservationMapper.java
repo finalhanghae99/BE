@@ -39,7 +39,8 @@ public class ReservationMapper {
                 .build();
     }
 
-    public ResponseReservationDto toresponseReservationDto(Reservation reservation, Camping camping, Users users) {
+    public ResponseReservationDto toresponseReservationDto(Reservation reservation, Camping camping, Users users, Long usersId) {
+        boolean owncheck = users.getId().equals(usersId) == true ? true : false;
         return ResponseReservationDto.builder()
                 .reservationId(reservation.getId())
                 .startDate(reservation.getStartDate())
@@ -52,6 +53,7 @@ public class ReservationMapper {
                 .content(reservation.getContent())
                 .nickname(users.getNickname())
                 .profileImageUrl(users.getProfileImageUrl())
+                .ownerCheck(owncheck)
                 .build();
     }
 }

@@ -24,6 +24,7 @@ public enum ErrorCode {
 
 
     CONTENT_NOT_FOUND("존재하지 않는 게시글 입니다.",404),
+    RESERVATION_NOT_FOUND("존재하지 않는 양도글 입니다.",404),
     CAMPING_NOT_FOUND("해당 캠핑장 정보가 존재하지 않습니다.",404),
     REVIEW_NOT_FOUND("존재하지 않는 리뷰 입니다.", 404),
     USERNAME_NOT_FOUND("존재하지 않는 아이디 입니다.",404),
