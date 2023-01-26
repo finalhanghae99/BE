@@ -4,6 +4,10 @@ import com.product.application.camping.entity.Camping;
 import com.product.application.camping.entity.CampingLike;
 import com.product.application.camping.repository.CampingLikeRepository;
 import com.product.application.common.exception.CustomException;
+import com.product.application.reservation.dto.ResponseSearchDto;
+import com.product.application.reservation.entity.Reservation;
+import com.product.application.reservation.mapper.ReservationMapper;
+import com.product.application.reservation.repository.ReservationRepository;
 import com.product.application.review.dto.ResponseReviewOneDto;
 import com.product.application.review.dto.ResponseReviewOneListDto;
 import com.product.application.review.entity.Review;
@@ -11,10 +15,7 @@ import com.product.application.review.mapper.ReviewMapper;
 import com.product.application.review.repository.ReviewRepository;
 import com.product.application.s3.entity.Img;
 import com.product.application.s3.repository.ImgRepository;
-import com.product.application.user.dto.RequestUserInfoDto;
-import com.product.application.user.dto.ResponseUserCampingInfoDto;
-import com.product.application.user.dto.ResponseUserCampingInfoListDto;
-import com.product.application.user.dto.ResponseUserInfoDto;
+import com.product.application.user.dto.*;
 import com.product.application.user.entity.Users;
 import com.product.application.user.jwt.JwtUtil;
 import com.product.application.user.mapper.UserMapper;
@@ -42,6 +43,8 @@ public class UserInformationService {
     private final UserMapper userMapper;
     private final ReviewMapper reviewMapper;
     private final ImgRepository imgRepository;
+    private final ReservationRepository reservationRepository;
+    private final ReservationMapper reservationMapper;
 
     public ResponseUserInfoDto userInfo(HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
@@ -184,6 +187,39 @@ public class UserInformationService {
             ResponseReviewOneListDto responseReviewOneListDto = new ResponseReviewOneListDto(responseReviewOneDtoList);
             return responseReviewOneListDto;
 
+        } else {
+            throw new CustomException(TOKEN_ERROR);
+        }
+    }
+
+    public ResponseUserReservationDto userReservationInfo(HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new CustomException(TOKEN_ERROR);
+            }
+            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
+                    () -> new CustomException(USER_NOT_FOUND)
+            );
+            Long usersId = users.getId();
+
+            List<Reservation> reservationList = reservationRepository.findAllByUsersId(usersId);
+
+            List<ResponseSearchDto> responseSearchDtoList = new ArrayList<>();
+
+            for(Reservation reservation : reservationList){
+                ResponseSearchDto responseSearchDto = reservationMapper.toResponseSearchDto(reservation, reservation.getCamping());
+                responseSearchDtoList.add(responseSearchDto);
+            }
+            ResponseUserReservationDto responseUserReservationDto = new ResponseUserReservationDto(responseSearchDtoList);
+            //리스트 받아서 dto에 넣어서 반환
+            return responseUserReservationDto;
         } else {
             throw new CustomException(TOKEN_ERROR);
         }
