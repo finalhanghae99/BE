@@ -60,9 +60,18 @@ public class ReservationController {
     }
 
     @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
-    @GetMapping("/changestate/{reservationId}")
+    @PostMapping("/changestate/{reservationId}")
     public ResponseMessage<?> updateState(@PathVariable Long reservationId, HttpServletRequest request){
         reservationService.updateState(reservationId, request);
+        return new ResponseMessage<>("Success", 200, null);
+    }
+
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @PutMapping("/{reservationId}")
+    public ResponseMessage<?> updateReservation(@RequestBody RequestReservationDto requestReservationDto
+            , HttpServletRequest request
+            , @PathVariable Long reservationId) {
+        reservationService.updateReservation(requestReservationDto, request, reservationId);
         return new ResponseMessage<>("Success", 200, null);
     }
 }

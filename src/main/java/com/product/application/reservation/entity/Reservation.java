@@ -55,11 +55,17 @@ public class Reservation {
         this.camping = camping;
     }
 
-    public void update(boolean tradeState) {
+    public void updateState(boolean tradeState) {
         this.tradeState = tradeState;
     }
 
 
-
+    public void update(RequestReservationDto requestReservationDto) {
+        this.content = requestReservationDto.getContent();
+        this.startDate = requestReservationDto.getStartDate();
+        this.endDate = requestReservationDto.getEndDate();
+        this.tradeState = requestReservationDto.isTradeState();
+        this.price = requestReservationDto.getPrice();
+    }
 }
 
