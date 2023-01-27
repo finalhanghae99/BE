@@ -27,6 +27,7 @@ public class ResponseReservationDto {
 
     private String nickname;
     private String profileImageUrl;
+    private boolean ownerCheck;
 
     public ResponseReservationDto(Reservation reservation, Camping camping, Users users){
         this.reservationId = reservation.getId();
@@ -43,7 +44,7 @@ public class ResponseReservationDto {
     }
 
     @Builder
-    public ResponseReservationDto(Long reservationId,LocalDate startDate, LocalDate endDate, String imageUrl, String campingName, String address3, boolean tradeState, Long price, String content, String nickname, String profileImageUrl){
+    public ResponseReservationDto(Long reservationId,LocalDate startDate, LocalDate endDate, String imageUrl, String campingName, String address3, boolean tradeState, Long price, String content, String nickname, String profileImageUrl, boolean ownerCheck){
         this.reservationId = reservationId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -55,6 +56,7 @@ public class ResponseReservationDto {
         this.content = content;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
+        this.ownerCheck = ownerCheck;
     }
 
 
