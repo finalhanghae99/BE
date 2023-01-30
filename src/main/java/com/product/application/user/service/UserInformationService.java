@@ -217,9 +217,10 @@ public class UserInformationService {
                 ResponseSearchDto responseSearchDto = reservationMapper.toResponseSearchDto(reservation, reservation.getCamping());
                 responseSearchDtoList.add(responseSearchDto);
             }
+
             ResponseUserReservationDto responseUserReservationDto = new ResponseUserReservationDto(responseSearchDtoList);
-            //리스트 받아서 dto에 넣어서 반환
             return responseUserReservationDto;
+
         } else {
             throw new CustomException(TOKEN_ERROR);
         }

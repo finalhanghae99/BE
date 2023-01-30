@@ -3,6 +3,7 @@ package com.product.application.reservation.controller;
 import com.product.application.common.ResponseMessage;
 import com.product.application.reservation.dto.RequestReservationDto;
 import com.product.application.reservation.service.ReservationService;
+import com.product.application.review.dto.ReviewLikeResponseDto;
 import com.product.application.user.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -46,8 +47,8 @@ public class ReservationController {
 
     @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping("/{reservationId}")
-    public ResponseMessage getReservation(@PathVariable Long reservationId) {
-        ResponseMessage responseMessage = reservationService.getReservation(reservationId);
+    public ResponseMessage getReservation(@PathVariable Long reservationId, HttpServletRequest request) {
+        ResponseMessage responseMessage = reservationService.getReservation(reservationId, request);
         return responseMessage;
     }
 
@@ -56,5 +57,21 @@ public class ReservationController {
     public ResponseMessage viewListSix() {
         ResponseMessage responseMessage = reservationService.viewListSix();
         return responseMessage;
+    }
+
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @PostMapping("/changestate/{reservationId}")
+    public ResponseMessage<?> updateState(@PathVariable Long reservationId, HttpServletRequest request){
+        reservationService.updateState(reservationId, request);
+        return new ResponseMessage<>("Success", 200, null);
+    }
+
+    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
+    @PutMapping("/{reservationId}")
+    public ResponseMessage<?> updateReservation(@RequestBody RequestReservationDto requestReservationDto
+            , HttpServletRequest request
+            , @PathVariable Long reservationId) {
+        reservationService.updateReservation(requestReservationDto, request, reservationId);
+        return new ResponseMessage<>("Success", 200, null);
     }
 }
