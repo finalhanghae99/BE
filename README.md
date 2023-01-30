@@ -12,12 +12,19 @@
 ### 백엔드 프로세스
 
 #### 전체 아키텍처
-![image](https://user-images.githubusercontent.com/114709427/215399367-9584a767-d864-47d1-92e8-f1ca81e77139.png)
+![image](https://user-images.githubusercontent.com/114709427/215400898-8d7a01ce-574c-4bad-aadd-b3e2fd57ddc7.png)
 
 #### 백엔드 아키텍처
+![image](https://user-images.githubusercontent.com/114709427/215401995-7ed2bc9a-6b40-450d-af11-19442a4c846f.png)
 
 #### 사용한 기술 스택
+JAVA, SPRING BOOT, SRPING DATA JPA, OPEN API, JWT, MYSQL, 
+AWS(EC2, RDS, S3, LOAD BALANCER, ROUTE53, Certificate Manager)
 
 #### ERD
+![image](https://user-images.githubusercontent.com/114709427/215403313-d35bb7be-7d59-4fbb-88fb-9e8d1b8cec6a.png)
 
-#### API 
+#### API 설계 ( 수정중 )
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/114709427/215403634-1a4d14f7-5f14-4a9b-81e1-c858cf8df576.png">
+<img width="957" alt="image" src="https://user-images.githubusercontent.com/114709427/215403692-29afe772-7613-48ad-bd79-4f2b240647f1.png">
+<img width="959" alt="image" src="https://user-images.githubusercontent.com/114709427/215403771-f51a8631-c6d9-411d-84b1-67e85488ad39.png">
