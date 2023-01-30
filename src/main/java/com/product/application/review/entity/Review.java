@@ -22,7 +22,7 @@ public class Review extends TimeStamped {
     @Column(name = "reviewId")
     private Long id;
 
-    @Column(nullable = false, length = 50000)
+    @Column(nullable = false, length = 5000)
     private String content;
 
     @Column(nullable = false)

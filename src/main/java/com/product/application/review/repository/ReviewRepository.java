@@ -13,9 +13,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findTop5ByCampingIdOrderByModifiedAtDesc(Long campingId);
 
-    @Query(value="select * from REVIEW order by Like_Count desc LIMIT 100", nativeQuery = true)
+    @Query(value="select * from demo.review order by like_count desc LIMIT 100", nativeQuery = true)
     List<Review> selectAllSQL();
-    @Query(value="select * from REVIEW order by LIKE_COUNT desc LIMIT 6", nativeQuery = true)
+    //List<Review> findTop100OrderByLike_COuntDesc();
+    @Query(value="select * from demo.review order by lIKE_cOUNT desc LIMIT 6", nativeQuery = true)
     List<Review> selectSixSQL();
 
     List<Review> findAllByusersId(Long usersId);
