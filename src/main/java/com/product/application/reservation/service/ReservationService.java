@@ -219,21 +219,53 @@ public class ReservationService {
                     () -> new CustomException(RESERVATION_NOT_FOUND)
             );
 
-            if(reservation.getUsers().getId().equals(usersId)){
+            if(!reservation.getUsers().getId().equals(usersId)){
                 throw new CustomException(AUTHORIZATION_UPDATE_FAIL);
             }
 
             if(reservation.isTradeState()){
-                reservation.update(false);
+                reservation.updateState(false);
                 reservationRepository.save(reservation);
             } else {
-                reservation.update(true);
+                reservation.updateState(true);
                 reservationRepository.save(reservation);
             }
 
 
         } else {
             throw new CustomException(TOKEN_ERROR);
+        }
+    }
+
+    public void updateReservation(RequestReservationDto requestReservationDto, HttpServletRequest request, Long reservationId) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+
+        if (token != null) {
+            // Token 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+
+            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
+                    () -> new CustomException(ErrorCode.USER_NOT_FOUND)
+            );
+
+            Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
+                    () -> new CustomException(RESERVATION_NOT_FOUND)
+            );
+
+            if(!users.getId().equals(reservation.getUsers().getId())){
+                throw new CustomException(AUTHORIZATION_UPDATE_FAIL);
+            }
+
+            reservation.update(requestReservationDto);
+            reservationRepository.save(reservation);
+        } else {
+            throw new CustomException(ErrorCode.TOKEN_ERROR);
         }
     }
 }

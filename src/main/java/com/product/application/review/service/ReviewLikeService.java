@@ -63,6 +63,7 @@ public class ReviewLikeService {
             }
             if(reviewLike.getLikeState()){
                 reviewLike.update(false);
+                reviewLikeRepository.save(reviewLike);
                 review.updateLikeCount(false);
                 likeResponseDto.setLikeState(false);
                 likeResponseDto.setLikeCount(review.getLikeCount());
@@ -70,6 +71,7 @@ public class ReviewLikeService {
             }
 
             reviewLike.update(true);
+            reviewLikeRepository.save(reviewLike);
             review.updateLikeCount(true);
             likeResponseDto.setLikeState(true);
             likeResponseDto.setLikeCount(review.getLikeCount());
