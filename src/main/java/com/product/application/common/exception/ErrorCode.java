@@ -43,7 +43,10 @@ public enum ErrorCode {
     TOKEN_NOT_FOUND("토큰이 존재하지 않습니다. 로그인이 필요합니다.",401),
     USER_NOT_FOUND("존재하지 않는 유저 입니다.",404),
 
-    INTERNAL_SERVER_ERROR("서버 에러입니다. 서버 팀에 연락주세요!", 500);
+    INTERNAL_SERVER_ERROR("서버 에러입니다. 서버 팀에 연락주세요!", 500),
+
+    //jwt
+    DO_NOT_HAVE_PERMISSION_ERROR_MSG("사용 권한이 없습니다.", 403);
 
 
 

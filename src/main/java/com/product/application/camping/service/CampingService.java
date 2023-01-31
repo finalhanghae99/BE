@@ -10,27 +10,22 @@ import com.product.application.common.ResponseMessage;
 import com.product.application.common.exception.CustomException;
 import com.product.application.common.exception.ErrorCode;
 import com.product.application.review.dto.ResponseDetailCampingInfoReviewDto;
+import com.product.application.review.dto.ResponseFindListTenDto;
 import com.product.application.review.entity.Review;
 import com.product.application.review.repository.ReviewRepository;
 import com.product.application.s3.entity.Img;
 import com.product.application.s3.repository.ImgRepository;
-import com.product.application.user.entity.Users;
-import com.product.application.user.jwt.JwtUtil;
+import com.product.application.security.jwt.JwtUtil;
 import com.product.application.user.repository.UserRepository;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.product.application.common.exception.ErrorCode.TOKEN_ERROR;
-import static com.product.application.common.exception.ErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -44,30 +39,7 @@ public class CampingService {
     private final ImgRepository imgRepository;
 
     @Transactional
-    public ResponseMessage searchAllCampingInfo(String campingname, String address1, String address2, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        Long usersId;
-
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(TOKEN_ERROR);
-            }
-
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(USER_NOT_FOUND)
-            );
-            usersId = users.getId();
-
-        } else {
-            usersId = 0L;
-            //throw new CustomException(TOKEN_ERROR);
-        }
-
+    public ResponseMessage searchAllCampingInfo(String campingname, String address1, String address2, Long usersId) {
         List<Camping> campingList;
         List<Camping> returnCampingList = new ArrayList<>();
         // # 검색기능 구현
@@ -177,30 +149,43 @@ public class CampingService {
     }
 
     @Transactional
-    public ResponseMessage viewDetailCampingInfo(Long campingId, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        Long usersId;
+    public ResponseMessage findListTen(List<Long> list, Long usersId) {
+        List<ResponseFindListTenDto> dtoList = new ArrayList<>();
+        for(Long campingId : list){
+            Camping camping = campingRepository.findById(campingId).orElseThrow(()->new CustomException(ErrorCode.CAMPING_NOT_FOUND));
+            Long reviewCount = camping.getReviewCount();
 
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(TOKEN_ERROR);
-            }
+            CampingLike campingLike = camping.getCampingLikeList().stream().filter(Like -> Like.getUsersId().equals(usersId)).findFirst().orElse(null);
+            Boolean CampingLikeState = campingLike == null ? false : campingLike.getCampingLikeState();
 
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(USER_NOT_FOUND)
-            );
-            usersId = users.getId();
+            // (1) campingEnv
+            String campingEnv = camping.getCampingEnv();
+            String[] campingEnvArr = campingEnv.split(","); // 단일 단어인 경우에도 배열에 잘 들어감
+            List<String> campingEnvList = Stream.of(campingEnvArr).collect(Collectors.toList());
+            if(campingEnvList.size()==1 && campingEnvList.get(0) == "") campingEnvList.remove(0);
+            // (2) campingEnv
+            String campingType = camping.getCampingType();
+            String[] campingTypeArr = campingType.split(",");
+            List<String> campingTypeList = Stream.of(campingTypeArr).collect(Collectors.toList());
+            if(campingTypeList.size() == 1 && campingTypeList.get(0) == "") campingTypeList.remove(0);
+            // (3) campingEnv
+            String campingFac = camping.getCampingFac();
+            String[] campingFacArr = campingFac.split(",");
+            List<String> campingFacList = Stream.of(campingFacArr).collect(Collectors.toList());
+            if(campingFacList.size() == 1 && campingFacList.get(0) == "") campingFacList.remove(0);
+            // (4) campingEnv
+            String campingSurroundFac = camping.getCampingSurroundFac();
+            String[] campingSurroundFacArr = campingSurroundFac.split(",");
+            List<String> campingSurroundFacList = Stream.of(campingSurroundFacArr).collect(Collectors.toList());
+            if(campingSurroundFacList.size() == 1 && campingSurroundFacList.get(0) == "") campingSurroundFacList.remove(0);
 
-        } else {
-            usersId = 0L;
-            //throw new CustomException(TOKEN_ERROR);
+            dtoList.add(new ResponseFindListTenDto(camping,reviewCount,CampingLikeState,campingEnvList,campingTypeList,campingFacList,campingSurroundFacList));
         }
+        return new ResponseMessage("Success",200, dtoList);
+    }
 
+    @Transactional
+    public ResponseMessage viewDetailCampingInfo(Long campingId, Long usersId) {
         // 1. 캠핑아이디로 캠핑장 정보를 불러와서 Dto를 만들고 여기에 추가하기
         Camping camping = campingRepository.findById(campingId).orElseThrow(()-> new CustomException(ErrorCode.CAMPING_NOT_FOUND));
 
@@ -253,55 +238,37 @@ public class CampingService {
     }
 
     @Transactional
-    public ResponseMessage updateCampingLikeState(Long campingId, HttpServletRequest request) {
+    public ResponseMessage updateCampingLikeState(Long campingId, Long usersId) {
+        Camping camping = campingRepository.findById(campingId).orElseThrow(()->new CustomException(ErrorCode.CAMPING_NOT_FOUND));
+        Optional<CampingLike> optionalLike = campingLikeRepository.findByCampingAndUsersId(camping, usersId);
 
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        if (token != null) {
-
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(ErrorCode.TOKEN_ERROR);
-            }
-
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
-            Long usersId = users.getId();
-            Camping camping = campingRepository.findById(campingId).orElseThrow(()->new CustomException(ErrorCode.CAMPING_NOT_FOUND));
-            Optional<CampingLike> optionalLike = campingLikeRepository.findByCampingAndUsersId(camping, usersId);
-
-            ResponseCampingLikeStateDto responseCampingLikeStateDto;
-            // like에 관한 정보가 아예 없던 경우 -> 메시지 만들어서 리턴
-            if(optionalLike.isEmpty()){
-                CampingLike newCampingLike = new CampingLike(usersId, true, camping);
-                camping.updateCampingLikeCount(true);
-                responseCampingLikeStateDto = new ResponseCampingLikeStateDto(newCampingLike.getCampingLikeState());
-                campingLikeRepository.save(newCampingLike);
-                return new ResponseMessage("Success",200, responseCampingLikeStateDto);
-            }
-
-            // like에 관한 정보가 있는경우
-            CampingLike updatedCampingLike = optionalLike.get();
-            if(updatedCampingLike.getCampingLikeState()){
-                // 엔티티 업데이트 수행
-                updatedCampingLike.stateUpdate(false);
-                campingLikeRepository.save(updatedCampingLike);
-                camping.updateCampingLikeCount(false);
-                responseCampingLikeStateDto = new ResponseCampingLikeStateDto(false);
-                return new ResponseMessage("Success",200, responseCampingLikeStateDto);
-            } else {
-                // 엔티티 업데이트 수행
-                updatedCampingLike.stateUpdate(true);
-                campingLikeRepository.save(updatedCampingLike);
-                camping.updateCampingLikeCount(true);
-                responseCampingLikeStateDto = new ResponseCampingLikeStateDto(true);
-                return new ResponseMessage("Success",200, responseCampingLikeStateDto);
-            }
-
-        } else { // 토큰이 존재하지 않으면 에러 발생
-            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+        ResponseCampingLikeStateDto responseCampingLikeStateDto;
+        // like에 관한 정보가 아예 없던 경우 -> 메시지 만들어서 리턴
+        if(optionalLike.isEmpty()){
+            CampingLike newCampingLike = new CampingLike(usersId, true, camping);
+            camping.updateCampingLikeCount(true);
+            responseCampingLikeStateDto = new ResponseCampingLikeStateDto(newCampingLike.getCampingLikeState());
+            campingLikeRepository.save(newCampingLike);
+            return new ResponseMessage("Success",200, responseCampingLikeStateDto);
         }
 
+        // like에 관한 정보가 있는경우
+        CampingLike updatedCampingLike = optionalLike.get();
+        if(updatedCampingLike.getCampingLikeState()){
+            // 엔티티 업데이트 수행
+            updatedCampingLike.stateUpdate(false);
+            campingLikeRepository.save(updatedCampingLike);
+            camping.updateCampingLikeCount(false);
+            responseCampingLikeStateDto = new ResponseCampingLikeStateDto(false);
+            return new ResponseMessage("Success",200, responseCampingLikeStateDto);
+        } else {
+            // 엔티티 업데이트 수행
+            updatedCampingLike.stateUpdate(true);
+            campingLikeRepository.save(updatedCampingLike);
+            camping.updateCampingLikeCount(true);
+            responseCampingLikeStateDto = new ResponseCampingLikeStateDto(true);
+            return new ResponseMessage("Success",200, responseCampingLikeStateDto);
+        }
     }
 
     public ResponseCampingFiveListDto searchLikeFive() {

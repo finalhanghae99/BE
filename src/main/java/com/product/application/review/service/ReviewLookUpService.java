@@ -9,21 +9,17 @@ import com.product.application.review.mapper.ReviewMapper;
 import com.product.application.review.repository.ReviewRepository;
 import com.product.application.s3.entity.Img;
 import com.product.application.s3.repository.ImgRepository;
-import com.product.application.user.entity.Users;
-import com.product.application.user.jwt.JwtUtil;
+import com.product.application.security.jwt.JwtUtil;
 import com.product.application.user.repository.UserRepository;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.product.application.common.exception.ErrorCode.*;
-import static com.product.application.common.exception.ErrorCode.TOKEN_ERROR;
+import static com.product.application.common.exception.ErrorCode.CAMPING_NOT_FOUND;
+import static com.product.application.common.exception.ErrorCode.REVIEW_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -36,30 +32,7 @@ public class ReviewLookUpService {
     private final ImgRepository imgRepository;
 
     @Transactional
-    public ResponseReviewAllDto searchAll(Long campingId, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        Long usersId;
-
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(TOKEN_ERROR);
-            }
-
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(USER_NOT_FOUND)
-            );
-            usersId = users.getId();
-
-        } else {
-            usersId = 0L;
-            //throw new CustomException(TOKEN_ERROR);
-            //토큰이 null 이면 userID를 0으로 지정해주고 위에 코드를 가지고 오면 되
-        }
+    public ResponseReviewAllDto searchAll(Long campingId, Long usersId) {
         Camping camping = campingRepository.findById(campingId).orElseThrow(
                 () -> new CustomException(CAMPING_NOT_FOUND)
         );
@@ -77,32 +50,9 @@ public class ReviewLookUpService {
         }
         ResponseReviewAllDto responseReviewAllDto = new ResponseReviewAllDto(reviewListDtos);
         return responseReviewAllDto;
-
     }
 
-    public ResponseReviewOneDto searchOne(Long reviewId, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        Long usersId;
-
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(TOKEN_ERROR);
-            }
-
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(USER_NOT_FOUND)
-            );
-            usersId = users.getId();
-
-        } else {
-            usersId = 0L;
-            //throw new CustomException(TOKEN_ERROR);
-        }
+    public ResponseReviewOneDto searchOne(Long reviewId, Long usersId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new CustomException(REVIEW_NOT_FOUND)
         );
@@ -117,29 +67,7 @@ public class ReviewLookUpService {
         return reviewMapper.toResponseReviewOne(review, usersId, imgList);
     }
 
-    public ResponseReviewAllDto searchfive(Long campingId, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        Long usersId;
-
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(TOKEN_ERROR);
-            }
-
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(USER_NOT_FOUND)
-            );
-            usersId = users.getId();
-
-        } else {
-            usersId = 0L;
-            //throw new CustomException(TOKEN_ERROR);
-        }
+    public ResponseReviewAllDto searchfive(Long campingId, Long usersId) {
         Camping camping = campingRepository.findById(campingId).orElseThrow(
                 () -> new CustomException(CAMPING_NOT_FOUND)
         );
@@ -174,28 +102,7 @@ public class ReviewLookUpService {
         return responseReviewAllDto;
     }
 
-    public ResponseReviewAllDto searchLikeAll(HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        Long usersId;
-
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(TOKEN_ERROR);
-            }
-
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(USER_NOT_FOUND)
-            );
-            usersId = users.getId();
-        } else {
-            usersId = 0L;
-            //throw new CustomException(TOKEN_ERROR);
-        }
+    public ResponseReviewAllDto searchLikeAll(Long usersId) {
         List<Review> reviewList = reviewRepository.selectAllSQL();
         List<ResponseReviewListDto> reviewListDtos = new ArrayList<>();
         for(Review review : reviewList) {
@@ -220,4 +127,5 @@ public class ReviewLookUpService {
         ResponseReviewSixListDto responseReviewSixListDto = new ResponseReviewSixListDto(responseReviewSixDtos);
         return responseReviewSixListDto;
     }
+
 }

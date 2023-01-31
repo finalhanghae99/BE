@@ -1,19 +1,16 @@
 package com.product.application.user.service;
 
 import com.product.application.common.exception.CustomException;
+import com.product.application.security.jwt.JwtUtil;
 import com.product.application.user.dto.*;
 import com.product.application.user.entity.Users;
-import com.product.application.user.jwt.JwtUtil;
 import com.product.application.user.mapper.UserMapper;
 import com.product.application.user.repository.UserRepository;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
@@ -25,6 +22,7 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public void signup(RequestSignupDto requestSignupDto) {
         Users users =userMapper.toUser(requestSignupDto);
@@ -47,7 +45,7 @@ public class UserService {
                 () -> new CustomException(USEREMAIL_NOT_FOUND)
         );
         //비밀번호 확인
-        if(!users.getPassword().equals(requestLoginDto.getPassword())){
+        if(!passwordEncoder.matches(requestLoginDto.getPassword(), users.getPassword())){
             throw new CustomException(INCORRECT_PASSWORD);
         }
 
@@ -68,28 +66,9 @@ public class UserService {
         }
     }
 
-    public ResponseUserNicknameDto getnickname(HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(TOKEN_ERROR);
-            }
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(USER_NOT_FOUND)
-            );
-
-            String nickname = users.getNickname();
-            ResponseUserNicknameDto responseUserNicknameDto = new ResponseUserNicknameDto(nickname);
-            return responseUserNicknameDto;
-
-        } else {
-            throw new CustomException(TOKEN_ERROR);
-        }
+    public ResponseUserNicknameDto getnickname(Users users) {
+        String nickname = users.getNickname();
+        ResponseUserNicknameDto responseUserNicknameDto = new ResponseUserNicknameDto(nickname);
+        return responseUserNicknameDto;
     }
 }

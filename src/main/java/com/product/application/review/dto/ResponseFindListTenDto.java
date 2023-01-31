@@ -21,7 +21,7 @@ public class ResponseFindListTenDto {
     private List<String> campingType;
     private List<String> campingFac;
     private List<String> campingSurroundFac;
-    public ResponseFindListTenDto(Camping camping, Long reviewCount, boolean campingLikeState, List<String> campingEnvList, List<String> campingTypeList, List<String> campingFacList, List<String> campingSurroundFacList){
+    public ResponseFindListTenDto(Camping camping, Long reviewCount, Boolean campingLikeState, List<String> campingEnvList, List<String> campingTypeList, List<String> campingFacList, List<String> campingSurroundFacList){
         this.campingId = camping.getId();
         this.imageUrl = camping.getImageUrl();
         this.campingName = camping.getCampingName();

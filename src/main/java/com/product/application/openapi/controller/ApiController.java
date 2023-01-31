@@ -16,7 +16,6 @@ import java.net.URL;
 @RequiredArgsConstructor
 public class ApiController {
     private final ApiService apiService;
-    @CrossOrigin(originPatterns = "http://localhost:3000")
     @GetMapping("/api/test")
     public void getApi() throws IOException {
         StringBuilder result = new StringBuilder();

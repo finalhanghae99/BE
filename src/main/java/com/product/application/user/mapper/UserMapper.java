@@ -7,6 +7,7 @@ import com.product.application.user.dto.ResponseUserCampingInfoListDto;
 import com.product.application.user.dto.ResponseUserInfoDto;
 import com.product.application.user.entity.Users;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 
@@ -16,11 +17,13 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class UserMapper {
+
+    private final PasswordEncoder passwordEncoder;
     public Users toUser(RequestSignupDto requestSignupDto){
         return Users.builder()
                 .useremail(requestSignupDto.getUseremail())
                 .nickname(requestSignupDto.getNickname())
-                .password(requestSignupDto.getPassword())
+                .password(passwordEncoder.encode(requestSignupDto.getPassword()))
                 .profileImageUrl(requestSignupDto.getProfileImageUrl())
                 .build();
     }
