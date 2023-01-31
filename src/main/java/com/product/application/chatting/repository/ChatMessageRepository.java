@@ -16,4 +16,6 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
 
    ChatMessage findTopByRoomIdOrderBySendDateDesc(String roomId);
 
+
+    List<ChatMessage> findAllByReceiver(String nickname);
 }
