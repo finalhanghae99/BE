@@ -24,7 +24,6 @@ public class ResponseReservationDto {
     private boolean tradeState;
     private Long price;
     private String content;
-
     private String nickname;
     private String profileImageUrl;
     private boolean ownerCheck;

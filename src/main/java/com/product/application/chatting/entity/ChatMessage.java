@@ -23,6 +23,7 @@ public class ChatMessage extends TimeStampedChat {
     private MessageType type;
     private String roomId;
     private String sender;
+    private String receiver;
     private String message;
     private boolean readMessage;
 
@@ -34,10 +35,11 @@ public class ChatMessage extends TimeStampedChat {
     private ChatRoom chatRoom;
 
     @Builder
-    public ChatMessage(MessageType type, String roomId, String sender, String message, boolean readMessage, Reservation reservation, ChatRoom chatRoom){
+    public ChatMessage(MessageType type, String roomId, String sender, String receiver, String message, boolean readMessage, Reservation reservation, ChatRoom chatRoom){
         this.type = type;
         this.roomId = roomId;
         this.sender = sender;
+        this.receiver = receiver;
         this.message = message;
         this.readMessage = readMessage;
         this.reservation = reservation;

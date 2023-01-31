@@ -11,17 +11,19 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ChattingMapper {
 
-    public ChatMessage toRequestMessageDto(RequestMessageDto requestMessageDto, String nickname, ChatRoom chatRoom, Reservation reservation) {
+    public ChatMessage toRequestMessageDto(RequestMessageDto requestMessageDto, ChatRoom chatRoom, Reservation reservation, String roomId, String nickname) {
         return ChatMessage.builder()
                 .sender(nickname)
+                .receiver(reservation.getUsers().getNickname())
                 .message(requestMessageDto.getMessage())
                 .type(requestMessageDto.getType())
-                .roomId(chatRoom.getRoomId())
-                .reservation(reservation)
+                .roomId(roomId)
+                .chatRoom(chatRoom)
                 .readMessage(requestMessageDto.isReadMessage())
+                .reservation(reservation)
                 .build();
     }
-    public ResponseChatReservationDto toResponseChatMessageDto(ChatMessage chatMessage, Reservation reservation) {
+    public ResponseChatReservationDto toResponseChatMessageDto(ChatRoom chatRoom, Reservation reservation) {
         return ResponseChatReservationDto.builder()
                 .campingName(reservation.getCamping().getCampingName())
                 .imageUrl(reservation.getCamping().getImageUrl())
@@ -48,7 +50,6 @@ public class ChattingMapper {
     public ResponseChatMessageDto toresponseChatMessageDto(ChatMessage chatMessage){
         return ResponseChatMessageDto.builder()
                 .sendDate(chatMessage.getSendDate())
-                .reservationId(chatMessage.getReservation().getId())
                 .sender(chatMessage.getSender())
                 .type(chatMessage.getType())
                 .roomId(chatMessage.getRoomId())
@@ -56,8 +57,6 @@ public class ChattingMapper {
                 .readMessage(chatMessage.isReadMessage())
                 .build();
     }
-
-
 
 
 }

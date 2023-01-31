@@ -15,6 +15,7 @@ public class RequestMessageDto {
     private MessageType type;
     private String roomId;
     private String sender;
+    private String receiver;
     private String message;
     private LocalDateTime sendDate;
     private Long reservationId;
