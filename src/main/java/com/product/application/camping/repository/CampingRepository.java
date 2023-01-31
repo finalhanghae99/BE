@@ -10,6 +10,6 @@ public interface CampingRepository extends JpaRepository<Camping, Long> {
     List<Camping> findAllByAddress1(String address1);
     List<Camping> findAllByCampingNameContaining(String campingname);
 
-    @Query(value="select * from CAMPING order by CAMPING_LIKE_COUNT desc LIMIT 5", nativeQuery = true)
+    @Query(value="select * from demo.camping order by camping_like_count desc LIMIT 5", nativeQuery = true)
     List<Camping> selectFiveSQL();
 }

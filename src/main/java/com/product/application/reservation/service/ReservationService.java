@@ -5,27 +5,26 @@ import com.product.application.camping.repository.CampingRepository;
 import com.product.application.common.ResponseMessage;
 import com.product.application.common.exception.CustomException;
 import com.product.application.common.exception.ErrorCode;
-import com.product.application.reservation.dto.*;
+import com.product.application.reservation.dto.RequestReservationDto;
+import com.product.application.reservation.dto.ResponseReservationDto;
+import com.product.application.reservation.dto.ResponseSearchDto;
+import com.product.application.reservation.dto.SearchDtoList;
 import com.product.application.reservation.entity.Reservation;
 import com.product.application.reservation.mapper.ReservationMapper;
 import com.product.application.reservation.repository.ReservationRepository;
-import com.product.application.review.dto.ReviewLikeResponseDto;
-import com.product.application.review.entity.Review;
-import com.product.application.review.entity.ReviewLike;
+import com.product.application.security.jwt.JwtUtil;
 import com.product.application.user.entity.Users;
-import com.product.application.user.jwt.JwtUtil;
 import com.product.application.user.repository.UserRepository;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.product.application.common.exception.ErrorCode.*;
+import static com.product.application.common.exception.ErrorCode.AUTHORIZATION_UPDATE_FAIL;
+import static com.product.application.common.exception.ErrorCode.RESERVATION_NOT_FOUND;
 
 
 @Service
@@ -39,59 +38,23 @@ public class ReservationService {
 
 
     @Transactional
-    public void create(RequestReservationDto requestReservationDto, HttpServletRequest request, Long campingId) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
+    public void create(RequestReservationDto requestReservationDto, Users users, Long campingId) {
+        Camping camping = campingRepository.findById(campingId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+        Reservation reservation = reservationMapper.toRequestReservationDto(users, camping, requestReservationDto);
 
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(ErrorCode.USER_NOT_FOUND)
-            );
-
-            Camping camping = campingRepository.findById(campingId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-            Reservation reservation = reservationMapper.toRequestReservationDto(users, camping, requestReservationDto);
-
-            reservationRepository.save(reservation);
-
-        } else {
-            throw new CustomException(ErrorCode.TOKEN_ERROR);
-        }
+        reservationRepository.save(reservation);
     }
 
     @Transactional
-    public void delete(Long reservationId, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
+    public void delete(Long reservationId, Long usersId) {
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
+                () -> new CustomException(ErrorCode.CONTENT_NOT_FOUND)
+        );
 
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(ErrorCode.USER_NOT_FOUND)
-            );
-
-            Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
-                    () -> new CustomException(ErrorCode.CONTENT_NOT_FOUND)
-            );
-
-            reservationRepository.deleteById(reservationId);
-
-        } else {
-            throw new CustomException(ErrorCode.TOKEN_ERROR);
+        if(!reservation.getUsers().getId().equals(usersId)){
+            throw new CustomException(ErrorCode.AUTHORIZATION_DELETE_FAIL);
         }
+        reservationRepository.deleteById(reservationId);
     }
 
     @Transactional
@@ -147,29 +110,7 @@ public class ReservationService {
         return new ResponseMessage("Success", 200, new SearchDtoList(responseSearchDtoList));
     }
 
-    public ResponseMessage getReservation(Long reservationId, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        Long usersId;
-
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(TOKEN_ERROR);
-            }
-
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(USER_NOT_FOUND)
-            );
-            usersId = users.getId();
-
-        } else {
-            usersId = 0L;
-        }
-
+    public ResponseMessage getReservation(Long reservationId, Long usersId) {
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
         ResponseReservationDto responseReservationDto = reservationMapper.toresponseReservationDto(reservation, reservation.getCamping(), reservation.getUsers(), usersId);
 
@@ -196,77 +137,37 @@ public class ReservationService {
         return new ResponseMessage<>("Success", 200, responseFindListSixDtoList);
     }
 
-    public void updateState(Long reservationId, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
+    public void updateState(Long reservationId, Long usersId) {
+        //reservation글을 찾아서 상태값을 변경한다./
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
+                () -> new CustomException(RESERVATION_NOT_FOUND)
+        );
 
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new CustomException(TOKEN_ERROR);
-            }
-
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(USER_NOT_FOUND)
-            );
-            Long usersId = users.getId();
-
-            //reservation글을 찾아서 상태값을 변경한다./
-            Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
-                    () -> new CustomException(RESERVATION_NOT_FOUND)
-            );
-
-            if(!reservation.getUsers().getId().equals(usersId)){
-                throw new CustomException(AUTHORIZATION_UPDATE_FAIL);
-            }
-
-            if(reservation.isTradeState()){
-                reservation.updateState(false);
-                reservationRepository.save(reservation);
-            } else {
-                reservation.updateState(true);
-                reservationRepository.save(reservation);
-            }
-
-
-        } else {
-            throw new CustomException(TOKEN_ERROR);
+        if(!reservation.getUsers().getId().equals(usersId)){
+            throw new CustomException(AUTHORIZATION_UPDATE_FAIL);
         }
-    }
 
-    public void updateReservation(RequestReservationDto requestReservationDto, HttpServletRequest request, Long reservationId) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-
-        if (token != null) {
-            // Token 검증
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-
-            Users users = userRepository.findByUseremail(claims.getSubject()).orElseThrow(
-                    () -> new CustomException(ErrorCode.USER_NOT_FOUND)
-            );
-
-            Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
-                    () -> new CustomException(RESERVATION_NOT_FOUND)
-            );
-
-            if(!users.getId().equals(reservation.getUsers().getId())){
-                throw new CustomException(AUTHORIZATION_UPDATE_FAIL);
-            }
-
-            reservation.update(requestReservationDto);
+        if(reservation.isTradeState()){
+            reservation.updateState(false);
             reservationRepository.save(reservation);
         } else {
-            throw new CustomException(ErrorCode.TOKEN_ERROR);
+            reservation.updateState(true);
+            reservationRepository.save(reservation);
         }
+
+    }
+
+    public void updateReservation(RequestReservationDto requestReservationDto, Users users, Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
+                () -> new CustomException(RESERVATION_NOT_FOUND)
+        );
+
+        if(!users.getId().equals(reservation.getUsers().getId())){
+            throw new CustomException(AUTHORIZATION_UPDATE_FAIL);
+        }
+
+        reservation.update(requestReservationDto);
+        reservationRepository.save(reservation);
     }
 }
 

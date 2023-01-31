@@ -3,13 +3,12 @@ package com.product.application.reservation.controller;
 import com.product.application.common.ResponseMessage;
 import com.product.application.reservation.dto.RequestReservationDto;
 import com.product.application.reservation.service.ReservationService;
-import com.product.application.review.dto.ReviewLikeResponseDto;
-import com.product.application.user.jwt.JwtUtil;
+import com.product.application.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 
 @RestController
@@ -18,25 +17,23 @@ import java.time.LocalDate;
 public class ReservationController {
     private final ReservationService reservationService;
 
-    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PostMapping("/{campingId}")
     public ResponseMessage<?> create(@RequestBody RequestReservationDto requestReservationDto
-            , HttpServletRequest request
+            , @AuthenticationPrincipal UserDetailsImpl userDetails
             , @PathVariable Long campingId) {
-        reservationService.create(requestReservationDto, request, campingId);
+        reservationService.create(requestReservationDto, userDetails.getUser(), campingId);
         return new ResponseMessage<>("Success", 200, null);
     }
 
-    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @DeleteMapping("/{reservationId}")
     public ResponseMessage<?> delete(@PathVariable Long reservationId
-            , HttpServletRequest request) {
-        reservationService.delete(reservationId, request);
+            , @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long usersId = userDetails.getUserId();
+        reservationService.delete(reservationId, usersId);
         return new ResponseMessage<>("Success", 200, null);
     }
 
-    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
-    @GetMapping()
+    @GetMapping("/findall")
     public ResponseMessage getReservationList(@RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                               @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                               @RequestParam(value = "address1", required = false) String address1,
@@ -45,33 +42,36 @@ public class ReservationController {
         return responseMessage;
     }
 
-    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping("/{reservationId}")
-    public ResponseMessage getReservation(@PathVariable Long reservationId, HttpServletRequest request) {
-        ResponseMessage responseMessage = reservationService.getReservation(reservationId, request);
+    public ResponseMessage getReservation(@PathVariable Long reservationId,  @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long usersId;
+        if(userDetails != null){
+            usersId = userDetails.getUserId();
+        } else {
+            usersId = 0L;
+        }
+        ResponseMessage responseMessage = reservationService.getReservation(reservationId, usersId);
         return responseMessage;
     }
 
-    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @GetMapping("/listsix")
     public ResponseMessage viewListSix() {
         ResponseMessage responseMessage = reservationService.viewListSix();
         return responseMessage;
     }
 
-    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PostMapping("/changestate/{reservationId}")
-    public ResponseMessage<?> updateState(@PathVariable Long reservationId, HttpServletRequest request){
-        reservationService.updateState(reservationId, request);
+    public ResponseMessage<?> updateState(@PathVariable Long reservationId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        Long usersId = userDetails.getUserId();
+        reservationService.updateState(reservationId, usersId);
         return new ResponseMessage<>("Success", 200, null);
     }
 
-    @CrossOrigin(origins = {"http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com", "http://localhost:3000"}, exposedHeaders = JwtUtil.AUTHORIZATION_HEADER)
     @PutMapping("/{reservationId}")
     public ResponseMessage<?> updateReservation(@RequestBody RequestReservationDto requestReservationDto
-            , HttpServletRequest request
+            , @AuthenticationPrincipal UserDetailsImpl userDetails
             , @PathVariable Long reservationId) {
-        reservationService.updateReservation(requestReservationDto, request, reservationId);
+        reservationService.updateReservation(requestReservationDto, userDetails.getUser(), reservationId);
         return new ResponseMessage<>("Success", 200, null);
     }
 }
