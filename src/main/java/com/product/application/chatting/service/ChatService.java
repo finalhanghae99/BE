@@ -28,7 +28,6 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final UserRepository userRepository;
     private final ReservationRepository reservationRepository;
     private final ChattingMapper chattingMapper;
 
