@@ -32,21 +32,30 @@ public class ChatService {
     private final ReservationRepository reservationRepository;
     private final ChattingMapper chattingMapper;
 
-    public void createRoom(Users users, Long reservationId) {
+    public ResponseMessage createRoom(Users users, Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
                 () -> new CustomException(ErrorCode.CONTENT_NOT_FOUND)
         );
-        ChatRoom chatRoom = ChatRoom.create(users, reservation);
-        chatRoomRepository.save(chatRoom);
+        List<ChatRoom> roomList = chatRoomRepository.findAllByBuyerAndSellerAndReservationId(users.getNickname(), reservation.getUsers().getNickname(), reservationId);
+        String roomId;
+        if(roomList.size() == 0){
+            ChatRoom chatRoom = ChatRoom.create(users, reservation);
+            chatRoomRepository.save(chatRoom);
+            roomId = chatRoom.getRoomId();
+        }else{
+            roomId = roomList.get(0).getRoomId();
+        }
+        return new ResponseMessage<>("Success", 200, roomId);
     }
 
 
     @Transactional
-    public void saveMessage(RequestMessageDto requestMessageDto, Long reservationId, String roomId, Users user) {
+    public ResponseMessage saveMessage(RequestMessageDto requestMessageDto, Long reservationId, String roomId, Users user) {
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
         ChatMessage chatMessage = chattingMapper.toRequestMessageDto(requestMessageDto, chatRoom, reservation, roomId, user.getNickname());
         chatMessageRepository.save(chatMessage);
+        return new ResponseMessage<>("Success", 200, chatMessage.getRoomId());
     }
 
 

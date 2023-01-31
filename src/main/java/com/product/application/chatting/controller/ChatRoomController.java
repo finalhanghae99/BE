@@ -18,9 +18,9 @@ public class ChatRoomController {
     private final ChatService chatService;
 
     @PostMapping("/{reservationId}")
-    public ResponseMessage<?> createRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long reservationId) {
-        chatService.createRoom(userDetails.getUser(), reservationId);
-        return new ResponseMessage<>("Success", 200, null);
+    public ResponseMessage createRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long reservationId) {
+        ResponseMessage responseMessage = chatService.createRoom(userDetails.getUser(), reservationId);
+        return responseMessage;
     }
 
     //채팅방에 있는 양도글 정보
