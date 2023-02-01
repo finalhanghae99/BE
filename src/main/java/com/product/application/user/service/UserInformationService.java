@@ -86,11 +86,17 @@ public class UserInformationService {
     }
 
     public ResponseUserInfoDto userInfoChange(RequestUserInfoDto requestUserInfoDto, Users users) {
-        if(users.getNickname().equals(requestUserInfoDto.getNickname())){
-            throw new CustomException(DUPLICATE_NICKNAME);
+        if(userRepository.findByNickname(requestUserInfoDto.getNickname()).isPresent()){
+            if(requestUserInfoDto.getNickname().equals(users.getNickname())){
+                users.change(requestUserInfoDto.getNickname(),requestUserInfoDto.getProfileImageUrl());
+                userRepository.save(users);
+            } else {
+                throw new CustomException(DUPLICATE_NICKNAME);
+            }
+        } else {
+            users.change(requestUserInfoDto.getNickname(),requestUserInfoDto.getProfileImageUrl());
+            userRepository.save(users);
         }
-        users.change(requestUserInfoDto.getNickname(),requestUserInfoDto.getProfileImageUrl());
-        userRepository.save(users);
         return userMapper.toResponseUserInfo(users);
     }
 
