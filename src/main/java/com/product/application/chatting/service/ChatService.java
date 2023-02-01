@@ -12,12 +12,14 @@ import com.product.application.common.exception.ErrorCode;
 import com.product.application.reservation.entity.Reservation;
 import com.product.application.reservation.repository.ReservationRepository;
 import com.product.application.user.entity.Users;
-import com.product.application.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 

@@ -2,7 +2,6 @@ package com.product.application.reservation.service;
 
 import com.product.application.camping.entity.Camping;
 import com.product.application.camping.repository.CampingRepository;
-import com.product.application.chatting.entity.ChatRoom;
 import com.product.application.chatting.repository.ChatMessageRepository;
 import com.product.application.chatting.repository.ChatRoomRepository;
 import com.product.application.common.ResponseMessage;
@@ -15,9 +14,7 @@ import com.product.application.reservation.dto.SearchDtoList;
 import com.product.application.reservation.entity.Reservation;
 import com.product.application.reservation.mapper.ReservationMapper;
 import com.product.application.reservation.repository.ReservationRepository;
-import com.product.application.security.jwt.JwtUtil;
 import com.product.application.user.entity.Users;
-import com.product.application.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

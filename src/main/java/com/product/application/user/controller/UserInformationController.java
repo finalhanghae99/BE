@@ -3,19 +3,21 @@ package com.product.application.user.controller;
 
 import com.product.application.common.ResponseMessage;
 import com.product.application.review.dto.ResponseReviewOneListDto;
-import com.product.application.s3.entity.Img;
 import com.product.application.s3.service.S3UploadService;
 import com.product.application.security.UserDetailsImpl;
-import com.product.application.user.dto.*;
-
-import com.product.application.user.entity.Users;
+import com.product.application.user.dto.RequestUserInfoDto;
+import com.product.application.user.dto.ResponseUserCampingInfoDto;
+import com.product.application.user.dto.ResponseUserInfoDto;
+import com.product.application.user.dto.ResponseUserReservationDto;
 import com.product.application.user.service.UserInformationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController

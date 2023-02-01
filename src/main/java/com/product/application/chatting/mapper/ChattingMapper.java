@@ -3,7 +3,6 @@ package com.product.application.chatting.mapper;
 import com.product.application.chatting.dto.*;
 import com.product.application.chatting.entity.ChatMessage;
 import com.product.application.chatting.entity.ChatRoom;
-import com.product.application.reservation.entity.Reservation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
