@@ -2,6 +2,9 @@ package com.product.application.reservation.service;
 
 import com.product.application.camping.entity.Camping;
 import com.product.application.camping.repository.CampingRepository;
+import com.product.application.chatting.entity.ChatRoom;
+import com.product.application.chatting.repository.ChatMessageRepository;
+import com.product.application.chatting.repository.ChatRoomRepository;
 import com.product.application.common.ResponseMessage;
 import com.product.application.common.exception.CustomException;
 import com.product.application.common.exception.ErrorCode;
@@ -32,9 +35,10 @@ import static com.product.application.common.exception.ErrorCode.RESERVATION_NOT
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final CampingRepository campingRepository;
-    private final UserRepository userRepository;
     private final ReservationMapper reservationMapper;
-    private final JwtUtil jwtUtil;
+
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
 
     @Transactional
@@ -54,7 +58,9 @@ public class ReservationService {
         if(!reservation.getUsers().getId().equals(usersId)){
             throw new CustomException(ErrorCode.AUTHORIZATION_DELETE_FAIL);
         }
-        reservationRepository.deleteById(reservationId);
+        chatMessageRepository.deleteAllByChatMessageId(reservationId);
+        chatRoomRepository.deleteAllByChatRoomId(reservationId);
+        reservationRepository.delete(reservation);
     }
 
     @Transactional

@@ -15,13 +15,13 @@ public class ChatConfig implements WebSocketMessageBrokerConfigurer {
     private final StompHandler stompHandler; // jwt 인증
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("wss://campingzip.site/ws/chat").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/ws/chat").setAllowedOriginPatterns("*").withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
 
-        registry.enableSimpleBroker("/queue", "/topic");
+        registry.enableSimpleBroker("/topic");
 
         registry.setApplicationDestinationPrefixes("/app");
     }
