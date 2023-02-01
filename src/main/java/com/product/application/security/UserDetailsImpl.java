@@ -1,13 +1,10 @@
 package com.product.application.security;
 
 
-import com.product.application.security.jwt.UserRoleEnum;
 import com.product.application.user.entity.Users;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class UserDetailsImpl implements UserDetails {
@@ -21,11 +18,11 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public Long getUserId() {
-        return users.getId();
+        return this.users.getId();
     }
 
     public Users getUser() {
-        return users;
+        return this.users;
     }
 
     @Override

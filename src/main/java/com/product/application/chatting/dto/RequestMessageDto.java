@@ -1,7 +1,6 @@
 package com.product.application.chatting.dto;
 
 import com.product.application.chatting.entity.MessageType;
-import com.product.application.reservation.entity.Reservation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,8 +19,5 @@ public class RequestMessageDto {
     private LocalDateTime sendDate;
     private Long reservationId;
     private boolean readMessage;
-
-
-
 
 }
