@@ -85,20 +85,21 @@ public class UserInformationService {
         return responseUserCampingInfoDto;
     }
 
-    public ResponseUserInfoDto userInfoChange(RequestUserInfoDto requestUserInfoDto, Users users) {
+    public ResponseUserInfoDto userInfoChange(RequestUserInfoDto requestUserInfoDto,List<String> imgUrl, Users users) {
         if(userRepository.findByNickname(requestUserInfoDto.getNickname()).isPresent()){
             if(requestUserInfoDto.getNickname().equals(users.getNickname())){
-                users.change(requestUserInfoDto.getNickname(),requestUserInfoDto.getProfileImageUrl());
+                users.change(requestUserInfoDto.getNickname(), imgUrl.toString().replaceAll("\\[", "").replaceAll("\\]", ""));
                 userRepository.save(users);
             } else {
                 throw new CustomException(DUPLICATE_NICKNAME);
             }
         } else {
-            users.change(requestUserInfoDto.getNickname(),requestUserInfoDto.getProfileImageUrl());
+            users.change(requestUserInfoDto.getNickname(), imgUrl.toString().replaceAll("\\[", "").replaceAll("\\]", ""));
             userRepository.save(users);
         }
         return userMapper.toResponseUserInfo(users);
     }
+
 
     public ResponseReviewOneListDto userReviewInfo(Long usersId) {
         List<Review> reviewList = reviewRepository.findAllByusersId(usersId);

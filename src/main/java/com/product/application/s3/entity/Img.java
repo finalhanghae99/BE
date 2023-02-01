@@ -30,4 +30,9 @@ public class Img {
     public Img(Img imgUrl) {
         this.imgUrl = imgUrl.getImgUrl();
     }
+
+
+    public Img(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 }

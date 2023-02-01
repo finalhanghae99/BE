@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat")
@@ -25,10 +23,10 @@ public class ChatRoomController {
 
     //채팅방에 있는 양도글 정보
 
-    @GetMapping("/room/{reservationId}/{roomId}")
+    @GetMapping("/room/reservation/{roomId}")
     @ResponseBody
-    public ResponseMessage reservationInfo(@PathVariable String roomId, @PathVariable Long reservationId){
-        ResponseMessage responseMessage = chatService.reservationInfo(roomId, reservationId);
+    public ResponseMessage reservationInfo(@PathVariable String roomId){
+        ResponseMessage responseMessage = chatService.reservationInfo(roomId);
         return  responseMessage;
     }
 

@@ -48,6 +48,8 @@ public class WebSecurityConfig {
                 .antMatchers(HttpMethod.GET, new String[]{"/api/test", "/review/bestsix", "/reservation/findall", "/reservation/{reservationId}", "/reservation/listsix"}).permitAll()
                 .antMatchers("/reviewlookup/**").permitAll()
                 .antMatchers("/camping/permit/**").permitAll()
+                .antMatchers("/chat/room/**").permitAll()
+                .antMatchers("/ws/**", "/topic/**", "/app/**").permitAll()
                 .anyRequest().authenticated()
                 // JWT 인증/인가를 사용하기 위해 JwtAuthFilter 적용
                 .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
@@ -81,8 +83,9 @@ public class WebSecurityConfig {
 
         // 서버에서 응답하는 리소스에 접근 가능한 출처를 명시
         // Access-Control-Allow-Origin
+        //config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("http://localhost:3000"); //요거 변경하시면 됩니다.
-        config.addAllowedOrigin("https://www.campingzip.site");
+        config.addAllowedOrigin("http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com");
 
         // 특정 헤더를 클라이언트 측에서 꺼내어 사용할 수 있게 지정
         // 만약 지정하지 않는다면, Authorization 헤더 내의 토큰 값을 사용할 수 없음

@@ -3,23 +3,28 @@ package com.product.application.user.controller;
 
 import com.product.application.common.ResponseMessage;
 import com.product.application.review.dto.ResponseReviewOneListDto;
+import com.product.application.s3.service.S3UploadService;
 import com.product.application.security.UserDetailsImpl;
 import com.product.application.user.dto.RequestUserInfoDto;
 import com.product.application.user.dto.ResponseUserCampingInfoDto;
 import com.product.application.user.dto.ResponseUserInfoDto;
-
 import com.product.application.user.dto.ResponseUserReservationDto;
 import com.product.application.user.service.UserInformationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class UserInformationController {
     private final UserInformationService userInformationService;
+    private final S3UploadService s3UploadService;
 
 
     @GetMapping("/mypage")
@@ -36,9 +41,12 @@ public class UserInformationController {
         return new ResponseMessage<>("Success", 200, responseUserCampingInfo);
     }
 
-    @GetMapping("/mypage/update")
-    public ResponseMessage<?> userInfoChange(@RequestBody RequestUserInfoDto requestUserInfoDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        ResponseUserInfoDto responseUserInfoDto = userInformationService.userInfoChange(requestUserInfoDto, userDetails.getUser());
+    @PutMapping("/mypage/update")
+    public ResponseMessage<?> userInfoChange(@RequestPart RequestUserInfoDto requestUserInfoDto,
+                                             @RequestPart List<MultipartFile> profileImageUrl,
+                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<String> imgUrl = s3UploadService.upload(profileImageUrl);
+        ResponseUserInfoDto responseUserInfoDto = userInformationService.userInfoChange(requestUserInfoDto, imgUrl, userDetails.getUser());
         return new ResponseMessage<>("Success", 200, responseUserInfoDto);
     }
 

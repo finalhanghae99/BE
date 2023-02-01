@@ -12,12 +12,14 @@ import com.product.application.common.exception.ErrorCode;
 import com.product.application.reservation.entity.Reservation;
 import com.product.application.reservation.repository.ReservationRepository;
 import com.product.application.user.entity.Users;
-import com.product.application.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 
@@ -28,7 +30,6 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final UserRepository userRepository;
     private final ReservationRepository reservationRepository;
     private final ChattingMapper chattingMapper;
 
@@ -50,19 +51,17 @@ public class ChatService {
 
 
     @Transactional
-    public ResponseMessage saveMessage(RequestMessageDto requestMessageDto, Long reservationId, String roomId, Users user) {
-        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+    public ResponseMessage saveMessage(RequestMessageDto requestMessageDto, String roomId, Users user) {
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
-        ChatMessage chatMessage = chattingMapper.toRequestMessageDto(requestMessageDto, chatRoom, reservation, roomId, user.getNickname());
+        ChatMessage chatMessage = chattingMapper.toRequestMessageDto(requestMessageDto, chatRoom, roomId, user.getNickname());
         chatMessageRepository.save(chatMessage);
         return new ResponseMessage<>("Success", 200, chatMessage.getRoomId());
     }
 
 
-    public ResponseMessage reservationInfo(String roomId, Long reservationId) {
+    public ResponseMessage reservationInfo(String roomId) {
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
-        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-        ResponseChatReservationDto responseChatReservationDto = chattingMapper.toResponseChatMessageDto(chatRoom, reservation);
+        ResponseChatReservationDto responseChatReservationDto = chattingMapper.toResponseChatMessageDto(chatRoom);
         return new ResponseMessage("Success", 200, responseChatReservationDto);
     }
 

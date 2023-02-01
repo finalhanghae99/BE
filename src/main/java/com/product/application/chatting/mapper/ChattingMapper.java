@@ -3,7 +3,6 @@ package com.product.application.chatting.mapper;
 import com.product.application.chatting.dto.*;
 import com.product.application.chatting.entity.ChatMessage;
 import com.product.application.chatting.entity.ChatRoom;
-import com.product.application.reservation.entity.Reservation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,23 +10,23 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ChattingMapper {
 
-    public ChatMessage toRequestMessageDto(RequestMessageDto requestMessageDto, ChatRoom chatRoom, Reservation reservation, String roomId, String nickname) {
+    public ChatMessage toRequestMessageDto(RequestMessageDto requestMessageDto, ChatRoom chatRoom, String roomId, String nickname) {
         return ChatMessage.builder()
                 .sender(nickname)
-                .receiver(reservation.getUsers().getNickname())
+                .receiver(chatRoom.getReservation().getUsers().getNickname())
                 .message(requestMessageDto.getMessage())
                 .type(requestMessageDto.getType())
                 .roomId(roomId)
                 .chatRoom(chatRoom)
                 .readMessage(requestMessageDto.isReadMessage())
-                .reservation(reservation)
+                .reservation(chatRoom.getReservation())
                 .build();
     }
-    public ResponseChatReservationDto toResponseChatMessageDto(ChatRoom chatRoom, Reservation reservation) {
+    public ResponseChatReservationDto toResponseChatMessageDto(ChatRoom chatRoom) {
         return ResponseChatReservationDto.builder()
-                .campingName(reservation.getCamping().getCampingName())
-                .imageUrl(reservation.getCamping().getImageUrl())
-                .price(reservation.getPrice())
+                .campingName(chatRoom.getReservation().getCamping().getCampingName())
+                .imageUrl(chatRoom.getReservation().getCamping().getImageUrl())
+                .price(chatRoom.getReservation().getPrice())
                 .build();
     }
     public ResponseChatNicknameDto toresponseChatNicknameDto(ChatRoom chatRoom){
@@ -55,6 +54,11 @@ public class ChattingMapper {
                 .roomId(chatMessage.getRoomId())
                 .message(chatMessage.getMessage())
                 .readMessage(chatMessage.isReadMessage())
+                .build();
+    }
+    public ResponseChatRoomDto toResponseChatRoomDto(ChatRoom chatRoom){
+        return ResponseChatRoomDto.builder()
+                .roomId(chatRoom.getRoomId())
                 .build();
     }
 
