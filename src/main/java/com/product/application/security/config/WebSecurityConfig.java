@@ -2,15 +2,19 @@ package com.product.application.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.product.application.common.ResponseMessage;
+import com.product.application.security.UserDetailsImpl;
 import com.product.application.security.UserDetailsServiceImpl;
 import com.product.application.security.jwt.JwtAuthFilter;
 import com.product.application.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +25,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import static com.product.application.common.exception.ErrorCode.DO_NOT_HAVE_PERMISSION_ERROR_MSG;
 import static com.product.application.common.exception.ErrorCode.FORBIDDEN_ERROR;
 
 @Configuration
@@ -36,6 +41,15 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    //h2관련 설정 나중에 지우기.
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        // h2-console 사용 및 resources 접근 허용 설정
+        return (web) -> web.ignoring()
+                .requestMatchers(PathRequest.toH2Console())
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // csrf 중지
@@ -48,6 +62,8 @@ public class WebSecurityConfig {
                 .antMatchers(HttpMethod.GET, new String[]{"/api/test", "/review/bestsix", "/reservation/findall", "/reservation/{reservationId}", "/reservation/listsix"}).permitAll()
                 .antMatchers("/reviewlookup/**").permitAll()
                 .antMatchers("/camping/permit/**").permitAll()
+                .antMatchers("/chat/room/**").permitAll()
+                .antMatchers("/ws/**", "/topic/**", "/app/**").permitAll()
                 .anyRequest().authenticated()
                 // JWT 인증/인가를 사용하기 위해 JwtAuthFilter 적용
                 .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
@@ -81,8 +97,9 @@ public class WebSecurityConfig {
 
         // 서버에서 응답하는 리소스에 접근 가능한 출처를 명시
         // Access-Control-Allow-Origin
+        //config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("http://localhost:3000"); //요거 변경하시면 됩니다.
-        config.addAllowedOrigin("https://www.campingzip.site");
+        config.addAllowedOrigin("http://campingzipbeta.s3-website.ap-northeast-2.amazonaws.com");
 
         // 특정 헤더를 클라이언트 측에서 꺼내어 사용할 수 있게 지정
         // 만약 지정하지 않는다면, Authorization 헤더 내의 토큰 값을 사용할 수 없음

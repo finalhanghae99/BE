@@ -17,12 +17,11 @@ public class ChatMessageController {
     private final SimpMessageSendingOperations sendingOperations;
     private final ChatService chatService;
 
-    @MessageMapping("/chat/message/{reservationId}/{roomId}")
-    public ResponseMessage<?> saveMessage(@RequestBody RequestMessageDto requestMessageDto,@PathVariable Long reservationId, @PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @MessageMapping("/chat/message/{roomId}")
+    public ResponseMessage<?> saveMessage(@RequestBody RequestMessageDto requestMessageDto, @PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         sendingOperations.convertAndSend("/topic/chat/room/"+requestMessageDto.getRoomId(),requestMessageDto);
-        chatService.saveMessage(requestMessageDto ,reservationId, roomId, userDetails.getUser());
+        chatService.saveMessage(requestMessageDto, roomId, userDetails.getUser());
         return new ResponseMessage<>("Success", 200, null);
     }
-
 
 }

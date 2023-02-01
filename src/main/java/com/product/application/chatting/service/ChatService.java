@@ -49,19 +49,17 @@ public class ChatService {
 
 
     @Transactional
-    public ResponseMessage saveMessage(RequestMessageDto requestMessageDto, Long reservationId, String roomId, Users user) {
-        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+    public ResponseMessage saveMessage(RequestMessageDto requestMessageDto, String roomId, Users user) {
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
-        ChatMessage chatMessage = chattingMapper.toRequestMessageDto(requestMessageDto, chatRoom, reservation, roomId, user.getNickname());
+        ChatMessage chatMessage = chattingMapper.toRequestMessageDto(requestMessageDto, chatRoom, roomId, user.getNickname());
         chatMessageRepository.save(chatMessage);
         return new ResponseMessage<>("Success", 200, chatMessage.getRoomId());
     }
 
 
-    public ResponseMessage reservationInfo(String roomId, Long reservationId) {
+    public ResponseMessage reservationInfo(String roomId) {
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
-        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-        ResponseChatReservationDto responseChatReservationDto = chattingMapper.toResponseChatMessageDto(chatRoom, reservation);
+        ResponseChatReservationDto responseChatReservationDto = chattingMapper.toResponseChatMessageDto(chatRoom);
         return new ResponseMessage("Success", 200, responseChatReservationDto);
     }
 

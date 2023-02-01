@@ -1,6 +1,7 @@
 package com.product.application.s3.entity;
 
 import com.product.application.review.entity.Review;
+import com.product.application.user.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,5 +30,10 @@ public class Img {
 
     public Img(Img imgUrl) {
         this.imgUrl = imgUrl.getImgUrl();
+    }
+
+
+    public Img(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

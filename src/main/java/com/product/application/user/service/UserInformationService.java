@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -85,14 +86,21 @@ public class UserInformationService {
         return responseUserCampingInfoDto;
     }
 
-    public ResponseUserInfoDto userInfoChange(RequestUserInfoDto requestUserInfoDto, Users users) {
-        if(users.getNickname().equals(requestUserInfoDto.getNickname())){
-            throw new CustomException(DUPLICATE_NICKNAME);
+    public ResponseUserInfoDto userInfoChange(RequestUserInfoDto requestUserInfoDto,List<String> imgUrl, Users users) {
+        if(userRepository.findByNickname(requestUserInfoDto.getNickname()).isPresent()){
+            if(requestUserInfoDto.getNickname().equals(users.getNickname())){
+                users.change(requestUserInfoDto.getNickname(), imgUrl.toString().replaceAll("\\[", "").replaceAll("\\]", ""));
+                userRepository.save(users);
+            } else {
+                throw new CustomException(DUPLICATE_NICKNAME);
+            }
+        } else {
+            users.change(requestUserInfoDto.getNickname(), imgUrl.toString().replaceAll("\\[", "").replaceAll("\\]", ""));
+            userRepository.save(users);
         }
-        users.change(requestUserInfoDto.getNickname(),requestUserInfoDto.getProfileImageUrl());
-        userRepository.save(users);
         return userMapper.toResponseUserInfo(users);
     }
+
 
     public ResponseReviewOneListDto userReviewInfo(Long usersId) {
         List<Review> reviewList = reviewRepository.findAllByusersId(usersId);
