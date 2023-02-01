@@ -51,9 +51,12 @@ public class ChatService {
 
 
     @Transactional
-    public ResponseMessage saveMessage(RequestMessageDto requestMessageDto, String roomId, Users user) {
+    public ResponseMessage saveMessage(RequestMessageDto requestMessageDto, String roomId) {
+        System.out.println("rodmId = " + roomId);
+
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
-        ChatMessage chatMessage = chattingMapper.toRequestMessageDto(requestMessageDto, chatRoom, roomId, user.getNickname());
+        System.out.println("chatRoom = " + chatRoom);
+        ChatMessage chatMessage = chattingMapper.toRequestMessageDto(requestMessageDto, chatRoom, roomId, requestMessageDto.getSender());
         chatMessageRepository.save(chatMessage);
         return new ResponseMessage<>("Success", 200, chatMessage.getRoomId());
     }
