@@ -18,7 +18,6 @@ public class ChattingMapper {
                 .type(requestMessageDto.getType())
                 .roomId(roomId)
                 .chatRoom(chatRoom)
-                .readMessage(requestMessageDto.isReadMessage())
                 .reservation(chatRoom.getReservation())
                 .sendDate(requestMessageDto.getSendDate())
                 .build();
@@ -55,7 +54,6 @@ public class ChattingMapper {
                 .type(chatMessage.getType())
                 .roomId(chatMessage.getRoomId())
                 .message(chatMessage.getMessage())
-                .readMessage(chatMessage.isReadMessage())
                 .build();
     }
     public ResponseChatRoomDto toResponseChatRoomDto(ChatRoom chatRoom){

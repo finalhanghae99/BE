@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @NoArgsConstructor
-@MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class ChatMessage {
     @Id
@@ -30,7 +29,6 @@ public class ChatMessage {
     private String sender;
     private String receiver;
     private String message;
-    private Boolean readMessage;
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime sendDate;
@@ -43,20 +41,16 @@ public class ChatMessage {
     private ChatRoom chatRoom;
 
     @Builder
-    public ChatMessage(MessageType type, String roomId, String sender, String receiver, String message, boolean readMessage, Reservation reservation, ChatRoom chatRoom, LocalDateTime sendDate){
+    public ChatMessage(MessageType type, String roomId, String sender, String receiver, String message,Reservation reservation, ChatRoom chatRoom, LocalDateTime sendDate){
         this.type = type;
         this.roomId = roomId;
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
-        this.readMessage = readMessage;
         this.reservation = reservation;
         this.chatRoom = chatRoom;
         this.sendDate = sendDate;
     }
 
 
-    public void update(ResponseChatMessageDto responseChatMessageDto) {
-        this.readMessage = responseChatMessageDto.isReadMessage();
-    }
 }
