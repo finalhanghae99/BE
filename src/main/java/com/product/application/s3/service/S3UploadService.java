@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,24 +29,24 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+
+
     public List<String> upload(List<MultipartFile> multipartFile) {
         List<String> imgUrlList = new ArrayList<>();
-
-        // key가 존재하면 기존 파일은 삭제
-
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
-        for (MultipartFile file : multipartFile) {
-            String fileName = createFileName(file.getOriginalFilename());
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(file.getSize());
-            objectMetadata.setContentType(file.getContentType());
-
-            try(InputStream inputStream = file.getInputStream()) {
-                s3Client.putObject(new PutObjectRequest(bucket+"/image", fileName, inputStream, objectMetadata)
-                        .withCannedAcl(CannedAccessControlList.PublicRead));
-                imgUrlList.add(s3Client.getUrl(bucket+"/image", fileName).toString());
-            } catch(IOException e) {
-                throw new CustomException(ErrorCode.IMAGE_UPLOAD_ERROR);
+        if(multipartFile != null) {
+            for (MultipartFile file : multipartFile) {
+                String fileName = createFileName(file.getOriginalFilename());
+                ObjectMetadata objectMetadata = new ObjectMetadata();
+                objectMetadata.setContentLength(file.getSize());
+                objectMetadata.setContentType(file.getContentType());
+                try (InputStream inputStream = file.getInputStream()) {
+                    s3Client.putObject(new PutObjectRequest(bucket + "/image", fileName, inputStream, objectMetadata)
+                            .withCannedAcl(CannedAccessControlList.PublicRead));
+                    imgUrlList.add(s3Client.getUrl(bucket + "/image", fileName).toString());
+                } catch (IOException e) {
+                    throw new CustomException(ErrorCode.IMAGE_UPLOAD_ERROR);
+                }
             }
         }
         return imgUrlList;

@@ -10,5 +10,6 @@ import lombok.Setter;
 public class RequestUserInfoDto {
     private String nickname;
     private String profileImageUrl;
+    private Boolean changePro;
 
 }

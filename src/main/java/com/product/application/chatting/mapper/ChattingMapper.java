@@ -44,6 +44,7 @@ public class ChattingMapper {
                 .seller(chatMessage.getChatRoom().getSeller())
                 .buyer(chatMessage.getChatRoom().getBuyer())
                 .campingName(chatMessage.getReservation().getCamping().getCampingName())
+                .roomId(chatMessage.getRoomId())
                 .build();
     }
     public ResponseChatMessageDto toresponseChatMessageDto(ChatMessage chatMessage){

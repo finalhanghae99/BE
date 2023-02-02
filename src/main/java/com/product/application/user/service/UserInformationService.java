@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -86,15 +87,16 @@ public class UserInformationService {
     }
 
     public ResponseUserInfoDto userInfoChange(RequestUserInfoDto requestUserInfoDto,List<String> imgUrl, Users users) {
+        String profileImgUrl = requestUserInfoDto.getChangePro() ? imgUrl.toString() : users.getProfileImageUrl();
         if(userRepository.findByNickname(requestUserInfoDto.getNickname()).isPresent()){
             if(requestUserInfoDto.getNickname().equals(users.getNickname())){
-                users.change(requestUserInfoDto.getNickname(), imgUrl.toString().replaceAll("\\[", "").replaceAll("\\]", ""));
+                users.change(requestUserInfoDto.getNickname(), profileImgUrl.replaceAll("\\[", "").replaceAll("\\]", ""));
                 userRepository.save(users);
             } else {
                 throw new CustomException(DUPLICATE_NICKNAME);
             }
         } else {
-            users.change(requestUserInfoDto.getNickname(), imgUrl.toString().replaceAll("\\[", "").replaceAll("\\]", ""));
+            users.change(requestUserInfoDto.getNickname(), profileImgUrl.replaceAll("\\[", "").replaceAll("\\]", ""));
             userRepository.save(users);
         }
         return userMapper.toResponseUserInfo(users);
