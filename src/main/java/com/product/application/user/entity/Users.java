@@ -3,7 +3,6 @@ package com.product.application.user.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 
@@ -36,8 +35,8 @@ public class Users {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public void change(String nickname, String profileImageUrl) {
+    public void change(String nickname, String imgUrl) {
         this.nickname = nickname;
-        this.profileImageUrl = profileImageUrl;
+        this.profileImageUrl = imgUrl;
     }
 }

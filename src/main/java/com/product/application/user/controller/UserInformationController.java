@@ -12,12 +12,11 @@ import com.product.application.user.dto.ResponseUserReservationDto;
 import com.product.application.user.service.UserInformationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -43,7 +42,7 @@ public class UserInformationController {
 
     @PutMapping("/mypage/update")
     public ResponseMessage<?> userInfoChange(@RequestPart RequestUserInfoDto requestUserInfoDto,
-                                             @RequestPart List<MultipartFile> profileImageUrl,
+                                             @RequestParam(value="profileImageUrl",required = false)  List<MultipartFile> profileImageUrl,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         List<String> imgUrl = s3UploadService.upload(profileImageUrl);
         ResponseUserInfoDto responseUserInfoDto = userInformationService.userInfoChange(requestUserInfoDto, imgUrl, userDetails.getUser());

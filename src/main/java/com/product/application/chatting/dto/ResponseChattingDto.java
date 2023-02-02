@@ -17,9 +17,10 @@ public class ResponseChattingDto {
     private String campingName;
     private String lastChatMessage;
     private LocalDateTime lastSendDate;
+    private String roomId;
 
     @Builder
-    public ResponseChattingDto(String sellerProfileImageUrl, String buyerProfileImageUrl, String seller, String buyer, String campingName, String lastChatMessage, LocalDateTime lastSendDate) {
+    public ResponseChattingDto(String sellerProfileImageUrl, String buyerProfileImageUrl, String seller, String buyer, String campingName, String lastChatMessage, LocalDateTime lastSendDate, String roomId) {
         this.sellerProfileImageUrl = sellerProfileImageUrl;
         this.buyerProfileImageUrl = buyerProfileImageUrl;
         this.seller = seller;
@@ -27,6 +28,7 @@ public class ResponseChattingDto {
         this.campingName = campingName;
         this.lastChatMessage = lastChatMessage;
         this.lastSendDate = lastSendDate;
+        this.roomId = roomId;
 
     }
 }

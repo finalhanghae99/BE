@@ -20,6 +20,7 @@ public class ChattingMapper {
                 .chatRoom(chatRoom)
                 .readMessage(requestMessageDto.isReadMessage())
                 .reservation(chatRoom.getReservation())
+                .sendDate(requestMessageDto.getSendDate())
                 .build();
     }
     public ResponseChatReservationDto toResponseChatMessageDto(ChatRoom chatRoom) {
@@ -44,6 +45,7 @@ public class ChattingMapper {
                 .seller(chatMessage.getChatRoom().getSeller())
                 .buyer(chatMessage.getChatRoom().getBuyer())
                 .campingName(chatMessage.getReservation().getCamping().getCampingName())
+                .roomId(chatMessage.getRoomId())
                 .build();
     }
     public ResponseChatMessageDto toresponseChatMessageDto(ChatMessage chatMessage){
