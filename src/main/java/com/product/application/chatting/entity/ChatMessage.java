@@ -8,14 +8,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
-public class ChatMessage extends TimeStampedChat {
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chatId")
@@ -25,7 +30,10 @@ public class ChatMessage extends TimeStampedChat {
     private String sender;
     private String receiver;
     private String message;
-    private boolean readMessage;
+    private Boolean readMessage;
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime sendDate;
 
     @ManyToOne
     @JoinColumn(name="reservationId")
@@ -35,7 +43,7 @@ public class ChatMessage extends TimeStampedChat {
     private ChatRoom chatRoom;
 
     @Builder
-    public ChatMessage(MessageType type, String roomId, String sender, String receiver, String message, boolean readMessage, Reservation reservation, ChatRoom chatRoom){
+    public ChatMessage(MessageType type, String roomId, String sender, String receiver, String message, boolean readMessage, Reservation reservation, ChatRoom chatRoom, LocalDateTime sendDate){
         this.type = type;
         this.roomId = roomId;
         this.sender = sender;
@@ -44,6 +52,7 @@ public class ChatMessage extends TimeStampedChat {
         this.readMessage = readMessage;
         this.reservation = reservation;
         this.chatRoom = chatRoom;
+        this.sendDate = sendDate;
     }
 
 

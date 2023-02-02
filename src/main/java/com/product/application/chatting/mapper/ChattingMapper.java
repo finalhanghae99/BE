@@ -20,6 +20,7 @@ public class ChattingMapper {
                 .chatRoom(chatRoom)
                 .readMessage(requestMessageDto.isReadMessage())
                 .reservation(chatRoom.getReservation())
+                .sendDate(requestMessageDto.getSendDate())
                 .build();
     }
     public ResponseChatReservationDto toResponseChatMessageDto(ChatRoom chatRoom) {
