@@ -14,6 +14,7 @@ import java.util.List;
 public class ResponseReviewOneDto {
     private Long reviewId;
     private String campingName;
+    private Long campingId;
     private String nickname;
     private Long score1;
     private Long score2;

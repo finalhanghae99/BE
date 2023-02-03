@@ -47,6 +47,7 @@ public class ReservationMapper {
                 .endDate(reservation.getEndDate())
                 .imageUrl(camping.getImageUrl())
                 .campingName(camping.getCampingName())
+                .campingId(camping.getId())
                 .address3(camping.getAddress3())
                 .tradeState(reservation.isTradeState())
                 .price(reservation.getPrice())

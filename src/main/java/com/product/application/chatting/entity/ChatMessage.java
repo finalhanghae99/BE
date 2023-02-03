@@ -1,9 +1,6 @@
 package com.product.application.chatting.entity;
 
-import com.product.application.chatting.dto.ResponseChatMessageDto;
-import com.product.application.common.TimeStampedChat;
 import com.product.application.reservation.entity.Reservation;
-import com.product.application.user.entity.Users;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +25,7 @@ public class ChatMessage {
     private String roomId;
     private String sender;
     private String receiver;
+    @Column(length = 5000)
     private String message;
     @CreatedDate
     @Column(updatable = false)

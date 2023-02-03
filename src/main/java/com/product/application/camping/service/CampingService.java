@@ -80,7 +80,8 @@ public class CampingService {
         }
         // 1.5. campingname O address1 X address2 X -> 검색가능
         else if(campingname != null && address1 == null && address2 == null){
-            returnCampingList = campingRepository.findAllByCampingNameContaining(campingname);
+            String campingname2 = campingname.replaceAll(" ","");
+            returnCampingList = campingRepository.selectCampingNameSQL(campingname2);
         }
         // 1.6. campingname O address1 X address2 O -> 에러반환
         else if(campingname != null && address1 == null && address2 != null){
@@ -89,7 +90,8 @@ public class CampingService {
         // 1.7. campingname O address1 O address2 X -> 검색가능
         else if(campingname != null && address1 != null && address2 == null){
             // campingname으로 디비에서 받아오기 -> address1이 일치하는 것만 리스트에 받아서 반환
-            campingList = campingRepository.findAllByCampingNameContaining(campingname);
+            String campingname2 = campingname.replaceAll(" ","");
+            campingList = campingRepository.selectCampingNameSQL(campingname2);
             for(Camping camping : campingList){
                 if(camping.getAddress1().equals(address1)){
                     returnCampingList.add(camping);
@@ -99,7 +101,8 @@ public class CampingService {
         // 1.8. campingname O address1 O address2 O -> 검색가능
         else if(campingname != null && address1 != null && address2 != null){
             // campingname으로 추려내고 address1 & address2가 일치하는 것을 반환한다
-            campingList = campingRepository.findAllByCampingNameContaining(campingname);
+            String campingname2 = campingname.replaceAll(" ","");
+            campingList = campingRepository.selectCampingNameSQL(campingname2);
             for(Camping camping : campingList){
                 if(camping.getAddress1().equals(address1) && camping.getAddress2().equals(address2)){
                     returnCampingList.add(camping);

@@ -25,6 +25,7 @@ public class CampingController {
             usersId = userDetails.getUserId();
         }
         usersId = 0L;
+        System.out.println(campingname);
         ResponseMessage responseMessage = campingService.searchAllCampingInfo(campingname, address1, address2, usersId);
         return responseMessage;
     }
