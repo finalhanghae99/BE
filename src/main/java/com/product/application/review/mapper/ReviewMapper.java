@@ -51,6 +51,7 @@ public class ReviewMapper {
         return ResponseReviewOneDto.builder()
                 .reviewId(review.getId())
                 .campingName(review.getCamping().getCampingName())
+                .campingId(review.getCamping().getId())
                 .nickname(review.getUsers().getNickname())
                 .score1(review.getScore1())
                 .score2(review.getScore2())

@@ -18,6 +18,4 @@ public class RequestMessageDto {
     private String message;
     private LocalDateTime sendDate;
     private Long reservationId;
-    private boolean readMessage;
-
 }
