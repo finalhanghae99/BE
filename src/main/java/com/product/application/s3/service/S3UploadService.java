@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,6 +68,9 @@ public class S3UploadService {
         fileValidate.add(".JPG");
         fileValidate.add(".JPEG");
         fileValidate.add(".PNG");
+        fileValidate.add(".JFiF");
+        fileValidate.add(".jfif");
+        fileValidate.add(".BMP");
         String idxFileName = fileName.substring(fileName.lastIndexOf("."));
         if (!fileValidate.contains(idxFileName)) {
             throw new CustomException(ErrorCode.WRONG_INPUT_IMAGE);

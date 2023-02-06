@@ -6,11 +6,15 @@ import com.product.application.chatting.entity.ChatRoom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 @RequiredArgsConstructor
 public class ChattingMapper {
 
     public ChatMessage toRequestMessageDto(RequestMessageDto requestMessageDto, ChatRoom chatRoom, String roomId, String nickname) {
+        LocalDateTime now = LocalDateTime.parse(requestMessageDto.getSendDate());
+        System.out.println("now = " + now);
         return ChatMessage.builder()
                 .sender(nickname)
                 .receiver(chatRoom.getReservation().getUsers().getNickname())
@@ -19,7 +23,7 @@ public class ChattingMapper {
                 .roomId(roomId)
                 .chatRoom(chatRoom)
                 .reservation(chatRoom.getReservation())
-                .sendDate(requestMessageDto.getSendDate())
+                .sendDate(now)
                 .build();
     }
     public ResponseChatReservationDto toResponseChatMessageDto(ChatRoom chatRoom) {

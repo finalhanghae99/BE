@@ -16,6 +16,6 @@ public class RequestMessageDto {
     private String sender;
     private String receiver;
     private String message;
-    private LocalDateTime sendDate;
+    private String sendDate;
     private Long reservationId;
 }

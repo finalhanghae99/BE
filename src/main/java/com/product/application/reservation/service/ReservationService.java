@@ -125,7 +125,7 @@ public class ReservationService {
         List<Reservation> reservationList;
         List<Reservation> responseFindListSix = new ArrayList<>();
 
-        reservationList = reservationRepository.findTop6ByOrderByIdDesc();
+        reservationList = reservationRepository.findingsixSQL();
 
         for (Reservation reservation : reservationList) {
             responseFindListSix.add(reservation);

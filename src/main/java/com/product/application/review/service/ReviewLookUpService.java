@@ -51,7 +51,7 @@ public class ReviewLookUpService {
         ResponseReviewAllDto responseReviewAllDto = new ResponseReviewAllDto(reviewListDtos);
         return responseReviewAllDto;
     }
-
+    @Transactional
     public ResponseReviewOneDto searchOne(Long reviewId, Long usersId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new CustomException(REVIEW_NOT_FOUND)
