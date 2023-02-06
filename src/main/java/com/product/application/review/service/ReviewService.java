@@ -44,7 +44,7 @@ public class ReviewService {
             throw new CustomException(ErrorCode.WRONG_INPUT_IMAGE);
         }
         Review review = reviewMapper.requestReviewWriteDtoToEntity(users, camping, requestReviewWriteDto);
-        Review reviewTemp = reviewRepository.save(review);
+        reviewRepository.save(review);
         camping.updateReviewCount(true);
 
         List<String> imgList = new ArrayList<>();
@@ -53,7 +53,7 @@ public class ReviewService {
             imgRepository.save(img);
             imgList.add(img.getImgUrl());
         }
-        System.out.println("review.getId() = " + review.getId());
+
         return new ResponseMessage<>("Success", 200, review.getId());
     }
 
