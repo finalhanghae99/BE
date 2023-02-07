@@ -31,6 +31,7 @@ public class ChattingMapper {
                 .campingName(chatRoom.getReservation().getCamping().getCampingName())
                 .imageUrl(chatRoom.getReservation().getCamping().getImageUrl())
                 .price(chatRoom.getReservation().getPrice())
+                .reservationId(chatRoom.getReservation().getId())
                 .build();
     }
     public ResponseChatNicknameDto toresponseChatNicknameDto(ChatRoom chatRoom){

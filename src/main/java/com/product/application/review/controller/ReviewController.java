@@ -35,7 +35,7 @@ public class ReviewController {
     @PutMapping("/{reviewId}")
     public ResponseEntity updateReview(@PathVariable Long reviewId,
                                        @RequestPart(value = "requestReviewWriteDto") RequestReviewWriteDto requestReviewWriteDto,
-                                       @RequestPart List<MultipartFile> multipartFile,
+                                       @RequestParam(required = false) List<MultipartFile> multipartFile,
                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
         Long usersId = userDetails.getUserId();
         List<String> reviewUrl = s3UploadService.upload(multipartFile);
