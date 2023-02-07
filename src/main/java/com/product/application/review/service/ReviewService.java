@@ -73,7 +73,6 @@ public class ReviewService {
                 String result = img.getImgUrl().substring(img.getImgUrl().lastIndexOf("/image") + 1);
                 s3UploadService.deleteImg(result);
             }
-
             List<String> newImgList = new ArrayList<>();
             for (String imgUrl : reviewUrl) {
                 Img img = new Img(imgUrl, review);
