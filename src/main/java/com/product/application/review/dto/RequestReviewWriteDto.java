@@ -16,4 +16,5 @@ public class RequestReviewWriteDto {
     private Long score3;
     private Long score4;
     private Long score5;
+    private Boolean changeReview;
 }

@@ -58,27 +58,33 @@ public class ReviewService {
     }
 
     @Transactional
-    public ResponseMessage updateReview(Long reviewId, RequestReviewWriteDto requestReviewWriteDto, Long usersId , List<String> reviewUrl) {
-        Review review = reviewRepository.findById(reviewId).orElseThrow(()->new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-        if(!review.getUsers().getId().equals(usersId)){
+    public ResponseMessage updateReview(Long reviewId, RequestReviewWriteDto requestReviewWriteDto, Long usersId, List<String> reviewUrl) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+        if (!review.getUsers().getId().equals(usersId)) {
             throw new CustomException(ErrorCode.AUTHORIZATION_UPDATE_FAIL);
         }
         review.update(requestReviewWriteDto);
         reviewRepository.save(review);
 
-//        List<Img> imgList = imgRepository.findByReviewId(reviewId);
-//        for(Img img : imgList){
-//            imgRepository.delete(img);
-//            String result = img.getImgUrl().substring(img.getImgUrl().lastIndexOf("/image")+1);
-//            s3UploadService.deleteImg(result);
-//        }
+        if (requestReviewWriteDto.getChangeReview() == true) {
+            List<Img> imgList = imgRepository.findByReviewId(reviewId);
+            for (Img img : imgList) {
+                imgRepository.delete(img);
+                String result = img.getImgUrl().substring(img.getImgUrl().lastIndexOf("/image") + 1);
+                s3UploadService.deleteImg(result);
+            }
 
-        List<String> newImgList = new ArrayList<>();
-        for (String imgUrl : reviewUrl) {
-            Img img = new Img(imgUrl, review);
+            List<String> newImgList = new ArrayList<>();
+            for (String imgUrl : reviewUrl) {
+                Img img = new Img(imgUrl, review);
+                imgRepository.save(img);
+                newImgList.add(img.getImgUrl());
+            }
+        } else {
             review.update(requestReviewWriteDto);
-            newImgList.add(img.getImgUrl());
+            reviewRepository.save(review);
         }
+
         return new ResponseMessage<>("Success", 200, review.getId());
     }
 
