@@ -66,20 +66,20 @@ public class ReviewService {
         review.update(requestReviewWriteDto);
         reviewRepository.save(review);
 
-        List<Img> imgList = imgRepository.findByReviewId(reviewId);
-        for(Img img : imgList){
-            imgRepository.delete(img);
-            String result = img.getImgUrl().substring(img.getImgUrl().lastIndexOf("/image")+1);
-            s3UploadService.deleteImg(result);
-        }
+//        List<Img> imgList = imgRepository.findByReviewId(reviewId);
+//        for(Img img : imgList){
+//            imgRepository.delete(img);
+//            String result = img.getImgUrl().substring(img.getImgUrl().lastIndexOf("/image")+1);
+//            s3UploadService.deleteImg(result);
+//        }
 
         List<String> newImgList = new ArrayList<>();
         for (String imgUrl : reviewUrl) {
             Img img = new Img(imgUrl, review);
-            imgRepository.save(img);
+            review.update(requestReviewWriteDto);
             newImgList.add(img.getImgUrl());
         }
-        return new ResponseMessage<>("Success", 200, null);
+        return new ResponseMessage<>("Success", 200, review.getId());
     }
 
 

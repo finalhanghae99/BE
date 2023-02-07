@@ -12,12 +12,14 @@ public class ResponseChatReservationDto {
     private String imageUrl;
     private String campingName;
     private Long price;
+    private Long reservationId;
 
     @Builder
-    public ResponseChatReservationDto(String imageUrl, String campingName, Long price){
+    public ResponseChatReservationDto(String imageUrl, String campingName, Long price, Long reservationId){
         this.imageUrl = imageUrl;
         this.campingName = campingName;
         this.price = price;
+        this.reservationId = reservationId;
 
     }
 }
