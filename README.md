@@ -1,9 +1,9 @@
-# 캠핑집 프로젝트(CampingZip) (수정중)
+# :tent: 캠핑집 프로젝트(CampingZip)
 
 ### 프로젝트 기간
 2022.12.30 ~ 2023.02.10
-
-
+ <br />
+ 
 ### 멤버 정보
 |Name|Role|Github|
 |------|---|---|
@@ -14,7 +14,9 @@
 |진효제|BE|https://github.com/jinhyoje|
 |오은지|Design||
 
-## 서비스 소개
+ <br />
+ 
+## :cherries: 서비스 소개
  행복한 캠핑을 위해 캠핑장의 정보를 제공하는 저희 서비스의 이름은 캠핑집(CAMPINGZIP)입니다. 
  <br />
  텐트를 열고 캠핑의 세상을 열어보자는 의미로 캠핑집(CAMPINGZIP)으로 서비스의 이름을 정했습니다.
@@ -23,8 +25,9 @@
 1. 전국 3천여개 캠핑장의 각 지역별 정보검색기능(OPEN API 활용)
 2. 캠핑장에 대한 리뷰생성 및 즐겨찾기 기능
 3. 캠핑장 양도글 게시기능 및 채팅기능 제공
+ <br />
 
-## 기술스택
+##  :grapes:  기술스택
 
 ### 프론트 기술스택
 <!-- <img src="https://img.shields.io/badge/표시할이름-색상?style=for-the-badge&logo=기술스택아이콘&logoColor=white"> -->
@@ -60,12 +63,15 @@
 <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 </div>
-<h3>전체 아키텍처 </h3>
+ <br /> <br />
+ 
+## :strawberry: 전체 아키텍처
+
  <div markdown="1">
   <img src="https://user-images.githubusercontent.com/49892292/217412803-f73c1678-5f28-43ae-80bb-9bee084b227f.png">
  </div>
 
-### 주요 기능
+## :peach: 주요 기능
 
 ✅ 지도 (kakao Map)
 
@@ -92,7 +98,7 @@
 ![검색](https://user-images.githubusercontent.com/49892292/217447135-d92b340e-46ef-4e56-8d46-9f1e72d400d8.png)
 
 
-## 트러블 슈팅
+## :watermelon: 트러블 슈팅
 <details>
 <summary>✔️ 채팅 실시간 렌더링(FE)</summary>
 <div markdown="1">
@@ -163,7 +169,15 @@ sender는 양도 받길 원하는 사람 receiver는 양도글을 작성한 사�
 </div>
 </details>
 
-### 레퍼런스
+<br />
+<br />
+
+## :beer: 레퍼런스
 <a href="https://www.figma.com/file/g0FYpNqsg3aAhMPu1O1dCD/CampingZip?node-id=0%3A1&t=LhlHY8QwlaFuHsd3-0">
-Figma
+<img src="https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white">
+
 </a>
+
+<a href="https://www.youtube.com/watch?v=mGCpUO4QnSo">
+ <img src="https://img.shields.io/badge/youtube-cd0000?style=for-the-badge&logo=youtube&logoColor=white">
+ </a>
