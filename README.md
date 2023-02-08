@@ -65,11 +65,6 @@
   <img src="https://user-images.githubusercontent.com/49892292/217412803-f73c1678-5f28-43ae-80bb-9bee084b227f.png">
  </div>
 
-### API 설계
-<a href="https://www.notion.so/e8dfe80fdd5f4047a081903fe8da1850?v=156169cd6e2240768142d54dd5e756cf">
-API 설계 링크
-</a>
-
 ### 주요 기능
 
 ✅ 지도 (kakao Map)
