@@ -1,4 +1,4 @@
-# :tent: 캠핑집 프로젝트(CampingZip) (수정중)
+# :tent: 캠핑집 프로젝트(CampingZip)
 
 ### 프로젝트 기간
 2022.12.30 ~ 2023.02.10
@@ -30,8 +30,12 @@
 2. 캠핑장에 대한 리뷰생성 및 즐겨찾기 기능
 3. 캠핑장 양도글 게시기능 및 채팅기능 제공
  <br />
- 
-![채팅2](https://user-images.githubusercontent.com/49892292/217453401-77d12b0b-b8bd-40e7-ba94-d666c0d8a7bc.gif)
+ <div>
+ <img width="200px" src="https://user-images.githubusercontent.com/49892292/217457917-cd22725a-f193-46b7-b18b-e4772a1fa724.gif"/>
+ <img width="200px" src="https://user-images.githubusercontent.com/49892292/217453401-77d12b0b-b8bd-40e7-ba94-d666c0d8a7bc.gif" />
+<img width="200px" src="https://user-images.githubusercontent.com/49892292/217457688-96a7ea6a-be27-468e-bc8b-283fe3a383d1.gif" />
+<img width="200px" src="https://user-images.githubusercontent.com/49892292/217457704-f9b07355-aa47-4cc3-8edf-d699bf696e7e.gif" />
+ </div>
 
 <br />
 
