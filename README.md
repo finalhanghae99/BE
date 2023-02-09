@@ -185,11 +185,16 @@ sender는 양도 받길 원하는 사람 receiver는 양도글을 작성한 사�
 <br />
 
 ## :beer: 레퍼런스
+
+  <a href="https://www.campingzip.site/">
+ <img src="https://img.shields.io/badge/CampingZip-ff8b00?style=for-the-badge&logo=&logoColor=white">
+ </a>
+
 <a href="https://www.figma.com/file/g0FYpNqsg3aAhMPu1O1dCD/CampingZip?node-id=0%3A1&t=LhlHY8QwlaFuHsd3-0">
 <img src="https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white">
-
 </a>
 
 <a href="https://www.youtube.com/watch?v=mGCpUO4QnSo">
  <img src="https://img.shields.io/badge/youtube-cd0000?style=for-the-badge&logo=youtube&logoColor=white">
  </a>
+ 
